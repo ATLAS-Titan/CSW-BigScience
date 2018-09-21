@@ -98,8 +98,11 @@ placed here. General acknowledgments should be placed at the end of the article.
 \date{Received: date / Accepted: date}
 % The correct dates will be entered by the editor
 
-
 \maketitle
+
+% ---------------------------------------------------------------------------
+% ABSTRACT
+% ---------------------------------------------------------------------------
 
 \begin{abstract}
 Insert your abstract here. Include keywords, PACS and mathematical
@@ -109,11 +112,25 @@ subject classification numbers as needed.
 % \subclass{MSC code1 \and MSC code2 \and more}
 \end{abstract}
 
-\include{introduction}
 
-%\section{Introduction}
-%\label{intro}
-%Your text comes here. Separate text sections with
+% ---------------------------------------------------------------------------
+% I - INTRODUCTION
+% ---------------------------------------------------------------------------
+
+\section{Introduction}
+\label{sec:intro}
+\input{introduction}
+
+% ---------------------------------------------------------------------------
+% II - PanDA Workload Management System: Software System Overview
+% ---------------------------------------------------------------------------
+
+\section{PanDA Workload Management System: Software System Overview}
+\label{sec:overview}
+\input{overview}
+
+%%%
+
 \section{Section title}
 \label{sec:1}
 Text with citations \cite{RefB} and \cite{RefJ}.
