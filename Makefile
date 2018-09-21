@@ -70,9 +70,10 @@ run: $(SUBMISSION)
 ###
 
 $(SUBMISSION): $(wildcard $(PROJ_ROOT)/*.tex)
-	@   $(LATEX) -jobname $(PROJECT) $^                             ;   \
+	@   cd $(PROJ_ROOT)                                             ;   \
+            $(LATEX) -jobname $(PROJECT) main                           ;   \
             while $(call greplog, "Rerun to"); do                           \
-                $(LATEX) -jobname $(PROJECT) $^                         ;   \
+                $(LATEX) -jobname $(PROJECT) main                       ;   \
             done
 
 ###

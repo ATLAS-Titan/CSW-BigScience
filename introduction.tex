@@ -1,0 +1,54 @@
+%-  LaTeX source file
+
+%-  introduction.tex ~~
+%                                                       ~~ (c) SRW, 20 Sep 2018
+%                                                   ~~ last updated 20 Sep 2018
+
+\section{Introduction}
+\label{intro}
+
+Traditionally, the ATLAS experiment at LHC has utilized distributed resources
+as provided by the WLCG to support data distribution and enable the simulation
+of events.  For example, the ATLAS experiment uses a geographically distributed
+grid of approximately 200,000 cores continuously (250,000 cores at peak), (over
+1,000 million core-hours per year) to process, simulate, and analyze its data
+(today's total data volume of ATLAS is more than 300 PB). After the early
+success in discovering a new particle consistent with the long awaited Higgs
+boson, ATLAS is starting the precision measurements necessary for further
+discoveries that will become possible by much higher LHC collision energy and
+rates from Run2. The need for simulation and analysis will overwhelm the
+expected capacity of WLCG computing facilities unless the range and precision
+of physics studies will be curtailed.
+
+Over the past few years, the ATLAS experiment has been investigating the
+implications of using high-performance computers -- such as those found at Oak
+Ridge leadership class facility (ORNL). This steady transition is a consequence
+of application requirements (e.g., greater than expected data production),
+technology trends and software complexity.
+
+Our approach to the exascale involve the BigPanDA workload management system
+which is responsible for coordination of tasks, orchestration of resources and
+job submission and management. Historically, BigPanDA was used to for workload
+management across multiple distributed resources on the WLCG. We describe the
+changes to the BigPanDA software system needed to enable BigPanDA to utilize
+Titan. We will then describe how architectural, algorithmic and software
+changes have also been addressed by ATLAS computing.
+
+We quantify the impact of this sustained and steady uptake of supercomputers
+via BigPanDA: For the latest 18 month period for which data is available, Big
+Panda has enabled the utilization of ~400 Million Titan core hours (primarily
+via Backfill mechanisms 275M, but also through regular ``front end'' submission
+as part of the ALCC project 125M). This non-trivial amount of 400 million Titan
+core hours has resulted in 920 million events being analysed. ~3-5\% of all of
+ATLAS compute resources now provided by Titan; other DOE supercomputers provide
+non-trivial compute allocations. In spite of these impressive numbers, there is
+a need to further improve the uptake and utilization of supercomputing
+resources to improve the ATLAS prospects for Run 3. 
+
+In spite of these impressive numbers, there is a need to further improve the
+uptake and utilization of supercomputing resources to improve the ATLAS
+prospects for Run 3. The aim of this paper to (i) \ldots (ii) \ldots (iiii)
+\ldots (iv) We will outline how we have steadily made the ATLAS project ready
+for the exascale era \ldots 
+
+%-  vim:set syntax=tex:
