@@ -4,47 +4,46 @@
 %
 %   This is the second section of the paper.
 %
-%                                                       ~~ (c) SRW, 20 Sep 2018
-%                                                   ~~ last updated 23 Sep 2018
+%                                               ~~ (c) SRW, 20 Sep 2018
+%                                               ~~ last updated 23 Sep 2018
 
 PanDA is a Workload Management System (WMS) [marco2009glite] designed to
 support the execution of distributed workloads and workflows via pilots
 [turilli2017comprehensive]. Pilot-capable WMS enable high throughput of tasks
 execution via multi-level scheduling while supporting interoperability across
 multiple sites. This is particularly relevant for LHC experiments, where
-millions of tasks are executed across multiple sites every month, analyzing and
-producing petabytes of data. The design of PanDA WMS started in 2005 to support
-ATLAS. 
+millions of tasks are executed across multiple sites every month, analyzing
+and producing petabytes of data. The design of PanDA WMS started in 2005 to
+support ATLAS.
 
+% ---------------------------------------------------------------------------
 \subsection{Design}
 \label{subsec:design}
 
 PanDA's application model assumes tasks grouped into workloads and workflows.
-Tasks represent a set of homogeneous operations performed on datasets stored in
-one or more input files. Tasks are decomposed into jobs, where each job
+Tasks represent a set of homogeneous operations performed on datasets stored
+in one or more input files. Tasks are decomposed into jobs, where each job
 consists of the task's operations performed on a partition of the task's data
-set. 
-PanDA's usage model assumes multitenancy of resources and at least two types of
-HEP users: individual researchers and groups executing so called ``production''
-workflows. Production workflows is a set of transformations of collected and
-simulated data into formats which are used for user analysis.
-
+set. PanDA's usage model assumes multitenancy of resources and at least two
+types of HEP users: individual researchers and groups executing so called
+``production'' workflows. Production workflows is a set of transformations of
+collected and simulated data into formats which are used for user analysis.
 
 PanDA's security model is based on separation between authentication,
 authorization and accounting for both single users and group of users. Both
 authentication and authorization are based on digital certificates and on the
-virtual organization abstraction [foster2001anatomy].
-Currently, PanDA's execution model is based on four main abstractions: task,
-job, queue, and pilot. Both tasks and jobs are assumed to have attributes and
-states and to be queued into a global queue for execution. Prioritization and
-binding of jobs are assumed to depend on the attributes of each job. Pilot is
-used to indicate the abstraction of resource capabilities. Each job is bound to
-one pilot and executed at the site where the pilot has been instantiated.
+virtual organization abstraction [foster2001anatomy]. Currently, PanDA's
+execution model is based on four main abstractions: task, job, queue, and
+pilot. Both tasks and jobs are assumed to have attributes and states and to
+be queued into a global queue for execution. Prioritization and binding of
+jobs are assumed to depend on the attributes of each job. Pilot is used to
+indicate the abstraction of resource capabilities. Each job is bound to one
+pilot and executed at the site where the pilot has been instantiated.
 
 In PanDA's data model, each datum refers to the recorded or simulated
 measurement of a physical process. Data can be packaged into files or other
-containers. As with jobs, data have both attributes and states, and some of the
-attributes are shared between events and jobs. Raw, reconstruction, and
+containers. As with jobs, data have both attributes and states, and some of
+the attributes are shared between events and jobs. Raw, reconstruction, and
 simulation data are all assumed to be distributed across multiple storage
 facilities and managed by the ATLAS Distributed Data Management (DDM)
 [garonne2012atlas]. When necessary, input files required by each job are
@@ -52,18 +51,19 @@ assumed to be replicated over the network, both for input and output data.
 PanDA's design supports provenance and traceability for both jobs and data.
 Attributes enable provenance by linking jobs and data items, providing
 information like ownership or project affiliation. States enable traceability
-by providing information about the stage of the execution in which each job or
-data file is or has been.
+by providing information about the stage of the execution in which each job
+or data file is or has been.
 
+% ---------------------------------------------------------------------------
 \subsection{Implementation and Execution}
 \label{subsec:implementation}
 
-The implementation of PanDA WMS consists of several interconnected subsystems,
-most of them built from off-the-shelf and Open Source components. Subsystems
-communicate via messaging using HTTP and dedicated APIs, and each subsystem is
-implemented by one or more modules. Databases are used to store eventful
-entities like tasks, jobs, and input/output data and to store information about
-sites, resources, logs, and accounting.
+The implementation of PanDA WMS consists of several interconnected
+subsystems, most of them built from off-the-shelf and Open Source components.
+Subsystems communicate via messaging using HTTP and dedicated APIs, and each
+subsystem is implemented by one or more modules. Databases are used to store
+eventful entities like tasks, jobs, and input/output data and to store
+information about sites, resources, logs, and accounting.
 
 Currently, PanDA's architecture has five main subsystems: PanDA Server
 [maeno2011overview], AutoPyFactory [caballero2012autopyfactory], PanDA Pilot
@@ -71,22 +71,22 @@ Currently, PanDA's architecture has five main subsystems: PanDA Server
 [klimentov2011atlas]. PanDA uses ATLAS Grid Information system (AGIS)
 [1742-6596-513-3-032001] to obtain information about distributed resources.
 
-Other subsystems are used by some of ATLAS workflows (e.g., ATLAS Event Service
-[calafiura2015atlas]), but their discussion is omitted here because they are
-irrelevant to understanding how PanDA has been ported to supercomputers. For a
-full list of subsystems, see Ref. [panda-wiki\_url]. Figure
-\ref{fig:architecture} shows a diagrammatic representation of PanDA's main
-subsystems, highlighting the execution process of tasks while omitting
-monitoring details to improve readability. During first LHC data taking period
-(LHC Run 1), PanDA required users to perform a static conversion between tasks
-and jobs; tasks were described as a set of jobs and then submitted to the PanDA
-Server. This introduced inefficiency both with usability and resource
-utilization. Ideally, users should conceive analyses in terms of one or more
-potentially related tasks, while the workload manager (i.e., PanDA) should
-partition tasks into jobs, depending on execution constraints. Further, the
-static partitioning of tasks into jobs does not take into account the
-heterogeneous and dynamic nature of the resources on which each job will be
-executed, introducing inefficiencies.
+Other subsystems are used by some of ATLAS workflows (e.g., ATLAS Event
+Service [calafiura2015atlas]), but their discussion is omitted here because
+they are irrelevant to understanding how PanDA has been ported to
+supercomputers. For a full list of subsystems, see Ref. [panda-wiki\_url].
+Figure \ref{fig:architecture} shows a diagrammatic representation of PanDA's
+main subsystems, highlighting the execution process of tasks while omitting
+monitoring details to improve readability. During first LHC data taking
+period (LHC Run 1), PanDA required users to perform a static conversion
+between tasks and jobs; tasks were described as a set of jobs and then
+submitted to the PanDA Server. This introduced inefficiency both with
+usability and resource utilization. Ideally, users should conceive analyses
+in terms of one or more potentially related tasks, while the workload manager
+(i.e., PanDA) should partition tasks into jobs, depending on execution
+constraints. Further, the static partitioning of tasks into jobs does not
+take into account the heterogeneous and dynamic nature of the resources on
+which each job will be executed, introducing inefficiencies.
 
 % For two-column wide figures use
 \begin{figure*}
@@ -101,68 +101,72 @@ improve clarity.}
 \label{fig:architecture}
 \end{figure*}
 
-% OKAY, PROBLEM. I think the "Fig. 1:n" stuff in the next paragraph refers not
-% to a new figure, but to specific numbered pieces of Figure 1. I'm going to
-% link them all to the figure and hardcode the ":n" part but not the figure
-% number.
+% OKAY, PROBLEM. I think the "Fig. 1:n" stuff in the next paragraph refers
+% not to a new figure, but to specific numbered pieces of Figure 1. I'm going
+% to link them all to the figure and hardcode the ":n" part but not the
+% figure number.
 
-Another problem of static job sizing is that PanDA instantiates pilots on sites
-with different type of resources and different models of availability of those
-resources. An optimal sizing of each job should take these properties into
-account. For example, sites may offer cores with different speeds, networking
-with different amounts of bandwidth, and resources with different
-availabilities which may or may not be guaranteed for known amounts of time.
-These resources could disappear at any point in time, as often happens with
-opportunistic models of resource provision. JEDI system was deployed to address
-these inefficiencies. Users submit task descriptions to JEDI
-(Fig.~\ref{fig:architecture}:1), which stores them into a queue implemented by
-a database (Fig.~\ref{fig:architecture}:2). Tasks are partitioned into jobs of
-different sizes, depending on both static and dynamic information about
-available resources (Fig.~\ref{fig:architecture}:3). Jobs are bound to sites
-with resources that best match jobs' requirements, and they are submitted to
-the PanDA Server for execution (Fig.~\ref{fig:architecture}:4).
+Another problem of static job sizing is that PanDA instantiates pilots on
+sites with different type of resources and different models of availability
+of those resources. An optimal sizing of each job should take these
+properties into account. For example, sites may offer cores with different
+speeds, networking with different amounts of bandwidth, and resources with
+different availabilities which may or may not be guaranteed for known amounts
+of time. These resources could disappear at any point in time, as often
+happens with opportunistic models of resource provision. JEDI system was
+deployed to address these inefficiencies. Users submit task descriptions to
+JEDI (Fig.~\ref{fig:architecture}:1), which stores them into a queue
+implemented by a database (Fig.~\ref{fig:architecture}:2). Tasks are
+partitioned into jobs of different sizes, depending on both static and
+dynamic information about available resources
+(Fig.~\ref{fig:architecture}:3). Jobs are bound to sites with resources that
+best match jobs' requirements, and they are submitted to the PanDA Server for
+execution (Fig.~\ref{fig:architecture}:4).
 
 Once submitted to the PanDA Server, tasks are stored by the Task Buffer
 component into a global queue implemented by a database
-(Fig.~\ref{fig:architecture}:5). When jobs are submitted directly to the PanDA
-Server, the Brokerage module is used to bind jobs to available sites, depending
-on static information about the resources available for each site. Jobs
-submitted by JEDI are already bound to sites, so no further brokerage is
+(Fig.~\ref{fig:architecture}:5). When jobs are submitted directly to the
+PanDA Server, the Brokerage module is used to bind jobs to available sites,
+depending on static information about the resources available for each site.
+Jobs submitted by JEDI are already bound to sites, so no further brokerage is
 needed.
 
 Once jobs are bound to sites, the Brokerage module communicates to the Data
 Service module about which datasets need to be made available to which sites
 (Fig.~\ref{fig:architecture}:6). The Data Service communicates these
-requirements to the ATLAS DDM (Fig.~\ref{fig:architecture}:7) which replicates
-datasets at the required sites when needed (Fig.~\ref{fig:architecture}:8).
+requirements to the ATLAS DDM (Fig.~\ref{fig:architecture}:7) which
+replicates datasets at the required sites when needed
+(Fig.~\ref{fig:architecture}:8).
 
 Meanwhile, AutoPyFactory defines PanDA Pilots, submitting them to a Condor-G
-agent (Fig.~\ref{fig:architecture}:9). Condor-G schedules these pilots wrapped
-as jobs or virtual machines to the required sites
+agent (Fig.~\ref{fig:architecture}:9). Condor-G schedules these pilots
+wrapped as jobs or virtual machines to the required sites
 (Fig.~\ref{fig:architecture}:10).
 
-When a PanDA Pilot becomes available, it requests a job to execute from the Job
-Dispatcher module of the PanDA Server (Fig.~\ref{fig:architecture}:11). The Job
-Dispatcher interrogates the Task Buffer module for a job which is bound to the
-site of that pilot and ready to be executed. Task Buffer checks the global
-queue (i.e., the PanDA database) and returns a job to the Job Dispatcher if one
-is available. The Job Dispatcher dispatches that job to the PanDA Pilot
-(Fig.~\ref{fig:architecture}:12).
+When a PanDA Pilot becomes available, it requests a job to execute from the
+Job Dispatcher module of the PanDA Server (Fig.~\ref{fig:architecture}:11).
+The Job Dispatcher interrogates the Task Buffer module for a job which is
+bound to the site of that pilot and ready to be executed. Task Buffer checks
+the global queue (i.e., the PanDA database) and returns a job to the Job
+Dispatcher if one is available. The Job Dispatcher dispatches that job to the
+PanDA Pilot (Fig.~\ref{fig:architecture}:12).
 
 Upon receiving a job, a PanDA Pilot starts a monitoring process and forks a
 subprocess for the execution of the job's payload. Input data are transferred
 from the stage-in location (Fig.~\ref{fig:architecture}:13) and the job's
-payload is executed (Fig.~\ref{fig:architecture}:14). Once completed, output is
-transferred to the staging-out location (Fig.~\ref{fig:architecture}:15).
+payload is executed (Fig.~\ref{fig:architecture}:14). Once completed, output
+is transferred to the staging-out location (Fig.~\ref{fig:architecture}:15).
 
 The Data Service module of the PanDA Server tracks and collects the output
 generated by each job (Fig.~\ref{fig:architecture}:16), updating jobs'
 attributes via the Task Buffer module (Fig.~\ref{fig:architecture}:17). When
-the output of all the jobs of a task are retrieved, it is made available to the
-user via PanDA Server. When a task is submitted to JEDI, task is instead marked
-as done (Fig.~\ref{fig:architecture}:18) and the result of its execution is
-made available to the user by JEDI (Fig.~\ref{fig:architecture}:19).
+the output of all the jobs of a task are retrieved, it is made available to
+the user via PanDA Server. When a task is submitted to JEDI, task is instead
+marked as done (Fig.~\ref{fig:architecture}:18) and the result of its
+execution is made available to the user by JEDI
+(Fig.~\ref{fig:architecture}:19).
 
+% ---------------------------------------------------------------------------
 \subsection{Job-State Definitions in PanDA}
 \label{subsec:jobstatedefs}
 
@@ -176,29 +180,31 @@ Job injected into the system by the JEDI in ATLAS or by the PanDA client in
 general case is persist as so-called job parameters object and corresponds to
 the ``Pending'' status. Job parameters are the object where job definition is
 unsorted and all parameters are placed in a string. Sorting out parameters of
-the job by dedicated DB fields job transferring into the ``Defined'' status. On
-this stage the job is processed throw the brokerage algorithm and being
+the job by dedicated DB fields job transferring into the ``Defined'' status.
+On this stage the job is processed throw the brokerage algorithm and being
 assigned to particular resource (PanDA queue) it is moved to ``Assigned''
 status. Concurrently with that PanDA server checks availability of the input
 data and needed SW at the resource. The job stays in the ``Waiting'' state
-until data and the SW are ready and then it moved to the ``Activated'' status.
-Activated job is ready to be dispatched by its order to the next corresponding
-pilot. Job dispatched and taken by the pilot is moved to the ``Sent'' status.
-Since this moment the handling of the job processing is delegated to the pilot.
-Few next job states are corresponding represents the steps of the job
-processing on the resource. Next ``Starting'' status means that the pilot is
-starting the job on a worker node or local batch system. The job running on a
-worker node marked as in ``Running'' status. Next states progression is return
-to the handling by the server. When the job execution is ended and output and
-log files are transferred then PanDA server either pilot is responsible to
-register that files in the file catalog. At the same time pilot return the
-server the final status of the job either it was successful or the job failed.
-During this process the job stays in ``Holding'' status. PanDA server check the
-output files regularly by the cron job and finally assign the final
-``Finished'' or ``Failed'' status to the job. Some additional statuses and two
-most important are ``Cancelled'' for manually killed jobs or ``Closed'' -
-terminated by the system before completing to be reassigned to another site.
+until data and the SW are ready and then it moved to the ``Activated''
+status. Activated job is ready to be dispatched by its order to the next
+corresponding pilot. Job dispatched and taken by the pilot is moved to the
+``Sent'' status. Since this moment the handling of the job processing is
+delegated to the pilot. Few next job states are corresponding represents the
+steps of the job processing on the resource. Next ``Starting'' status means
+that the pilot is starting the job on a worker node or local batch system.
+The job running on a worker node marked as in ``Running'' status. Next states
+progression is return to the handling by the server. When the job execution
+is ended and output and log files are transferred then PanDA server either
+pilot is responsible to register that files in the file catalog. At the same
+time pilot return the server the final status of the job either it was
+successful or the job failed. During this process the job stays in
+``Holding'' status. PanDA server check the output files regularly by the cron
+job and finally assign the final ``Finished'' or ``Failed'' status to the
+job. Some additional statuses and two most important are ``Cancelled'' for
+manually killed jobs or ``Closed'' - terminated by the system before
+completing to be reassigned to another site.
 
+% ---------------------------------------------------------------------------
 \subsection{Brokerage Characterization}
 \label{subsec:brokerage}
 
@@ -208,38 +214,39 @@ parameters can be provided within job definition to specify strict demands to
 the resource where the job can be executed. Both resources (queues) and jobs
 with parameters stored in the PanDA database.
 
-Also PanDA server maintains in the DB the dynamic information for queues about
-the number of defined, activated and running jobs and also the pilots
-statistics - number of requests of different types like ``get job'' or ``update
-job status''.
+Also PanDA server maintains in the DB the dynamic information for queues
+about the number of defined, activated and running jobs and also the pilots
+statistics - number of requests of different types like ``get job'' or
+``update job status''.
 
 PanDA Broker - key  component of the BigPanDA workflow automation - is an
-intelligent module designed to prioritize and assign PanDA jobs (job passed the
-brokerage transitioning from ``defined'' to the ``assigned'' state) to
-available computing resources on the basis of job type, software availability,
-input data and its locality, real-time job statistics, available CPU and
-storage resources and etc. Users are able to specify explicitly the resource
-while job submission or they can rely on automated brokerage engine. Full power
-of the PanDA brokerage integrated with another distributed computing and data
-management tools (internal and external with respect to the PanDA) is actively
-used in ATLAS experiment. In this paper we will present and will benchmark the
-basic brokerage functionality provided to all users.
+intelligent module designed to prioritize and assign PanDA jobs (job passed
+the brokerage transitioning from ``defined'' to the ``assigned'' state) to
+available computing resources on the basis of job type, software
+availability, input data and its locality, real-time job statistics,
+available CPU and storage resources and etc. Users are able to specify
+explicitly the resource while job submission or they can rely on automated
+brokerage engine. Full power of the PanDA brokerage integrated with another
+distributed computing and data management tools (internal and external with
+respect to the PanDA) is actively used in ATLAS experiment. In this paper we
+will present and will benchmark the basic brokerage functionality provided to
+all users.
 
 The basic brokerage algorithm works the following way. It takes the lists of
 submitted jobs and available queues. Then each job is checked against each
 queue by set of parameters if the queue meets the jobs static demands like
-number of CPU core or the walltime. All queues passed the round are proceeding
-to the short list where for each queue Broker calculates the weight on the
-basis of current job statistics for given queue according to the formula (1).
-Job finally assigning to the queue with bigger weight. Weight calculation
-algorithm fo ATLAS is more complicated and taking into account clouds default
-weights, network bandwidth, sharing policies etc.
+number of CPU core or the walltime. All queues passed the round are
+proceeding to the short list where for each queue Broker calculates the
+weight on the basis of current job statistics for given queue according to
+the formula (1). Job finally assigning to the queue with bigger weight.
+Weight calculation algorithm fo ATLAS is more complicated and taking into
+account clouds default weights, network bandwidth, sharing policies etc.
 
 The basic brokerage algorithm works the following way. Having the list of the
 submitted jobs, each job is checked against available resources as shown in
 SELECT{\textunderscore}CAND (Alg. ). Available resources presented as the set
-of defined PanDA queues: res = queue$_1$, \ldots, queue$_n$. For each queue in
-the set (3) we checking if it's satisfying the parameters of job (4).
+of defined PanDA queues: res = queue$_1$, \ldots, queue$_n$. For each queue
+in the set (3) we checking if it's satisfying the parameters of job (4).
 Successfully passed queues are concatenating to the list of candidate-queues
 (5).
 
@@ -248,17 +255,26 @@ attributes can scope job parameters. Set of the job parameters defined as
 par$_1$, \ldots, par$_m$ represents the software/hardware demands to the
 resource like CPU core count, walltime, SW releases etc. Each of these
 parameters can be mapped to the set of queue attributes defined as atr$_1$,
-\ldots, atr$_n$, where $n \geq m$. So for each job parameter (2) we check if it
-can be satisfied with the corresponding queue attribute (3). Finally queue
+\ldots, atr$_n$, where $n \geq m$. So for each job parameter (2) we check if
+it can be satisfied with the corresponding queue attribute (3). Finally queue
 passes the test if it copes all the jobs parameters (5).
 
-The procedure SATISFY{\textunderscore}REQ (Alg. ) is responsible to testing if
-the value of the job parameter is in the set of allowed values val$_1$, \ldots,
-val$_k$ of the queue attribute (2).
+The procedure SATISFY{\textunderscore}REQ (Alg. ) is responsible to testing
+if the value of the job parameter is in the set of allowed values val$_1$,
+\ldots, val$_k$ of the queue attribute (2).
 
-%-  NOTE: I think there are indenting mistakes present in the original writing,
-%   because things just honestly don't look right to me, but right now, I'm
-%   just typesetting what I see in Google Docs.
+%-  NOTE: I think there are indenting mistakes present in the original
+%   writing, because things just honestly don't look right to me, but right
+%   now, I'm just typesetting what I see in Google Docs.
+
+
+% I have already included the package required by this. Just put the code
+% without line numbers in list.py file (or whatever other name you want to
+% use.)
+
+% \lstinputlisting[language=Python, 
+%          label={lst:list.py}, 
+%          caption={Caption}]{list.py}
 
 \begin{tabbing}
 \hspace{0.5in}\=
