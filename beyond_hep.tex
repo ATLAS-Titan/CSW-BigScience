@@ -1,0 +1,218 @@
+%-  LaTeX source file
+
+%-  beyond_hep.tex ~~
+%
+%   This contains what was originally the seventh section of the Google Docs
+%   draft of the paper.
+%
+%                                                       ~~ (c) SRW, 23 Sep 2018
+%                                                   ~~ last updated 23 Sep 2018
+
+The objective of each subsection is to:
+(i) describe the science; and
+(ii) detail what customizations had to be done -- either on PanDA or the Titan
+    end to support the science driver.
+We will then conclude this section with a summary.
+
+\subsection{PanDA WMS beyond HEP}
+\label{subsec:panda_beyond}
+
+Traditionally computing in physics experiments at the basic level is usually
+independent processing of the input files to produce the output. This
+processing in referring in the paper as a job. Processing algorithm usually
+utilizes some experiment-specific software which may require parameterization
+and even additional configuration files. In the case if such a configuration
+file is specific for each job it can be defined in a job as another input file.
+Also experiment software may produce some additional files along with the
+primary output and they need to be stored. For instance PanDA pilot itself
+produces the tar-archive file containing the logs its own logs and the
+experiments software logs. Processing algorithm (referenced as ``transformation
+script'') responsible for the correct launching the experiment software and
+provide all necessary input information including the configuration and run
+parameters. PanDA job definition is only defines the launching command for the
+transformation script. This launching command is referring as a payload.
+
+The following components are usually provided and controlled by the experiment groups outside from PanDA core components.
+\begin{itemize}
+    \item Transformation scripts. User groups should define a complete set of
+        the transformations scripts to cover all possible SW usage. In the case
+        if the same software is used and only the run parameters, configuration
+        and input/output file names are changing, the single transformation
+        script should be able to cope this.
+    \item Input/output files conventions. The size of the input files often
+        adjusted in a way to balance of the total processing walltime and
+        flexibility in order to cope the failure risks. There is often case
+        that the equal sized input files are required relatively equal
+        processing time and produce equal sized output. Also input files are
+        often named conventionally and grouped in the datasets by some
+        attributes. PanDA job definition allows to provide name for the
+        input/output datasets.
+\end{itemize}
+
+The real workflow for each scientific group provides a lot of additional
+requirements and constraints. A common example is a specific order of the jobs
+execution. Also implementation of the dedicated workflows demands an
+integration with existing experiment computing infrastructure or even
+development an additional components. This includes the issues with data
+management, user authentication, monitoring, workflow control and etc.
+
+PanDA system may be the best solution for the new experiments and scientific groups by diversity of provided advantages. The main motivations for users are:
+\begin{itemize}
+    \item Powerful workload management. Automation of the jobs handling,
+        monitoring and logging.
+    \item Streamlining the usage of the computing resources. Possibility for
+        users to run their jobs on diversity of the computing resources. Local
+        resource schedulers, and policies are transparent for the users.
+    \item PanDA native data handling. PanDA provides a diverse set of the
+        plugins to support data stage-in/-out from the remote storages and
+        different data movement tools of different types.
+    \item Close integration with OLCF. Being integrated with OLCF PanDA system
+        also became attractive for many scientific groups already utilizing
+        OLCF resources or those who wish to get use them. 
+\end{itemize}
+
+\subsection{PanDA instance at OLCF}
+\label{subsec:panda_instance}
+
+In March 2017, we implemented a new PanDA server instance within OLCF operating
+under Red Hat OpenShift Origin [Red Hat OpenShift Origin] - a powerful
+container cluster management and orchestration system in order to serve various
+experiments at Titan supercomputer. By running on-premise Red Hat OpenShift
+built on Kubernetes [Kubernetes], the OLCF provides a container orchestration
+service that allows users to schedule and run their HPC middleware service
+containers while maintaining a high level of support for many diverse service
+workloads. The containers have direct access to all OLCF shared resources such
+as parallel filesystems and batch schedulers. With this PanDA instance, we
+implemented a set of demonstrations serving diverse scientific workflows
+including physics, biology studies of the genes and human brain, and molecular
+dynamics studies:
+\begin{itemize}
+    \item Biology / Genomics. 
+In collaboration with Center for Bioenergy Innovation at ORNL the PanDA based
+workflow for epistasis researches was established. Epistasis is the phenomenon
+where the effect of one gene is dependent on the presence of one or more
+``modifier genes'', i.e. the genetic background. GBOOST application [GBOOST], a
+GPU-based tool for detecting gene-gene interactions in genome-wide case control
+studies, was used for initial tests.
+    \item Molecular Dynamics.
+In collaboration with Chemistry and Biochemistry department of the University
+of Texas Arlington we implemented test to try out PanDA to support the
+Molecular Dynamics study ``Simulating Enzyme Catalysis, Conformational Change,
+and Ligand Binding/Release''. The CHARMM (Chemistry at HARvard Macromolecular
+Mechanics) [CHARMM] a molecular simulation program was chosen as a basic
+payload tool. CHARMM design for hybrid MPI/OpenMP/GPU computing.
+    \item IceCube. 
+Together with  experts from the IceCube experiment we implemented the
+demonstrator PanDA system. IceCube [IceCube] is a particle detector at the
+South Pole that records the interactions of a nearly massless subatomic
+particle called the neutrino. Demonstrator includes the use of NuGen package (a
+modified version of ANIS [ANIS] that works with IceCube software) - GPU
+application for atmospheric neutrinos are simulations packed in singularity
+container and remote stage-in/-out the data from GridFTP [GridFTP] storage with
+GSI authentication. 
+    \item BlueBrain.
+In 2017, a R\&D project was started between BigPanDA and the Blue Brain Project
+(BBP) [BBP] of the Ecole Polytechnique Federal de Lausanne (EPFL) located in
+Lausanne, Switzerland. This proof of concept project is aimed at demonstrating
+the efficient application of the BigPanDA system to support the complex
+scientific workflow of the BBP which relies on using a mix of desktop, cluster
+and supercomputers to reconstruct and simulate accurate models of brain tissue.
+In the first phase of this joint project we supported the execution of BBP
+software on a variety of distributed computing systems powered by BigPanDA. The
+targeted systems for demonstration included: Intel x86-NVIDIA GPU based BBP
+clusters located in Geneva (47 TFlops) and Lugano (81 TFlops), BBP IBM
+BlueGene/Q supercomputer [BlueGene](0.78 PFLops and 65 TB of DRAM memory)
+located in Lugano, the Titan Supercomputer with peak theoretical performance 27
+PFlops operated by the Oak Ridge Leadership Computing Facility (OLCF), and
+Cloud based resources such as Amazon Cloud.
+    \item LSST.
+A goal of LSST (Large Synoptic Survey Telescope) project is to conduct a
+10-year survey of the sky that is expected to deliver 200 petabytes of data
+after it begins full science operations in 2022. The project  will address some
+of the most pressing questions about the structure and evolution of the
+universe and the objects in it. It will require a large amount of simulations,
+which model the atmosphere, optics and camera to understand the collected data.
+For running LSST simulations with the PanDA WMS we have established a
+distributed testbed infrastructure that employs the resources of several sites
+on GridPP [GridPP] and Open Science Grid (OSG) [OSG] as well as the Titan
+supercomputer at ORNL. In order to submit jobs to these sites we have used a
+PanDA server instance deployed on the Amazon AWS Cloud.
+    \item LQCD.
+Lattice QCD (LQCD) [LQCD] is a well-established non-perturbative approach to
+solving the quantum chromodynamics theory of quarks and gluons. Current LQCD
+payloads can be characterized as massively parallel, occupying thousands of
+nodes on leadership-class supercomputers. It is understood that future LQCD
+calculations will require exascale computing capacities and workload management
+system in order to manage them efficiently.
+    \item nEDM.
+Precision measurements of the properties of the neutron present an opportunity
+to search for violations of fundamental symmetries and to make critical tests
+of the validity of the Standard Model of electroweak interactions. These
+experiments have been pursued [neutron] with great energy and interest since
+the discovery of neutron in 1932. The goal of the nEDM [nEDM] experiment at the
+Fundamental Neutron Physics Beamline at the Spallation Neutron Source (Oak
+Ridge National Laboratory) is to further improve the precision of this
+measurement by another factor of 100.
+\end{itemize}
+
+To isolate the workflows of different groups and experiments, dedicated queues
+were defined at the PanDA server. Presumably in  next steps we will provide the
+security mechanisms that will provide the access to each queue for job
+submission and dispatching only for authorised users. Also, the PanDA server
+provides the tools to customise environment variables, system settings and
+workflow algorithms for different user groups. Also this split of the different
+groups workflows on the level of PanDA queues simplifies jobs monitoring via
+the web based PanDA tool. 
+
+In collaboration with the dedicated scientific groups representatives, we
+implemented the ``transformation'' scripts containing complete definition of
+the processing actions (set of specific software and general system commands)
+are has to be applied to the input data to produce the output. The
+transformation script then can be addressed by its name. Client tool provided
+to the users allows to submit jobs to the PanDA server with authentication
+based on grid certificates. 
+
+Responsible group representative also authorized to run pilots launcher daemon.
+Daemon launches the pilots. Number of parallel running pilots can be
+configured. Pilots are running and interacts with the PBS under user account
+and with Titan group privileges of the responsible representative.
+
+The most important parameters of conducted tests are presented in the table
+
+% For tables use
+\begin{table}
+% table caption is above the table
+\caption{Please write your table caption here}
+\label{tab:1}       % Give a unique label
+% For LaTeX tables use
+\begin{tabular}{llrrrrr}
+\hline\noalign{\smallskip}
+% ORIGINAL COLUMN TITLES:
+%Experiment & Payload/SW & Number of jobs per campaign & Number of nodes per
+%job & Walltime (min) & Input data size per job & Output data size per job \\
+Experiment & Payload & Jobs & Nodes & Walltime & Input data & Output data \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+Genomics           & GBOOST & 10    & 2    & 30 min    & 100 MB & 300 MB \\
+Molecular Dynamics & CHARMM & 10    & 124  & 30-90 min & 10 KB  & 2-6 GB \\
+IceCube            & NuGen  & 4500K & 1    & 120 min   & 500 KB & 10KB - 4GB \\
+LSST/DESC          & Phosim & 20    & 2    & 600 min   & 700 MB & 70 MB \\
+LQCD               & QDP++  & 10    & 8000 & 700 min   & 40 GB  & 150 MB \\
+nEDM               & GEANT  & 10    & 200  & 20 min    & 120 MB & 20 MB \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Summary}
+\label{subsec:summary}
+
+The overview of the successfully implemented demonstrations of diverse
+workflows implementation via PanDA shows that PanDA model can cope the
+challenges of the different experiments and user groups and also provide
+possibility for extensions beyond the core components set.  The proof of
+concept was received from all considered experiments representatives and
+results that PanDA is considered as a possible solution. Preproduction
+utilization of PanDA is now under investigation with BlueBrain, IceCube, LSST,
+nEDM experiments, LQCD uses PanDA for Production.
+
+%-  vim:set syntax=tex:
