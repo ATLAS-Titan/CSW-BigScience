@@ -8,7 +8,7 @@
 #   happiness, but there is a much greater level of urgency here than usual.
 #
 #                                                       ~~ (c) SRW, 20 Sep 2018
-#                                                   ~~ last updated 21 Sep 2018
+#                                                   ~~ last updated 23 Sep 2018
 
 SHELL       :=  sh
 ECHO        :=  echo
@@ -35,7 +35,7 @@ define contingent
 endef
 
 PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
-PROJECT     :=  submission
+PROJECT     :=  draft
 SUBMISSION  :=  $(PROJ_ROOT)/$(PROJECT).pdf
 
 GREP        :=  $(call contingent, grep)
