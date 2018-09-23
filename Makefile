@@ -8,7 +8,7 @@
 #   happiness, but there is a much greater level of urgency here than usual.
 #
 #                                                       ~~ (c) SRW, 20 Sep 2018
-#                                                   ~~ last updated 20 Sep 2018
+#                                                   ~~ last updated 21 Sep 2018
 
 SHELL       :=  sh
 ECHO        :=  echo
@@ -50,7 +50,6 @@ greplog     =   ( $(GREP) -c $(1) "$(PROJ_ROOT)/$(PROJECT).log" > /dev/null )
 all: run
 
 clean: reset
-	@   $(RM) example.eps
 
 clobber: clean
 	@   $(RM) $(wildcard *.aux *.dvi *.log)
