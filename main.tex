@@ -6,7 +6,7 @@
 %   \include all the other source files.
 %
 %                                                       ~~ (c) SRW, 20 Sep 2018
-%                                                   ~~ last updated 21 Sep 2018
+%                                                   ~~ last updated 23 Sep 2018
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -52,23 +52,9 @@ grestore
 %\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
 \documentclass[smallextended]{svjour3}       % onecolumn (second format)
 %\documentclass[twocolumn]{svjour3}          % twocolumn
-%
-\smartqed  % flush right qed marks, e.g. at end of proof
-%
-\usepackage{graphicx}
-%
-% \usepackage{mathptmx}      % use Times fonts if available on your TeX system
-%
-% insert here the call for the packages your document requires
-%\usepackage{latexsym}
-% etc.
-%
-% please place your own definitions here and don't use \def but
-% \newcommand{}{}
-%
-% Insert the name of "your journal" with
-% \journalname{myjournal}
-%
+
+\input{include}
+
 \begin{document}
 
 \title{Production Workload Management on Leadership Class Facilities\thanks{Grants or other notes about the article that should go on the front page should be
@@ -129,56 +115,80 @@ subject classification numbers as needed.
 \label{sec:overview}
 \input{overview}
 
+% ---------------------------------------------------------------------------
+% III - Deploying PanDA Workload Management System on Titan
+% ---------------------------------------------------------------------------
+
+\section{Deploying PanDA Workload Management System on Titan}
+\label{sec:deploying}
+\input{deploying}
+
+% ---------------------------------------------------------------------------
+% IV - Performance Characterization on Titan
+% ---------------------------------------------------------------------------
+
+\section{Performance Characterization on Titan}
+\label{sec:performance}
+\input{performance}
+
+% ---------------------------------------------------------------------------
+% V - Workload Management Beyond HEP
+% ---------------------------------------------------------------------------
+
+\section{Workload Management Beyond HEP}
+\label{sec:beyond_hep}
+\input{beyond_hep}
+
 %%%
 
-\section{Section title}
-\label{sec:1}
-Text with citations \cite{RefB} and \cite{RefJ}.
-\subsection{Subsection title}
-\label{sec:2}
-as required. Don't forget to give each section
-and subsection a unique label (see Sect.~\ref{sec:1}).
-\paragraph{Paragraph headings} Use paragraph headings as needed.
-\begin{equation}
-a^2+b^2=c^2
-\end{equation}
+%\section{Section title}
+%\label{sec:1}
+%Text with citations \cite{RefB} and \cite{RefJ}.
+%\subsection{Subsection title}
+%\label{sec:2}
+%as required. Don't forget to give each section
+%and subsection a unique label (see Sect.~\ref{sec:1}).
+%\paragraph{Paragraph headings} Use paragraph headings as needed.
+%\begin{equation}
+%a^2+b^2=c^2
+%\end{equation}
 
-% For one-column wide figures use
-\begin{figure}
-% Use the relevant command to insert your figure file.
-% For example, with the graphicx package use
-  \includegraphics{images/example.eps}
-% figure caption is below the figure
-\caption{Please write your figure caption here}
-\label{fig:1}       % Give a unique label
-\end{figure}
+%% For one-column wide figures use
+%\begin{figure}
+%% Use the relevant command to insert your figure file.
+%% For example, with the graphicx package use
+%  \includegraphics{images/example.eps}
+%% figure caption is below the figure
+%\caption{Please write your figure caption here}
+%\label{fig:1}       % Give a unique label
+%\end{figure}
+%%
+%% For two-column wide figures use
+%\begin{figure*}
+%% Use the relevant command to insert your figure file.
+%% For example, with the graphicx package use
+%  \includegraphics[width=0.75\textwidth]{images/example.eps}
+%% figure caption is below the figure
+%\caption{Please write your figure caption here}
+%\label{fig:2}       % Give a unique label
+%\end{figure*}
+%%
 %
-% For two-column wide figures use
-\begin{figure*}
-% Use the relevant command to insert your figure file.
-% For example, with the graphicx package use
-  \includegraphics[width=0.75\textwidth]{images/example.eps}
-% figure caption is below the figure
-\caption{Please write your figure caption here}
-\label{fig:2}       % Give a unique label
-\end{figure*}
-%
-% For tables use
-\begin{table}
-% table caption is above the table
-\caption{Please write your table caption here}
-\label{tab:1}       % Give a unique label
-% For LaTeX tables use
-\begin{tabular}{lll}
-\hline\noalign{\smallskip}
-first & second & third  \\
-\noalign{\smallskip}\hline\noalign{\smallskip}
-number & number & number \\
-number & number & number \\
-\noalign{\smallskip}\hline
-\end{tabular}
-\end{table}
-
+%% For tables use
+%\begin{table}
+%% table caption is above the table
+%\caption{Please write your table caption here}
+%\label{tab:1}       % Give a unique label
+%% For LaTeX tables use
+%\begin{tabular}{lll}
+%\hline\noalign{\smallskip}
+%first & second & third  \\
+%\noalign{\smallskip}\hline\noalign{\smallskip}
+%number & number & number \\
+%number & number & number \\
+%\noalign{\smallskip}\hline
+%\end{tabular}
+%\end{table}
 
 %\begin{acknowledgements}
 %If you'd like to thank anyone, place your comments here
