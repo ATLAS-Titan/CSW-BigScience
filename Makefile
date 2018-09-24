@@ -7,8 +7,7 @@
 #   This isn't as fancy as my "usual" Makefiles, which are full of macros and
 #   happiness, but there is a much greater level of urgency here than usual.
 #
-#                                                       ~~ (c) SRW, 20 Sep 2018
-#                                                   ~~ last updated 23 Sep 2018
+#                                                   ~~ last updated 24 Sep 2018
 
 SHELL       :=  sh
 ECHO        :=  echo
