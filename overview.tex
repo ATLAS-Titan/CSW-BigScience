@@ -302,7 +302,7 @@ if the value of the job parameter is in the set of allowed values val$_1$,
   \> 1: \hspace{1em}\= procedure SELECT{\textunderscore}CAND(job, res) \\
   \> 2:             \> \hspace{1em}\= cand $\leftarrow$ NONE \\
   \> 3:             \> \hspace{1em}\= for all queue in res do: \\
-  \> 4:             \>             \> if SATISFY{\textunderscore}JOB(queue,%
+  \> 4:             \>             \> if SATISFY{\textunderscore}JOB(queue, %
 job) = True then \\
   \> 5:             \>             \> \hspace{1em} cand $\cup$ queue \\
   \> 6:             \>             \> return True
