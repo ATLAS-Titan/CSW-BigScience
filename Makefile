@@ -7,7 +7,7 @@
 #   This isn't as fancy as my "usual" Makefiles, which are full of macros and
 #   happiness, but there is a much greater level of urgency here than usual.
 #
-#                                                   ~~ last updated 24 Sep 2018
+#                                                   ~~ last updated 25 Sep 2018
 
 SHELL       :=  sh
 ECHO        :=  echo
@@ -37,6 +37,7 @@ PROJ_ROOT   :=  $(realpath $(dir $(firstword $(MAKEFILE_LIST))))
 PROJECT     :=  draft
 SUBMISSION  :=  $(PROJ_ROOT)/$(PROJECT).pdf
 
+BIBTEX      :=  $(call contingent, bibtex)
 GREP        :=  $(call contingent, grep)
 LATEX       :=  $(call contingent, pdflatex latex) -no-shell-escape
 OPEN        :=  $(call contingent, acroread gnome-open open)
@@ -71,6 +72,7 @@ $(SUBMISSION): $(wildcard $(PROJ_ROOT)/*.tex)
 	@   cd $(PROJ_ROOT)                                             ;   \
             $(LATEX) -jobname $(PROJECT) main                           ;   \
             while $(call greplog, "Rerun to"); do                           \
+                $(BIBTEX) $(PROJECT)                                    ;   \
                 $(LATEX) -jobname $(PROJECT) main                       ;   \
             done
 
