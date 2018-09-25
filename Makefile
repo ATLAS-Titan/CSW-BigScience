@@ -52,7 +52,7 @@ all: run
 clean: reset
 
 clobber: clean
-	@   $(RM) $(wildcard *.aux *.dvi *.log *.out)
+	@   $(RM) $(wildcard *.aux *.bbl *.blg *.dvi *.log *.out)
 
 distclean: clobber
 	@   $(RM) $(SUBMISSION)
