@@ -4,7 +4,7 @@
 %
 %   This is the second section of the paper.
 %
-%                                                   ~~ last updated 25 Sep 2018
+%                                                   ~~ last updated 06 Oct 2018
 
 PanDA is a Workload Management System (WMS) \cite{marco2009glite} designed to
 support the execution of distributed workloads and workflows via pilots
@@ -407,12 +407,15 @@ selected queues the jobs will be assigned to the queue with bigger weight.
 Brokerage time dependency on number of concurrently submitted jobs is shown in
 figure.
 
+%-  The publisher prefers TIFF, and Ruslan and others have provided the images
+%   in TIFF as requested. I am not aware of a LaTeX engine that understands
+%   TIFF natively, and pasting shell-escape sequences from the internet is a
+%   very, very bad idea, so I just converted it to PNG for now and included
+%   both in the repository.
+
 % For two-column wide figures use
 \begin{figure*}
-% Use the relevant command to insert your figure file.
-% For example, with the graphicx package use
-  \includegraphics[width=0.75\textwidth]{images/Fig2.tiff}
-% figure caption is below the figure
+  \includegraphics[width=0.75\textwidth]{images/Fig2.png}
 \caption{Response time dependency on number of concurrently submitted jobs}
 \label{fig:brokeragescaling}
 \end{figure*}
