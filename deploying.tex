@@ -4,8 +4,7 @@
 %
 %   This is the third section of the paper.
 %
-%                                                       ~~ (c) SRW, 23 Sep 2018
-%                                                   ~~ last updated 23 Sep 2018
+%                                                   ~~ last updated 24 Sep 2018
 
 \begin{itemize}
     \item Start of project and proof of concept, restrictions caused by policy
@@ -99,8 +98,8 @@ to become available. When a pilot job starts on a worker node it contacts the
 PanDA server to retrieve an actual payload and then, after necessary
 preparations, executes the payload as a sub process. The PanDA pilot is also
 responsible for a job's data management on a worker node and can perform data
-stage-in and stage-out operations. Figure 3 shows schematic view of PanDA
-interface.
+stage-in and stage-out operations. Figure \ref{fig:launching} shows schematic
+view of PanDA interface.
 
 Taking advantage of its modular and extensible design, the PanDA pilot code and
 logic has been enhanced with tools and methods relevant for work on HPCs. The
@@ -112,8 +111,8 @@ the payload and stage-out produced output files at the end of the job. In other
 words, the pilot acts as a site edge service for Titan. Pilots are launched by
 a daemon-like script which runs in user space. The ATLAS Tier 1 computing
 center at Brookhaven National Laboratory is currently used for data transfer to
-and from Titan, but in principle that can be any ATLAS site. Figure 4 shows
-schematic view of PanDA interface with Titan.
+and from Titan, but in principle that can be any ATLAS site. Figure
+\ref{fig:integration} shows schematic view of PanDA interface with Titan.
 The pilot submits ATLAS payloads to the worker nodes using the local batch
 system (Moab) via the SAGA (Simple API for Grid Applications) interface [Saga
 ref needed]. It also uses SAGA for monitoring and management of PanDA jobs
