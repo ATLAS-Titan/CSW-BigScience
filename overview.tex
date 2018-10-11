@@ -4,14 +4,13 @@
 %
 %   This is the second section of the paper.
 %
-%                                               ~~ (c) SRW, 20 Sep 2018
-%                                               ~~ last updated 23 Sep 2018
+%                                                   ~~ last updated 06 Oct 2018
 
-PanDA is a Workload Management System (WMS) [marco2009glite] designed to
+PanDA is a Workload Management System (WMS) \cite{marco2009glite} designed to
 support the execution of distributed workloads and workflows via pilots
-[turilli2017comprehensive]. Pilot-capable WMS enable high throughput of tasks
-execution via multi-level scheduling while supporting interoperability across
-multiple sites. This is particularly relevant for LHC experiments, where
+\cite{turilli2017comprehensive}. Pilot-capable WMS enable high throughput of
+tasks execution via multi-level scheduling while supporting interoperability
+across multiple sites. This is particularly relevant for LHC experiments, where
 millions of tasks are executed across multiple sites every month, analyzing
 and producing petabytes of data. The design of PanDA WMS started in 2005 to
 support ATLAS.
@@ -32,7 +31,7 @@ collected and simulated data into formats which are used for user analysis.
 PanDA's security model is based on separation between authentication,
 authorization and accounting for both single users and group of users. Both
 authentication and authorization are based on digital certificates and on the
-virtual organization abstraction [foster2001anatomy]. Currently, PanDA's
+virtual organization abstraction \cite{foster2001anatomy}. Currently, PanDA's
 execution model is based on four main abstractions: task, job, queue, and
 pilot. Both tasks and jobs are assumed to have attributes and states and to
 be queued into a global queue for execution. Prioritization and binding of
@@ -46,7 +45,7 @@ containers. As with jobs, data have both attributes and states, and some of
 the attributes are shared between events and jobs. Raw, reconstruction, and
 simulation data are all assumed to be distributed across multiple storage
 facilities and managed by the ATLAS Distributed Data Management (DDM)
-[garonne2012atlas]. When necessary, input files required by each job are
+\cite{garonne2012atlas}. When necessary, input files required by each job are
 assumed to be replicated over the network, both for input and output data.
 PanDA's design supports provenance and traceability for both jobs and data.
 Attributes enable provenance by linking jobs and data items, providing
@@ -65,16 +64,19 @@ subsystem is implemented by one or more modules. Databases are used to store
 eventful entities like tasks, jobs, and input/output data and to store
 information about sites, resources, logs, and accounting.
 
-Currently, PanDA's architecture has five main subsystems: PanDA Server
-[maeno2011overview], AutoPyFactory [caballero2012autopyfactory], PanDA Pilot
-[nilsson2011atlas], JEDI [borodin2015scaling], and PanDA Monitoring
-[klimentov2011atlas]. PanDA uses ATLAS Grid Information system (AGIS)
-[1742-6596-513-3-032001] to obtain information about distributed resources.
+Currently, PanDA's architecture has five main subsystems:
+PanDA Server \cite{maeno2011overview},
+AutoPyFactory \cite{caballero2012autopyfactory]},
+PanDA Pilot \cite{nilsson2011atlas},
+JEDI \cite{borodin2015scaling},
+and PanDA Monitoring \cite{klimentov2011atlas}. PanDA uses ATLAS Grid
+Information system (AGIS) \cite{1742-6596-513-3-032001} to obtain information
+about distributed resources.
 
 Other subsystems are used by some of ATLAS workflows (e.g., ATLAS Event
-Service [calafiura2015atlas]), but their discussion is omitted here because
-they are irrelevant to understanding how PanDA has been ported to
-supercomputers. For a full list of subsystems, see Ref. [panda-wiki\_url].
+Service \cite{calafiura2015atlas}), but their discussion is omitted here
+because they are irrelevant to understanding how PanDA has been ported to
+supercomputers. For a full list of subsystems, see Ref.~\cite{panda-wiki_url}.
 Figure \ref{fig:architecture} shows a diagrammatic representation of PanDA's
 main subsystems, highlighting the execution process of tasks while omitting
 monitoring details to improve readability. During first LHC data taking
@@ -92,7 +94,7 @@ which each job will be executed, introducing inefficiencies.
 \begin{figure*}
 % Use the relevant command to insert your figure file.
 % For example, with the graphicx package use
-  \includegraphics[width=0.75\textwidth]{images/Figure_1_placeholder.png}
+  \includegraphics[width=0.75\textwidth]{images/Figure_1.pdf}
 % figure caption is below the figure
 \caption{PanDA WMS architecture. Numbers indicate the JEDI-based execution
 process described in section \ref{subsec:implementation}. Several subsystems,
@@ -267,7 +269,6 @@ if the value of the job parameter is in the set of allowed values val$_1$,
 %   writing, because things just honestly don't look right to me, but right
 %   now, I'm just typesetting what I see in Google Docs.
 
-
 % I have already included the package required by this. Just put the code
 % list.py file (or whatever other name you want to use.)
 
@@ -304,7 +305,7 @@ if the value of the job parameter is in the set of allowed values val$_1$,
   \> 1: \hspace{1em}\= procedure SELECT{\textunderscore}CAND(job, res) \\
   \> 2:             \> \hspace{1em}\= cand $\leftarrow$ NONE \\
   \> 3:             \> \hspace{1em}\= for all queue in res do: \\
-  \> 4:             \>             \> if SATISFY{\textunderscore}JOB(queue,%
+  \> 4:             \>             \> if SATISFY{\textunderscore}JOB(queue, %
 job) = True then \\
   \> 5:             \>             \> \hspace{1em} cand $\cup$ queue \\
   \> 6:             \>             \> return True
@@ -406,17 +407,20 @@ selected queues the jobs will be assigned to the queue with bigger weight.
 Brokerage time dependency on number of concurrently submitted jobs is shown in
 figure.
 
+%-  The publisher prefers TIFF, and Ruslan and others have provided the images
+%   in TIFF as requested. I am not aware of a LaTeX engine that understands
+%   TIFF natively, and pasting shell-escape sequences from the internet is a
+%   very, very bad idea, so I just converted it to PNG for now and included
+%   both in the repository.
+
 % For two-column wide figures use
 \begin{figure*}
-% Use the relevant command to insert your figure file.
-% For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/Fig2.png}
-% figure caption is below the figure
-\caption{Brokerage time dependency on number of concurrently submitted jobs}
+\caption{Response time dependency on number of concurrently submitted jobs}
 \label{fig:brokeragescaling}
 \end{figure*}
 
-For this experiment we measured the time for a jobs to transit from the
+For this experiment we measured the response time for a jobs to transit from the
 ``Defined'' status to the ``Activated''. As in the test environment the JEDI
 system wasn't used and injection of the jobs was done using the simple python
 client interaction with PanDA REST API the first stated of the job indicated in

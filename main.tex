@@ -5,8 +5,7 @@
 %   This is the "main" document file, which means it is the one that will
 %   \include all the other source files.
 %
-%                                                       ~~ (c) SRW, 20 Sep 2018
-%                                                   ~~ last updated 23 Sep 2018
+%                                                   ~~ last updated 25 Sep 2018
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -21,30 +20,6 @@
 % your journal as needed.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% First comes an example EPS file -- just ignore it and
-% proceed on the \documentclass line
-% your LaTeX will extract the file if required
-\begin{filecontents*}{images/example.eps}
-%!PS-Adobe-3.0 EPSF-3.0
-%%BoundingBox: 19 19 221 221
-%%CreationDate: Mon Sep 29 1997
-%%Creator: programmed by hand (JK)
-%%EndComments
-gsave
-newpath
-  20 20 moveto
-  20 220 lineto
-  220 220 lineto
-  220 20 lineto
-closepath
-2 setlinewidth
-gsave
-  .4 setgray fill
-grestore
-stroke
-grestore
-\end{filecontents*}
 %
 \RequirePackage{fix-cm}
 %
@@ -102,6 +77,7 @@ subject classification numbers as needed.
 % ---------------------------------------------------------------------------
 % I - INTRODUCTION
 % ---------------------------------------------------------------------------
+
 \section{Introduction}
 \label{sec:intro}
 \input{introduction}
@@ -109,6 +85,7 @@ subject classification numbers as needed.
 % ---------------------------------------------------------------------------
 % II - PanDA Workload Management System: Software System Overview
 % ---------------------------------------------------------------------------
+
 \section{PanDA Workload Management System: Software System Overview}
 \label{sec:overview}
 \input{overview}
@@ -116,6 +93,7 @@ subject classification numbers as needed.
 % ---------------------------------------------------------------------------
 % III - Deploying PanDA Workload Management System on Titan
 % ---------------------------------------------------------------------------
+
 \section{Deploying PanDA Workload Management System on Titan}
 \label{sec:deploying}
 \input{deploying}
@@ -123,6 +101,7 @@ subject classification numbers as needed.
 % ---------------------------------------------------------------------------
 % IV - Performance Characterization on Titan
 % ---------------------------------------------------------------------------
+
 \section{Performance Characterization on Titan}
 \label{sec:performance}
 \input{performance}
@@ -130,23 +109,12 @@ subject classification numbers as needed.
 % ---------------------------------------------------------------------------
 % V - Workload Management Beyond HEP
 % ---------------------------------------------------------------------------
+
 \section{Workload Management Beyond HEP}
 \label{sec:beyond_hep}
 \input{beyond_hep}
 
 %%%
-
-%\section{Section title}
-%\label{sec:1}
-%Text with citations \cite{RefB} and \cite{RefJ}.
-%\subsection{Subsection title}
-%\label{sec:2}
-%as required. Don't forget to give each section
-%and subsection a unique label (see Sect.~\ref{sec:1}).
-%\paragraph{Paragraph headings} Use paragraph headings as needed.
-%\begin{equation}
-%a^2+b^2=c^2
-%\end{equation}
 
 %% For one-column wide figures use
 %\begin{figure}
@@ -169,49 +137,22 @@ subject classification numbers as needed.
 %\end{figure*}
 %%
 %
-%% For tables use
-%\begin{table}
-%% table caption is above the table
-%\caption{Please write your table caption here}
-%\label{tab:1}       % Give a unique label
-%% For LaTeX tables use
-%\begin{tabular}{lll}
-%\hline\noalign{\smallskip}
-%first & second & third  \\
-%\noalign{\smallskip}\hline\noalign{\smallskip}
-%number & number & number \\
-%number & number & number \\
-%\noalign{\smallskip}\hline
-%\end{tabular}
-%\end{table}
 
-%\begin{acknowledgements}
-%If you'd like to thank anyone, place your comments here
-%and remove the percent signs.
-%\end{acknowledgements}
+\begin{acknowledgements}
+    If you'd like to thank anyone, place your comments here.
+\end{acknowledgements}
 
-% BibTeX users please use one of
+
+%-  NOTE: I (Sean) chose the bibliography style arbitrarily.
+
 %\bibliographystyle{spbasic}      % basic style, author-year citations
 %\bibliographystyle{spmpsci}      % mathematics and physical sciences
-%\bibliographystyle{spphys}       % APS-like style for physics
-%\bibliography{}   % name your BibTeX data base
+\bibliographystyle{spphys}       % APS-like style for physics
+\bibliography{bibliography}
 
-% Non-BibTeX users please use
-\begin{thebibliography}{}
-%
-% and use \bibitem to create references. Consult the Instructions
-% for authors for reference list style.
-%
-\bibitem{RefJ}
-% Format for Journal Reference
-Author, Article title, Journal, Volume, page numbers (year)
-% Format for books
-\bibitem{RefB}
-Author, Book title, page numbers. Publisher, place (year)
-% etc
-\end{thebibliography}
+
+%-  That's all, folks!
 
 \end{document}
-% end of file template.tex
 
 %-  vim:set syntax=tex:
