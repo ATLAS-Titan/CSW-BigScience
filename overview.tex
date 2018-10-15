@@ -178,6 +178,16 @@ status used by the different algorithms and monitoring. Status reflect the
 current step of the job processing since the job submitted to the system,
 transferred to the particular resource and finally executed.
 
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/job-state-diagram.png}
+% figure caption is below the figure
+\caption{This is a job state transitions model diagram for PanDA.}
+\label{fig:jobstates}
+\end{figure*}
+
 Job injected into the system by the JEDI in ATLAS or by the PanDA client in
 general case is persist as so-called job parameters object and corresponds to
 the ``Pending'' status. Job parameters are the object where job definition is
