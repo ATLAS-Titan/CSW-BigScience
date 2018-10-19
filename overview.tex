@@ -241,8 +241,7 @@ explicitly the resource while job submission or they can rely on automated
 brokerage engine. Full power of the PanDA brokerage integrated with another
 distributed computing and data management tools (internal and external with
 respect to the PanDA) is actively used in ATLAS experiment. In this paper we
-will present and will benchmark the basic brokerage functionality provided to
-all users.
+will present and will benchmark the basic brokerage functionality.
 
 The basic brokerage algorithm works the following way. It takes the lists of
 submitted jobs and available queues. Then each job is checked against each
@@ -358,7 +357,7 @@ res{\textunderscore}queue
   \end{aligned}
 \end{equation}
 
-Brokerage time in general can be estimated as (2). Basically it's time the job
+Response time of the brokerage in general can be estimated as (2). Basically it's time the job
 transits from ``defined'' to assigned state.  
 
 \begin{equation}
@@ -403,7 +402,7 @@ streamline the equation like (5)
   \end{aligned}
 \end{equation}
 
-In order to estimate dependency of brokerage time from the number of
+In order to estimate dependency of brokerage response time from the number of
 concurrently submitted jobs we deployed a dedicated test instance of PanDA
 server at ORNL. PanDA was configured to use ten testing queues. Two of the
 queus was configured to provide 8 CPU cores and eight remaining queues provide
