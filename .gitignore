@@ -12,12 +12,12 @@
 #                                                   ~~ last updated 19 Oct 2018
 
 #-  Temporary files from BibTeX and LaTeX
-.aux
-.bbl
-.blg
-.dvi
-.log
-.out
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.out
 
 #-  netrw history file? (see: http://goo.gl/jhzdJ)
 .netrwhist
