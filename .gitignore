@@ -9,8 +9,15 @@
 #   may cause us to exclude an important file accidentally. Thus, we will
 #   script and monitor every step of the workflow *except* version control.
 #
-#                                                       ~~ (c) SRW, 20 Sep 2018
-#                                                   ~~ last updated 20 Sep 2018
+#                                                   ~~ last updated 19 Oct 2018
+
+#-  Temporary files from BibTeX and LaTeX
+.aux
+.bbl
+.blg
+.dvi
+.log
+.out
 
 #-  netrw history file? (see: http://goo.gl/jhzdJ)
 .netrwhist
