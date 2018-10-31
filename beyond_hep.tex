@@ -81,10 +81,10 @@ experiments from different disciplines, and it has the least restrictive securit
 \label{subsec:panda_instance}
 
 In March 2017, we implemented a new PanDA server instance within OLCF operating
-under Red Hat OpenShift Origin [Red Hat OpenShift Origin] - a powerful
+under Red Hat OpenShift Origin \cite{RH_OpenShift} - a powerful
 container cluster management and orchestration system in order to serve various
 experiments at Titan supercomputer. By running on-premise Red Hat OpenShift
-built on Kubernetes [Kubernetes], the OLCF provides a container orchestration
+built on Kubernetes \cite{Kubernetes}, the OLCF provides a container orchestration
 service that allows users to schedule and run their HPC middleware service
 containers while maintaining a high level of support for many diverse service
 workloads. The containers have direct access to all OLCF shared resources such
@@ -157,10 +157,13 @@ occupying thousands of nodes on leadership-class supercomputers.
 
 In 2017, as a part of SciDAC-4 funded project, a collaboration was formed between 
 several US LQCD groups and BigPanDA team with the goal to adopt PanDA WMS for the 
-needs of the SciDAC-4 LQCD computational program.
-In order to run LQCD payloads we have used our PanDA Server in Amazon cloud. 
+needs of the SciDAC-4 LQCD computational program. 
+
+LQCD payloads have been successfully tested on Titan as well as on other sites.
+%In order to run LQCD payloads we have also used our PanDA Server in Amazon cloud. 
 Production campaigns were executed on BNL Institutional Cluster through a 
-dedicated instance of Harvester. During the period between April and June 2018 13 TB 
+dedicated instance of Harvester installed on the front node of this site. 
+During the period between April and June 2018 13 TB 
 of input data were processed, producing output of 176 GB. LQCD jobs used around 
 15000 GPU hours with average job duration around 12 hours.
 
