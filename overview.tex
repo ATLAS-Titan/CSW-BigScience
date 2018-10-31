@@ -1,57 +1,58 @@
-%-  LaTeX source file
-
-%-  overview.tex ~~
-%
-%   This is the second section of the paper.
-%
-%                                                   ~~ last updated 06 Oct 2018
-
-PanDA is a Workload Management System (WMS) \cite{marco2009glite} designed to
-support the execution of distributed workloads and workflows via pilots
-\cite{turilli2017comprehensive}. Pilot-capable WMS enable high throughput of
-tasks execution via multi-level scheduling while supporting interoperability
-across multiple sites. This is particularly relevant for LHC experiments, where
-millions of tasks are executed across multiple sites every month, analyzing
-and producing petabytes of data. The design of PanDA WMS started in 2005 to
+PanDA is a Workload Management System (WMS)~\cite{marco2009glite} designed to
+support the execution of workloads in GRID-like distributed computing
+environment  via pilots~\cite{turilli2017comprehensive}.  Pilot-capable WMS
+enable high throughput of tasks execution via multi-level scheduling while
+supporting interoperability across multiple sites. This is particularly
+relevant for LHC experiments, where millions of tasks are executed across
+multiple sites of the LHC Computing Grid (LCG) every month, analyzing and
+producing petabytes of data. The design of PanDA WMS started in 2005 to
 support ATLAS.
 
 % ---------------------------------------------------------------------------
 \subsection{Design}
 \label{subsec:design}
 
-PanDA's application model assumes tasks grouped into workloads and workflows.
-Tasks represent a set of homogeneous operations performed on datasets stored
-in one or more input files. Tasks are decomposed into jobs, where each job
-consists of the task's operations performed on a partition of the task's data
-set. PanDA's usage model assumes multitenancy of resources and at least two
-types of HEP users: individual researchers and groups executing so called
-``production'' workflows. Production workflows is a set of transformations of
-collected and simulated data into formats which are used for user analysis.
+PanDA's application model assumes tasks grouped into workloads. Tasks
+represent a set of homogeneous operations performed on datasets stored in a
+set of input files. Tasks are decomposed into jobs, where each job consists
+of the task's operations performed on a partition of the task's data set.
+PanDA acts as an unified interface to distributed computing resources,
+enabling users of the ATLAS project to submit datasets for processing. One or
+more task is created for each dataset and each task is partitioned into jobs
+that, in turn, are distributed across the available resources for concurrent
+execution. So called ``production'' workflows are sets of transformations of
+collected and simulated data into formats which are required for user
+analysis.
 
-PanDA's security model is based on separation between authentication,
+PanDA's security model is based on separation among authentication,
 authorization and accounting for both single users and group of users. Both
 authentication and authorization are based on digital certificates and on the
-virtual organization abstraction \cite{foster2001anatomy}. Currently, PanDA's
-execution model is based on four main abstractions: task, job, queue, and
-pilot. Both tasks and jobs are assumed to have attributes and states and to
-be queued into a global queue for execution. Prioritization and binding of
-jobs are assumed to depend on the attributes of each job. Pilot is used to
-indicate the abstraction of resource capabilities. Each job is bound to one
-pilot and executed at the site where the pilot has been instantiated.
+virtual organization abstraction~\cite{foster2001anatomy}. Currently, PanDA's
+execution model is based on four main abstractions: task, job, global queue,
+and pilot. Both tasks and jobs are assumed to have attributes and states and
+to be queued into a global queue for execution. Prioritization and binding of
+jobs are assumed to depend on the attributes of each task and  job. PanDA has
+a global queue where all jobs are registered and one resource queue for each
+target  computing resource. PanDA assigns specific sets of jobs from the
+global queue to the resource queues, depending on the jobs requirements, and
+each resource capability and availability. When pilots become available on
+the the target compute resource, PanDA  sends jobs on each pilot from the
+resource  queue associated with that target compute source.
 
 In PanDA's data model, each datum refers to the recorded or simulated
-measurement of a physical process. Data can be packaged into files or other
-containers. As with jobs, data have both attributes and states, and some of
-the attributes are shared between events and jobs. Raw, reconstruction, and
-simulation data are all assumed to be distributed across multiple storage
-facilities and managed by the ATLAS Distributed Data Management (DDM)
-\cite{garonne2012atlas}. When necessary, input files required by each job are
-assumed to be replicated over the network, both for input and output data.
-PanDA's design supports provenance and traceability for both jobs and data.
-Attributes enable provenance by linking jobs and data items, providing
-information like ownership or project affiliation. States enable traceability
-by providing information about the stage of the execution in which each job
-or data file is or has been.
+measurement of a physical process. Data are stored in files that are grouped
+into datasets, with a relation N:N between files and datasets. As with jobs,
+data have both attributes and states, and some of the attributes are shared
+among events and jobs. Raw, reconstruction, and simulation data are all
+assumed to be distributed across multiple storage facilities and managed by
+the ATLAS Distributed Data Management (DDM)~\cite{garonne2012atlas}. When
+necessary, input files required by each job are assumed to be replicated over
+the network, both for input and output data. PanDA's design supports
+provenance and traceability for both jobs and data. Attributes enable
+provenance by linking jobs and data items, providing information like
+ownership or project affiliation. States enable traceability by providing
+information about the stage of the execution in which each job or data file
+is or has been.
 
 % ---------------------------------------------------------------------------
 \subsection{Implementation and Execution}
