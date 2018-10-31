@@ -70,14 +70,14 @@ information about sites and resources.
 Currently, PanDA's architecture has five main subsystems: JEDI/PanDA Server~
 \cite{maeno2011overview,borodin2015scaling}, PanDA
 Pilot~\cite{nilsson2011atlas}, Schedconfig~\cite{nilsson2008panda},
-AutoPyFactory~\cite{caballero2012autopyfactory]} and PanDA
+AutoPyFactory~\cite{caballero2012autopyfactory} and PanDA
 Monitoring~\cite{klimentov2011atlas}. JEDI and PanDA Server process tasks
 into jobs and broker their distributed execution. PanDA Pilot is a pilot
 system that executes jobs on computing infrastructures, managing the stage-in
 and stage-out of their data. Schedconfig is an information system implemented
 within PanDA to store PanDA queues (resources) descriptions.  Schedconfig
 synchronizes with the ATLAS Grid Information system
-(AGIS)~\cite{1742-6596-513-3-032001} to obtain information about distributed
+(AGIS)~\cite{anisenkov2014agis} to obtain information about distributed
 resources. AutoPyFactory is the system used to submit pilots to grid sites.
 PanDA Monitoring is a web application to monitor the execution of workloads
 in a distributed computing environment. Other subsystems are used by some of
