@@ -4,7 +4,7 @@
 %
 %   This is the fourth section of the paper.
 %
-%                                                   ~~ last updated 26 Nov 2018
+%                                                   ~~ last updated 27 Nov 2018
 
 %Availability note: code supporting this section is available at
 %\url{https://github.com/ATLAS-Titan/moab-data}. 
@@ -33,22 +33,94 @@
 %\subsection{Scaling PanDA on Titan}
 %\label{subsec:scaling}
 
-(This section should have lots of the kinds of plots that Danila always shows
-and that Sean always puts on his posters, like Titan core hours by month and
-stuff like that \ldots see Figures~\ref{fig:monthly-consumption} and
-\ref{fig:time-vs-nodes}.)
+%See Figure ~\ref{fig:throughput-all} \ldots
+%% For two-column wide figures use
+%\begin{figure*}
+%% Use the relevant command to insert your figure file.
+%% For example, with the graphicx package use
+%  \includegraphics[width=0.75\textwidth]{images/linfit-throughput-all.png}
+%% figure caption is below the figure
+%\caption{This figure shows the relationship between CSC108 backfill throughput
+%and overall throughput by counting jobs completed by day.}
+%\label{fig:throughput-all}
+%\end{figure*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The PanDA team, known primarily by the project identifier ``CSC108'' at Oak
+Ridge, began work on this project in 2013, and our opportunistic consumption of
+backfill resources on Titan has increased steadily every year. During this time
+period, overall utilization on Titan has increased as well, which is consistent
+with our expectations because CSC108 seeks to consume time-sensitive resources
+that would otherwise go to waste. The simple bar plot shown in
+Figure~\ref{fig:jacks-slide} was created to visualize this progress over time,
+and interestingly, it also shows that utilization by other projects has been
+decreasing over the same time period. A first reaction when observing this
+pattern might be to blame CSC108 for crowding out other projects on Titan, but
+careful consideration reveals that there are many other mechanisms which might
+be behind these effects. Consequently, we undertook several studies in order to
+assess the impact CSC108 is having on Titan and its users, especially with
+respect to wait times, throughput, and utilization. This section presents
+results from several ongoing studies.
 
 % For two-column wide figures use
 \begin{figure*}
 % Use the relevant command to insert your figure file.
 % For example, with the graphicx package use
-  \includegraphics[width=0.75\textwidth]{images/monthly-consumption.png}
+  \includegraphics[width=0.75\textwidth]{images/barplot-jacks-slide.png}
 % figure caption is below the figure
-\caption{This figure shows the monthly consumption of resources on Titan by the
-two methods used by PanDA.}
-\label{fig:monthly-consumption}
+\caption{This bar plot visualizes the yearly utilization of Titan core hours,
+separated into two categories: utilization of Titan core hours through backfill
+opportunities by CSC108, and all other utilization of core hours on Titan. The
+data for 2018 are incomplete; they cover from January 1, 2018 to September 1,
+2018.}
+\label{fig:jacks-slide}
 \end{figure*}
 
+
+Before presenting results, however, it is important to summarize the relevant
+policies at Oak Ridge for running jobs on Titan. There are three queues on
+Titan: batch, debug, and killable. There is no actual backfill queue on Titan;
+instead, smaller jobs from each queue are scheduled into spaces that cannot be
+used by larger jobs. The batch queue is the default queue for submitted jobs,
+and it is the only queue considered in this analysis. Jobs submitted to the
+batch queue are grouped into five ``bins'' according to the number of requested
+nodes, and each bin has a maximum wall time. Jobs that request fewer nodes have
+correspondingly lesser maximum wall times. The definitions and rules for each
+bin are shown in Table~\ref{tab:olcfbins}. Nodes are assigned exclusively to
+one job at a time. Because Titan is a leadership class machine and priority is
+a function of wait time, the batch scheduler awards aging boosts to jobs in
+bins 1 and 2 in order to prioritize larger jobs over smaller ones. Once jobs in
+the batch queue begin to run, however, they will not be killed when new jobs
+arrive, regardless of their priority. Sometimes, jobs small enough to use
+currently idle resources on Titan are scheduled to run immediately, and this is
+what we refer to as ``backfill opportunity''. CSC108 takes advantage of the
+``showbf'' command in order to query the Moab scheduler directly for currently
+available backfill opportunity and then tailors its own submissions to Titan
+accordingly. CSC108 has a special policy applied to guarantee that its jobs run
+with lesser priority than all others on Titan, to ensure that its jobs consume
+only backfill resources. Finally, ``Titan core hours'' are the billable units
+used at OLCF; they convert at a rate of 30 Titan core hours per 1 node hour.
+
+% For tables use
+\begin{table}
+% table caption is above the table
+\caption{OLCF policies sort jobs into numbered bins based on the requested
+number of nodes, and each bin has its own set of constraints.}
+\label{tab:olcfbins}       % Give a unique label
+% For LaTeX tables use
+\begin{tabular}{crrr}
+\hline\noalign{\smallskip}
+Bin & Requested Nodes   & Maximum Wall Time &   Aging Boost \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+1   &   11,250 - 18,688 &   24 hours        &   15 days     \\
+2   &    3,750 - 11,249 &   24 hours        &    5 days     \\
+3   &       313 - 3,749 &   12 hours        &         0     \\
+4   &         126 - 312 &    6 hours        &         0     \\
+5   &           1 - 125 &    2 hours        &         0     \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{table}
 
 
 % For two-column wide figures use
@@ -66,81 +138,6 @@ represents a self-imposed constraint.}
 \label{fig:time-vs-nodes}
 \end{figure*}
 
-
-%See Figure ~\ref{fig:throughput-all} \ldots
-%% For two-column wide figures use
-%\begin{figure*}
-%% Use the relevant command to insert your figure file.
-%% For example, with the graphicx package use
-%  \includegraphics[width=0.75\textwidth]{images/linfit-throughput-all.png}
-%% figure caption is below the figure
-%\caption{This figure shows the relationship between CSC108 backfill throughput
-%and overall throughput by counting jobs completed by day.}
-%\label{fig:throughput-all}
-%\end{figure*}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-The PanDA team, known primarily by the project identifier ``CSC108'' at Oak
-Ridge, began work on this project in \textbf{SOME YEAR}, and our opportunistic
-consumption of backfill resources on Titan has increased steadily every year.
-During this time period, overall utilization on Titan has increased as well,
-which is consistent with our expectations because CSC108 seeks to consume
-time-sensitive resources that would otherwise go to waste. The simple bar plot
-shown in \textbf{JACK'S SLIDE} was created to visualize this progress over
-time, and interestingly, it also shows that utilization by other projects has
-been decreasing over the same time period. A first reaction when observing this
-pattern might be to blame CSC108 for crowding out other projects on Titan, but
-careful consideration reveals that there are many other mechanisms which might
-be behind these effects. Consequently, we undertook several studies in order to
-assess the impact CSC108 is having on Titan and its users, especially with
-respect to wait times, throughput, and utilization. This section presents
-results from several ongoing studies.
-
-Before presenting results, however, it is important to summarize the relevant
-policies at Oak Ridge for running jobs on Titan. There are three queues on
-Titan: batch, debug, and killable. There is no actual backfill queue on Titan;
-instead, smaller jobs from each queue are scheduled into spaces that cannot be
-used by larger jobs. The batch queue is the default queue for submitted jobs,
-and it is the only queue considered in this analysis. Jobs submitted to the
-batch queue are grouped into five ``bins'' according to the number of requested
-nodes, and each bin has a maximum wall time. Jobs that request fewer nodes have
-correspondingly lesser maximum wall times. The definitions and rules for each
-bin are shown in Table~\ref{tab:olcfbins}. Nodes are assigned exclusively to
-one job at a
-time. Because Titan is a leadership class machine and priority is a function of
-wait time, the batch scheduler awards aging boosts to jobs in bins 1 and 2 in
-order to prioritize larger jobs over smaller ones. Once jobs in the batch queue
-begin to run, however, they will not be killed when new jobs arrive, regardless
-of their priority. Sometimes, jobs small enough to use currently idle resources
-on Titan are scheduled to run immediately, and this is what we refer to as
-``backfill opportunity''. CSC108 takes advantage of the ``showbf'' command in
-order to query the Moab scheduler directly for currently available backfill
-opportunity and then tailors its own submissions to Titan accordingly. CSC108
-has a special policy applied to guarantee that its jobs run with lesser
-priority than all others on Titan, to ensure that its jobs consume only
-backfill resources.
-
-% For tables use
-\begin{table}
-% table caption is above the table
-\caption{OLCF policies sort jobs into numbered bins based on the requested
-number of nodes, and each bin has its own set of constraints.}
-\label{tab:olcfbins}       % Give a unique label
-% For LaTeX tables use
-\begin{tabular}{crrr}
-\hline\noalign{\smallskip}
-Bin & Requested Nodes   & Maximum Wall Time &   Aging boost \\
-\noalign{\smallskip}\hline\noalign{\smallskip}
-1   &   11,250 - 18,688 &   24 hours        &   15 days     \\
-2   &    3,750 - 11,249 &   24 hours        &    5 days     \\
-3   &       313 - 3,749 &   12 hours        &         0     \\
-4   &         126 - 312 &    6 hours        &         0     \\
-5   &           1 - 125 &    2 hours        &         0     \\
-\noalign{\smallskip}\hline
-\end{tabular}
-\end{table}
-
 The studies have collected datasets in several different ways. Initially, we
 began by sampling live data from Moab by polling with Python scripts launched
 by cron jobs on a data transfer node. These scripts recorded XML output from
@@ -149,17 +146,19 @@ other Python scripts to import these files' sample data into SQLite. These
 tables contain data about the exact state of the queues at given times,
 including active jobs, blocked jobs, eligible jobs, recently completed jobs,
 and system information such as active nodes and available backfill
-opportunities. We then supplemented these live samples with historical job
-traces obtained from ORNL which span from January 2017 to October 2018. The job
-traces are basic, containing only job submission time, start time, completion
-time, requested nodes, and requested wall time, for all jobs not due to the
-PanDA team. Besides CSC108, the PanDA team has two other PanDA projects on
-Titan, which are HEP110 and HEP113, both of which use PanDA to submit jobs with
-the increased priority of their ALCC allocations. Thus, traces for the PanDA
-jobs contain additional fields for account name, job name, and user name to
-distinguish the backfill jobs from the ``direct mode'' jobs. Finally, we
-analyzed the SQLite data in Python using the well-known Matplotlib, NumPy, and
-SciPy libraries via Anaconda.
+opportunities. We then supplemented these live samples with monthly usage data
+and historical job traces obtained from ORNL. The monthly usage data span from
+January 2016 to September 2018 and contain only the total hours available,
+total hours consumed by all projects, and total hours consumed by CSC108. The
+job trace data span from January 2017 to October 2018 and contain only job
+submission time, start time, completion time, requested nodes, and requested
+wall time, for all jobs not due to the PanDA team. Besides CSC108, the PanDA
+team has two other PanDA projects on Titan, which are HEP110 and HEP113, both
+of which use PanDA to submit jobs with the increased priority of their ALCC
+allocations. Thus, traces for the PanDA jobs contain additional fields for
+account name, job name, and user name to distinguish the backfill jobs from the
+``direct mode'' jobs. Finally, we analyzed the SQLite data in Python using the
+well-known Matplotlib, NumPy, and SciPy libraries via Anaconda.
 
 First, we discuss the impact of CSC108's jobs on the wait times experienced by
 other projects' jobs on Titan.
