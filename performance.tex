@@ -4,7 +4,7 @@
 %
 %   This is the fourth section of the paper.
 %
-%                                                   ~~ last updated 27 Nov 2018
+%                                                   ~~ last updated 29 Nov 2018
 
 %Availability note: code supporting this section is available at
 %\url{https://github.com/ATLAS-Titan/moab-data}. 
@@ -192,11 +192,50 @@ period''.
 \label{subsec:throughput}
 
 
-Next, we discuss the impact of CSC108's jobs on throughput on Titan.
-\begin{itemize}
-    \item Explain linear regression results and how a pattern appears for bin 5
-\end{itemize}
+Next, we discuss the impact of CSC108's jobs on throughput on Titan. We modeled
+the relationships between overall throughput on Titan, in units of jobs
+completed per day, with CSC108's overall throughput and also with its
+throughputs when separated by OLCF bin number. The resulting models are shown
+in Figures~\ref{fig:throughput-all}, \ref{fig:throughput-bin3},
+\ref{fig:throughput-bin4}, and \ref{fig:throughput-bin5}.
 
+% For tables use
+\begin{table}
+% table caption is above the table
+\caption{(placeholder caption)}
+\label{tab:throughput-params}       % Give a unique label
+% For LaTeX tables use
+\begin{tabular}{ccrr}
+\hline\noalign{\smallskip}
+Figure  &   Bin & Slope   & Intercept   \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\ref{fig:throughput-all}    &   All &   0.3178  &   1351.1063   \\
+\ref{fig:throughput-bin3}   &   3   &   -0.7029 &   1742.0276   \\
+\ref{fig:throughput-bin4}   &   4   &   2.9256  &   1614.8481   \\
+\ref{fig:throughput-bin5}   &   5   &   0.2148  &   1433.2388   \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{table}
+
+All four of the models share common parameters, which can be viewed in
+Table~\ref{tab:throughput-params}. Each model has a small magnitude slope in
+relation to the magnitude of its Y intercept, which indicates that the impact
+of increased throughput by CSC108 is small in each model. Each model appears to
+be a relatively flat line positioned at approximately 1500 jobs completed per
+day on Titan.
+
+These results are consistent with our intuition about the behavior of Titan
+when the Moab scheduler begins ``draining'' in order to accommodate leadership
+class jobs. During the draining process, the nodes of completed jobs are not
+immediately reassigned, because the Moab scheduler reserves them in order to
+run a leadership class job in the future. Moab will only schedule jobs to run
+on those now-idle nodes if they will complete before the leadership class job's
+reservation begins. Thus, just before large jobs, which decrease overall
+throughput, run on Titan, more backfill opportunities arise for small jobs,
+which increase throughput; this effect helps Titan maintain a high level of
+overall throughput. Because PanDA submits jobs of different sizes according to
+available backfill opportunity, CSC108's throughput minimally impacts Titan's
+overall throughput.
 
 % For two-column wide figures use
 \begin{figure*}
@@ -246,7 +285,64 @@ Next, we discuss the impact of CSC108's jobs on throughput on Titan.
 Finally, we are investigating the effects of CSC108's utilization of backfill
 opportunity on the overall utilization of Titan by all projects. To do this, we
 constructed using linear models again, in a manner very similar to that of
-Section~\ref{subsec:throughput}.
+Section~\ref{subsec:throughput}. We modeled the relationships between overall
+utilization on Titan, as the percentage of available core hours consumed per
+day, with CSC108's utilization and also with its utilizations when separated by
+OLCF bin number. The resulting models are shown in
+Figures~\ref{fig:utilization-all}, \ref{fig:utilization-bin3},
+\ref{fig:utilization-bin4}, and \ref{fig:utilization-bin5}. The parameters of
+the models shown in the figures are shown in
+Table~\ref{tab:utilization-params}.
+
+% For tables use
+\begin{table}
+% table caption is above the table
+\caption{(placeholder caption)}
+\label{tab:utilization-params}       % Give a unique label
+% For LaTeX tables use
+\begin{tabular}{ccrr}
+\hline\noalign{\smallskip}
+Figure  &   Bin & Slope   & Intercept   \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\ref{fig:utilization-all}    &   All &  -0.5707 &   93.7360 \\
+\ref{fig:utilization-bin3}   &   3   &  -0.9372 &   93.1175 \\
+\ref{fig:utilization-bin4}   &   4   &  -0.9908 &   92.7168 \\
+\ref{fig:utilization-bin5}   &   5   &  4.2480  &   87.3287 \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{table}
+
+Unlike the case for the throughput models in Section~\ref{subsec:throughput},
+the parameters shown in Table~\ref{tab:utilization-params} show that one of the
+models is not like the others. Although three of the models have very similar
+negative slopes and Y intercepts, the model for CSC108's utilization of bin 5
+has a positive slope and a Y intercept that is much more interesting.
+
+Titan's overall utilization from January 1, 2017 through September 30, 2018 was
+91.9\%, and during this same time period, CSC108's utilization of Titan was
+3.5\%. Given the original assumption by the project that CSC108 uses only
+time-sensitive resources which would have otherwise gone to waste, the natural
+conclusion is that CSC108's utilization represents a pure increase in overall
+utilization, and therefore that Titan's utilization without CSC108 would have
+been 88.4\%. By way of comparison, the bin 5 model predicts this value to be
+87.3\%, which is much closer than the other models. The bin 5 model also
+intercepts 100\% Titan utilization when CSC108 bin 5 utilization is almost
+exactly 3\%, which is a feasible number that is similar to the observed overall
+utilization by CSC108 of 3.5\%.
+
+The similarity of the parameters of the bin 5 model to the observed values in
+the data suggests that Titan's overall utilization is more sensitive to
+CSC108's utilization of bin 5 jobs, which are the smallest jobs that run on
+Titan. The slope of the bin 5 model is harder to interpret. A slope of 4.2480
+in the model suggests that a 1\% increase in utilization by CSC108 in bin 5
+results in a roughly 4\% increase in overall utilization. Obviously, a 1\%
+increase by CSC108 can only directly result in a 1\% overall increase, but
+another reason may be behind this. For example, because CSC108 submits jobs to
+bins 3, 4, and 5 consistently, an increase in utilization in bin 5 also
+corresponds to a shift away from bins 3 and 4, where the individual models
+indicate that increased utilization negatively impacts overall utilization on
+Titan. Because we do not yet know the exact mechanism at work here, we are
+continuing to pursue this study in order to optimize our job sizing algorithm.
 
 
 % For two-column wide figures use
