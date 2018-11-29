@@ -9,27 +9,6 @@
 %Availability note: code supporting this section is available at
 %\url{https://github.com/ATLAS-Titan/moab-data}. 
 
-%\subsubsection{Blocking Probability}
-%\label{subsubsec:blockingprobability}
-%
-%We begin with a simple model that defines an event called a ``block'' and then
-%detects its occurrences within the data.
-%
-%Let $C_i$ be the abstract resources in use by CSC108 at the $i^{\text{th}}$
-%sample point in time, and let $U_i$ be the unused (idle) resources remaining on
-%Titan. We then define a boolean $B_i$ representing a ``block'' to be 1 if there
-%exists at least one job at the $i^{\text{th}}$ sample point which requests
-%$(C_i + U_i)$ resources or less, and we define $B_i$ to be zero otherwise.
-%
-%Summing $B_i$ over all $i$ gives a count of sample points at which a block
-%occurred, and dividing that count by the number of total sample points yields a
-%quantity we will term a ``blocking fraction''.
-%
-%To use this model for our concrete data set, we define the resources in
-%question to be requested processors (or requested nodes).
-%
-%(Specific numbers and graphs go here.)
-
 %\subsection{Scaling PanDA on Titan}
 %\label{subsec:scaling}
 
@@ -160,24 +139,163 @@ account name, job name, and user name to distinguish the backfill jobs from the
 ``direct mode'' jobs. Finally, we analyzed the SQLite data in Python using the
 well-known Matplotlib, NumPy, and SciPy libraries via Anaconda.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Wait Times}
+\label{subsec:waittimes}
+
 First, we discuss the impact of CSC108's jobs on the wait times experienced by
 other projects' jobs on Titan.
-\begin{itemize}
-    \item Option: explain blocking probability results so far
-    \item Option: explain dormant period results so far
-    \item Option: create and explain new linear regression results
-\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Blocking Model}
+\label{subsubsec:blockingmodel}
+
+We began by developing a simple model to estimate how often that a CSC108 job
+was using resources on Titan that would have been used by another project's job
+if they had been available. To this end, we defined an abstract event called a
+``block'' and then detected occurrences of the event within our data.
+
+Let $C_i$ be the abstract resources in use by CSC108 at the $i^{\text{th}}$
+sample point in time, and let $U_i$ be the unused (idle) resources remaining on
+Titan. We then define a boolean $B_i$ representing a ``block'' to be 1 if there
+exists at least one job at the $i^{\text{th}}$ sample point which requests
+$(C_i + U_i)$ resources or less when $C_i$ is non-zero; we define $B_i$ to be
+zero otherwise. Summing $B_i$ over all $i$ gives a count of sample points at
+which a block occurred, and dividing that count by the number of total sample
+points yields a quantity we call a ``blocking fraction''. The blocking fraction
+is a rational number between 0 and 1, with lesser numbers corresponding to
+lesser impacts by CSC108.
+
+To apply this abstract model to a real data set, we have initially defined the
+resources in a purely ``spatial'' manner by considering only jobs' requested
+numbers of nodes. Further work will explore ``temporal'' blocking by also
+considering jobs' requested wall times.
+
+\textbf{(Specific numbers and graphs go here.)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Dormant period}
+\label{subsubsec:dormantperiod}
+
+An interesting opportunity arose during July 2018 following the end of a large
+simulation campaign by ATLAS, because CSC108 submitted zero backfill jobs for
+14 consecutive days. For convenience, we have called this the ``dormant
+period''.
+
+\textbf{Keep going.}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Throughput}
+\label{subsec:throughput}
+
 
 Next, we discuss the impact of CSC108's jobs on throughput on Titan.
 \begin{itemize}
     \item Explain linear regression results and how a pattern appears for bin 5
 \end{itemize}
 
-Finally, we discuss the impact of CSC108's jobs on utilization on Titan.
-\begin{itemize}
-    \item Explain linear regression results and how the pattern continues for
-        bin 5
-\end{itemize}
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-throughput-all.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:throughput-all}
+\end{figure*}
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin3.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:throughput-bin3}
+\end{figure*}
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin4.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:throughput-bin4}
+\end{figure*}
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin5.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:throughput-bin5}
+\end{figure*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Utilization}
+\label{subsec:utilization}
+
+Finally, we are investigating the effects of CSC108's utilization of backfill
+opportunity on the overall utilization of Titan by all projects. To do this, we
+constructed using linear models again, in a manner very similar to that of
+Section~\ref{subsec:throughput}.
+
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-all.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:utilization-all}
+\end{figure*}
+
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-bin3.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:utilization-bin3}
+\end{figure*}
+
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-bin4.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:utilization-bin4}
+\end{figure*}
+
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-bin5.png}
+% figure caption is below the figure
+\caption{(placeholder)}
+\label{fig:utilization-bin5}
+\end{figure*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Conclusions}
+\label{subsec:sec4-conclusions}
 
 In conclusion,
 \begin{itemize}
