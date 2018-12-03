@@ -4,7 +4,7 @@
 %
 %   This is the fourth section of the paper.
 %
-%                                                   ~~ last updated 29 Nov 2018
+%                                                   ~~ last updated 03 Dec 2018
 
 %Availability note: code supporting this section is available at
 %\url{https://github.com/ATLAS-Titan/moab-data}. 
@@ -51,7 +51,7 @@ results from several ongoing studies.
 \caption{This bar plot visualizes the yearly utilization of Titan core hours,
 separated into two categories: utilization of Titan core hours through backfill
 opportunities by CSC108, and all other utilization of core hours on Titan. The
-data for 2018 are incomplete; they cover from January 1, 2018 to September 1,
+data for 2018 are incomplete; they cover from January 1, 2018 to October 15,
 2018.}
 \label{fig:jacks-slide}
 \end{figure*}
@@ -125,19 +125,19 @@ other Python scripts to import these files' sample data into SQLite. These
 tables contain data about the exact state of the queues at given times,
 including active jobs, blocked jobs, eligible jobs, recently completed jobs,
 and system information such as active nodes and available backfill
-opportunities. We then supplemented these live samples with monthly usage data
-and historical job traces obtained from ORNL. The monthly usage data span from
-January 2016 to September 2018 and contain only the total hours available,
-total hours consumed by all projects, and total hours consumed by CSC108. The
-job trace data span from January 2017 to October 2018 and contain only job
-submission time, start time, completion time, requested nodes, and requested
-wall time, for all jobs not due to the PanDA team. Besides CSC108, the PanDA
-team has two other PanDA projects on Titan, which are HEP110 and HEP113, both
-of which use PanDA to submit jobs with the increased priority of their ALCC
-allocations. Thus, traces for the PanDA jobs contain additional fields for
-account name, job name, and user name to distinguish the backfill jobs from the
-``direct mode'' jobs. Finally, we analyzed the SQLite data in Python using the
-well-known Matplotlib, NumPy, and SciPy libraries via Anaconda.
+opportunities. We then supplemented these live samples with daily availability
+data and historical job traces obtained from ORNL. The daily availability data
+span from January 1, 2016 to October 18, 2018 and contain only the total Titan
+core hours that were available each day. The historical job trace data span
+from January 1, 2016 to October 15, 2018 and contain only job submission time,
+start time, completion time, requested nodes, and requested wall time, for all
+jobs not due to the PanDA team. Besides CSC108, the PanDA team has two other
+PanDA projects on Titan, which are HEP110 and HEP113, both of which use PanDA
+to submit jobs with the increased priority of their ALCC allocations. Thus,
+traces for the PanDA jobs contain additional fields for account name, job name,
+and user name to distinguish the backfill jobs from the ``direct mode'' jobs.
+Finally, we analyzed the SQLite data in Python using the well-known Matplotlib,
+NumPy, and SciPy libraries via Anaconda.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Wait Times}
@@ -180,7 +180,11 @@ considering jobs' requested wall times.
 An interesting opportunity arose during July 2018 following the end of a large
 simulation campaign by ATLAS, because CSC108 submitted zero backfill jobs for
 14 consecutive days. For convenience, we have called this the ``dormant
-period''.
+period''. This unusually long dormant period allows comparison of the system
+when CSC108 is running versus the system when CSC108 is completely absent.
+
+CSC108 had consumed an average of 7.5 million Titan core hours every
+weeks during the first six months of 2018.
 
 \textbf{Keep going.}
 
@@ -209,10 +213,10 @@ in Figures~\ref{fig:throughput-all}, \ref{fig:throughput-bin3},
 \hline\noalign{\smallskip}
 Figure  &   Bin & Slope   & Intercept   \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
-\ref{fig:throughput-all}    &   All &   0.3178  &   1351.1063   \\
-\ref{fig:throughput-bin3}   &   3   &   -0.7029 &   1742.0276   \\
-\ref{fig:throughput-bin4}   &   4   &   2.9256  &   1614.8481   \\
-\ref{fig:throughput-bin5}   &   5   &   0.2148  &   1433.2388   \\
+\ref{fig:throughput-all}    &   All &   0.6797  &   1184.1510   \\
+\ref{fig:throughput-bin3}   &   3   &  -0.7029  &   1742.0276   \\
+\ref{fig:throughput-bin4}   &   4   &   5.7949  &   1427.9643   \\
+\ref{fig:throughput-bin5}   &   5   &   0.6200  &   1249.8151   \\
 \noalign{\smallskip}\hline
 \end{tabular}
 \end{table}
@@ -221,7 +225,7 @@ All four of the models share common parameters, which can be viewed in
 Table~\ref{tab:throughput-params}. Each model has a small magnitude slope in
 relation to the magnitude of its Y intercept, which indicates that the impact
 of increased throughput by CSC108 is small in each model. Each model appears to
-be a relatively flat line positioned at approximately 1500 jobs completed per
+be a relatively flat line positioned at approximately 1400 jobs completed per
 day on Titan.
 
 These results are consistent with our intuition about the behavior of Titan
@@ -232,10 +236,10 @@ run a leadership class job in the future. Moab will only schedule jobs to run
 on those now-idle nodes if they will complete before the leadership class job's
 reservation begins. Thus, just before large jobs, which decrease overall
 throughput, run on Titan, more backfill opportunities arise for small jobs,
-which increase throughput; this effect helps Titan maintain a high level of
-overall throughput. Because PanDA submits jobs of different sizes according to
-available backfill opportunity, CSC108's throughput minimally impacts Titan's
-overall throughput.
+which increase throughput; this effect helps Titan maintain its overall level
+of throughput. Because PanDA submits jobs of different sizes according to
+available backfill opportunity, as shown in Figure~\ref{fig:time-vs-nodes},
+CSC108's throughput minimally impacts Titan's overall throughput.
 
 % For two-column wide figures use
 \begin{figure*}
@@ -304,10 +308,10 @@ Table~\ref{tab:utilization-params}.
 \hline\noalign{\smallskip}
 Figure  &   Bin & Slope   & Intercept   \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
-\ref{fig:utilization-all}    &   All &  -0.5707 &   93.7360 \\
-\ref{fig:utilization-bin3}   &   3   &  -0.9372 &   93.1175 \\
-\ref{fig:utilization-bin4}   &   4   &  -0.9908 &   92.7168 \\
-\ref{fig:utilization-bin5}   &   5   &  4.2480  &   87.3287 \\
+\ref{fig:utilization-all}    &   All &  -0.5079 &   93.2965 \\
+\ref{fig:utilization-bin3}   &   3   &  -0.8270 &   92.6575 \\
+\ref{fig:utilization-bin4}   &   4   &  -1.1121 &   92.8737 \\
+\ref{fig:utilization-bin5}   &   5   &  3.9084  &   88.1362 \\
 \noalign{\smallskip}\hline
 \end{tabular}
 \end{table}
@@ -318,14 +322,14 @@ models is not like the others. Although three of the models have very similar
 negative slopes and Y intercepts, the model for CSC108's utilization of bin 5
 has a positive slope and a Y intercept that is much more interesting.
 
-Titan's overall utilization from January 1, 2017 to September 1, 2018 was
-91.1\%, as shown in Figure~\ref{fig:jacks-slide}, and during this same time
+Titan's overall utilization from January 1, 2017 to October 1, 2018 was
+91.9\%, as shown in Figure~\ref{fig:jacks-slide}, and during this same time
 period, CSC108's utilization of Titan was about 3.5\%. Given the original
 assumption by the project that CSC108 uses only time-sensitive resources which
 would have otherwise gone to waste, the natural conclusion is that CSC108's
 utilization represents a pure increase in overall utilization, and therefore
-that Titan's utilization without CSC108 would have been 87.6\%. By way of
-comparison, the bin 5 model predicts this value to be 87.3\%, which is
+that Titan's utilization without CSC108 would have been 88.4\%. By way of
+comparison, the bin 5 model predicts this value to be 88.1\%, which is
 surprisingly close for such a simple model. The bin 5 model also intercepts
 100\% Titan utilization when CSC108 bin 5 utilization is almost exactly 3\%,
 which is a feasible number that is similar to the observed overall utilization
@@ -334,7 +338,7 @@ by CSC108 of 3.5\%.
 The similarity of the parameters of the bin 5 model to the observed values in
 the data suggests that Titan's overall utilization is more sensitive to
 CSC108's utilization of bin 5 jobs, which are the smallest jobs that run on
-Titan. The slope of the bin 5 model is harder to interpret. A slope of 4.2480
+Titan. The slope of the bin 5 model is harder to interpret. A slope of 3.9084
 in the model suggests that a 1\% increase in utilization by CSC108 in bin 5
 results in a roughly 4\% increase in overall utilization. Obviously, a 1\%
 increase by CSC108 can only directly result in a 1\% overall increase, but
