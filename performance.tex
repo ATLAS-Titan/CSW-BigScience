@@ -178,7 +178,16 @@ considering jobs' requested wall times.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/barplot-spatial-blocking-by-month.png}
 % figure caption is below the figure
-\caption{(placeholder)}
+\caption{This figure shows the spatial blocking probabilities by month for
+samples where CSC108 was actively utilizing backfill opportunity. An eligible
+job in the batch queue is said to be blocked spatially when the job's number of
+requested nodes is too large to fit within the nodes available through backfill
+opportunity, so that the job must wait to run. The total height of the bars
+indicates the spatial blocking probability for the month, which is the
+percentage of samples in which at least one eligible job was spatially blocked.
+The red region indicates the percentage of samples in which at least one
+eligible job would no longer be spatially blocked if CSC108 freed its
+resources.}
 \label{fig:spatial-blocking-by-month}
 \end{figure*}
 
@@ -189,10 +198,18 @@ considering jobs' requested wall times.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/barplot-temporal-blocking-by-month.png}
 % figure caption is below the figure
-\caption{(placeholder)}
+\caption{This figure shows the temporal blocking probabilities by month for
+samples where CSC108 was actively utilizing backfill opportunity.An eligible
+job in the batch queue is said to be blocked temporally when the job's
+requested wall time is too long to fit within the duration available through
+backfill opportunity, so that the job must wait to run. The total height of the
+bars indicates the temporal blocking probability for the month, which is the
+percentage of samples in which at least one eligible job was temporally
+blocked. The red region indicates the percentage of samples in which at least
+one eligible job would no longer be temporally blocked if CSC108 freed its
+resources.}
 \label{fig:temporal-blocking-by-month}
 \end{figure*}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
