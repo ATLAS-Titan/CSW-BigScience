@@ -64,9 +64,9 @@ instead, smaller jobs from each queue are scheduled into spaces that cannot be
 used by larger jobs. The batch queue is the default queue for submitted jobs,
 and it is the only queue considered in this analysis. Jobs submitted to the
 batch queue are grouped into five ``bins'' according to the number of requested
-nodes, and each bin has a maximum wall time. Jobs that request fewer nodes have
-correspondingly lesser maximum wall times. The definitions and rules for each
-bin are shown in Table~\ref{tab:olcfbins}. Nodes are assigned exclusively to
+nodes, and each bin has a maximum wall time. The definitions and rules for each
+bin are shown in Table~\ref{tab:olcfbins}. Jobs that request fewer nodes have
+correspondingly lesser maximum wall times. Nodes are assigned exclusively to
 one job at a time. Because Titan is a leadership class machine and priority is
 a function of wait time, the batch scheduler awards aging boosts to jobs in
 bins 1 and 2 in order to prioritize larger jobs over smaller ones. Once jobs in
@@ -168,7 +168,7 @@ jobs' requested numbers of nodes in the former and only jobs' requested wall
 times in the latter. An eligible job in the batch queue is said to be spatially
 blocked when the job’s number of requested nodes is too large to fit within the
 nodes available through backfill opportunity, so that the job must wait to run.
-Similarly, An eligible job in the batch queue is said to be temporally blocked
+Similarly, an eligible job in the batch queue is said to be temporally blocked
 when the job’s requested wall time is too long to fit within the duration
 available through backfill opportunity. Figures
 \ref{fig:spatial-blocking-by-month} and \ref{fig:temporal-blocking-by-month}
@@ -254,13 +254,13 @@ its resources.
 
 None of the linear regression models that assessed the impact of blocking
 probability on wait times found any meaningful effect. The simplest evidence
-for this claim is that, in all four cases, the mean of the response variable
-fell entirely within the 95\% confidence region. Interestingly, the signs for
-the slopes of the spatial models were opposite those of the temporal models,
-seemingly indicating that wait times increase as spatial blocking increases but
-decrease as temporal blocking increases. Because the magnitude of the slopes
-indicate that effects over the given domains are small, the signs of the slopes
-are similarly unlikely to be of much importance. We conjecture that
+for this claim is that, in all four cases, the mean of wait times, the response
+variable, fell entirely within the 95\% confidence region. Interestingly, the
+signs for the slopes of the spatial models were opposite those of the temporal
+models, seemingly indicating that wait times increase as spatial blocking
+increases but decrease as temporal blocking increases. Because the magnitude of
+the slopes indicate that effects over the given domains are small, the signs of
+the slopes are similarly unlikely to be of much importance. We conjecture that
 one-dimensional blocking probabilities are too simplistic to account for true
 behavior, but that current work in spatiotemporal blocking probability will
 show that CSC108 does impact other projects' wait times in the future.
@@ -389,7 +389,7 @@ temporal blocking probability for all points.}
 \subsection{Throughput}
 \label{subsec:throughput}
 
-Another way to quantify the impact of CSC108's jobs on Titan is to study its
+Another way to quantify the impact of CSC108's jobs on Titan is to study their
 effects on throughput. We have modeled the relationships between overall
 throughput on Titan, in units of jobs completed per day, with CSC108's overall
 throughput and also with its throughputs when separated by OLCF bin number. The
@@ -438,7 +438,7 @@ throughput, run on Titan, more backfill opportunities arise for small jobs,
 which increase throughput; this effect helps Titan maintain its overall level
 of throughput. Because PanDA submits jobs of different sizes according to
 available backfill opportunity, as shown in Figure~\ref{fig:time-vs-nodes},
-CSC108's throughput minimally impacts Titan's overall throughput.
+CSC108's throughput minimally impacts other projects' throughput on Titan.
 
 % For two-column wide figures use
 \begin{figure*}
@@ -447,14 +447,14 @@ CSC108's throughput minimally impacts Titan's overall throughput.
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-all.png}
 % figure caption is below the figure
 \caption{This figure demonstrates the relationship between CSC108 backfill
-throughput and overall throughput on Titan, in terms of jobs completed per day.
-Each blue point represents one day. The red line is an Ordinary Least Squares
-(OLS) linear regression with parameters given in
+throughput and throughput of other projects on Titan, in terms of jobs
+completed per day. Each blue point represents one day. The red line is an
+Ordinary Least Squares (OLS) linear regression with parameters given in
 Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
 confidence regions. The horizontal dotted black line represents the mean number
-of jobs completed every day on Titan, and the vertical dotted black line
-represents the mean number of jobs completed every day by CSC108's use of
-backfill opportunity.}
+of jobs completed on Titan every day by projects other than CSC108, and the
+vertical dotted black line represents the mean number of jobs completed every
+day by CSC108's use of backfill opportunity.}
 \label{fig:throughput-all}
 \end{figure*}
 
@@ -465,14 +465,14 @@ backfill opportunity.}
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin3.png}
 % figure caption is below the figure
 \caption{This figure demonstrates the relationship between the throughput of
-CSC108's bin 3 jobs and the overall throughput on Titan, in terms of jobs
-completed per day. Each blue point represents one day. The red line is an
+CSC108's bin 3 jobs and the throughput of other projects on Titan, in terms of
+jobs completed per day. Each blue point represents one day. The red line is an
 Ordinary Least Squares (OLS) linear regression with parameters given in
 Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
 confidence regions. The horizontal dotted black line represents the mean number
-of jobs completed every day on Titan, and the vertical dotted black line
-represents the mean number of bin 3 jobs completed every day by CSC108's use of
-backfill opportunity.}
+of jobs completed on Titan every day by projects other than CSC108, and the
+vertical dotted black line represents the mean number of bin 3 jobs completed
+every day by CSC108's use of backfill opportunity.}
 \label{fig:throughput-bin3}
 \end{figure*}
 
@@ -483,14 +483,14 @@ backfill opportunity.}
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin4.png}
 % figure caption is below the figure
 \caption{This figure demonstrates the relationship between the throughput of
-CSC108's bin 4 jobs and the overall throughput on Titan, in terms of jobs
-completed per day. Each blue point represents one day. The red line is an
+CSC108's bin 4 jobs and the throughput of other projects on Titan, in terms of
+jobs completed per day. Each blue point represents one day. The red line is an
 Ordinary Least Squares (OLS) linear regression with parameters given in
 Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
 confidence regions. The horizontal dotted black line represents the mean number
-of jobs completed every day on Titan, and the vertical dotted black line
-represents the mean number of bin 4 jobs completed every day by CSC108's use of
-backfill opportunity.}
+of jobs completed on Titan every day by projects other than CSC108, and the
+vertical dotted black line represents the mean number of bin 4 jobs completed
+every day by CSC108's use of backfill opportunity.}
 \label{fig:throughput-bin4}
 \end{figure*}
 
@@ -501,14 +501,14 @@ backfill opportunity.}
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin5.png}
 % figure caption is below the figure
 \caption{This figure demonstrates the relationship between the throughput of
-CSC108's bin 5 jobs and the overall throughput on Titan, in terms of jobs
-completed per day. Each blue point represents one day. The red line is an
+CSC108's bin 5 jobs and the throughput of other projects on Titan, in terms of
+jobs completed per day. Each blue point represents one day. The red line is an
 Ordinary Least Squares (OLS) linear regression with parameters given in
 Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
 confidence regions. The horizontal dotted black line represents the mean number
-of jobs completed every day on Titan, and the vertical dotted black line
-represents the mean number of bin 5 jobs completed every day by CSC108's use of
-backfill opportunity.}
+of jobs completed on Titan every day by projects other than CSC108, and the
+vertical dotted black line represents the mean number of bin 5 jobs completed
+every day by CSC108's use of backfill opportunity.}
 \label{fig:throughput-bin5}
 \end{figure*}
 
@@ -517,17 +517,16 @@ backfill opportunity.}
 \subsection{Utilization}
 \label{subsec:utilization}
 
-Finally, we are investigating the effects of CSC108's utilization of backfill
+Finally, we have investigated the effects of CSC108's utilization of backfill
 opportunity on the overall utilization of Titan by all projects. To do this, we
-constructed using linear models again, in a manner very similar to that of
-Section~\ref{subsec:throughput}. We modeled the relationships between overall
-utilization on Titan, as the percentage of available core hours consumed per
-day, with CSC108's utilization and also with its utilizations when separated by
-OLCF bin number. The resulting models are shown in
+have constructed linear models again, in a manner very similar to that of
+Section~\ref{subsec:throughput}. We have modeled the relationships between
+overall utilization on Titan, as the percentage of available core hours
+consumed per day, with CSC108's utilization and also with its utilizations when
+separated by OLCF bin number. The resulting models are shown in
 Figures~\ref{fig:utilization-all}, \ref{fig:utilization-bin3},
-\ref{fig:utilization-bin4}, and \ref{fig:utilization-bin5}. The parameters of
-the models shown in the figures are shown in
-Table~\ref{tab:utilization-params}.
+\ref{fig:utilization-bin4}, and \ref{fig:utilization-bin5}, and their
+parameters are listed in Table~\ref{tab:utilization-params}.
 
 % For tables use
 \begin{table}
@@ -561,28 +560,27 @@ Titan's overall utilization from January 1, 2017 to October 1, 2018 was
 91.9\%, as shown in Figure~\ref{fig:jacks-slide}, and during this same time
 period, CSC108's utilization of Titan was about 3.5\%. Given the original
 assumption by the project that CSC108 uses only time-sensitive resources which
-would have otherwise gone to waste, the natural conclusion is that CSC108's
-utilization represents a pure increase in overall utilization, and therefore
-that Titan's utilization without CSC108 would have been 88.4\%. By way of
-comparison, the bin 5 model predicts this value to be 88.1\%, which is
+would have otherwise gone to waste, the natural conclusion would be that
+CSC108's utilization represents a pure increase in overall utilization, and
+therefore that Titan's utilization without CSC108 would have been 88.4\%. By
+way of comparison, the bin 5 model predicts this value to be 88.1\%, which is
 surprisingly close for such a simple model. The bin 5 model also intercepts
 100\% Titan utilization when CSC108 bin 5 utilization is almost exactly 3\%,
 which is a feasible number that is similar to the observed overall utilization
 by CSC108 of 3.5\%.
 
 The similarity of the parameters of the bin 5 model to the observed values in
-the data suggests that Titan's overall utilization is more sensitive to
-CSC108's utilization of bin 5 jobs, which are the smallest jobs that run on
-Titan. The slope of the bin 5 model is harder to interpret. A slope of 3.9084
-in the model suggests that a 1\% increase in utilization by CSC108 in bin 5
-results in a roughly 4\% increase in overall utilization. Obviously, a 1\%
-increase by CSC108 can only directly result in a 1\% overall increase, but
+the data suggests that Titan's overall utilization benefits most when CSC108
+utilizes backfill opportunity with bin 5 jobs, which are the smallest jobs that
+run on Titan. The slope of the bin 5 model is harder to interpret. A slope of
+{3.9084} in the model suggests that a 1\% increase in utilization by CSC108 in
+bin 5 results in a roughly 4\% increase in overall utilization. Obviously, a
+1\% increase by CSC108 can only directly result in a 1\% overall increase, but
 another reason may be behind this. For example, because CSC108 submits jobs to
 bins 3, 4, and 5 consistently, an increase in utilization in bin 5 also
 corresponds to a shift away from bins 3 and 4, where the individual models
 indicate that increased utilization negatively impacts overall utilization on
-Titan. Because we do not yet know the exact mechanism at work here, we are
-continuing to pursue this study in order to optimize our job sizing algorithm.
+Titan.
 
 
 % For two-column wide figures use
@@ -664,16 +662,31 @@ bin 5 jobs.}
 \subsection{Conclusions}
 \label{subsec:sec4-conclusions}
 
-In conclusion,
-\begin{itemize}
-    \item We probably need to restrict ourselves to being ``sand'' and not
-        ``pebbles''
-    \item Further results are needed to confirm these trends, and studies are
-        ongoing.
-\end{itemize}
+A commonly repeated metaphor when considering problems like the ones shown here
+is to compare the set of overall resources to a glass jar to be filled with
+various sizes of rocks. In the case of Titan, leadership class jobs that run in
+bins 1 and 2 are the ``big rocks'' that must be given highest priority, and the
+scheduler treats them as such by creating reservations for them and awarding
+aging boosts. All the other jobs are treated as pebbles, and CSC108, by virtue
+of its having lowest possible priority on Titan, must play the role of fine
+sand in order to fill all voids that remain.
 
+The models here support the idea that CSC108 is having little impact on Titan
+and its other users. The blocking probability models showed alarming results
+initially, because they showed that CSC108 blocks other projects a majority of
+the time, but the subsequent linear models showed that CSC108 is having little,
+if any, effect on wait times. The throughput models showed the same thing,
+which is to say that the number of jobs completed by CSC108 every day has
+little, if any, effect on the number of jobs other projects complete every day
+on Titan.
 
-
-
+The utilization models showed an important result, however, which was that only
+utilization by CSC108 in bin 5 should be expected to increase the overall
+utilization on Titan. This is an extremely intuitive result, since CSC108 must
+play the role of fine sand when filling the metaphorical jar. We do not know
+the exact mechanism at work here, however, and so we are continuing our studies
+in the hopes that we will be able to optimize our job sizing algorithms
+accordingly, both to help increase utilization on Titan and also to better
+manage the workloads of our users.
 
 %-  vim:set syntax=tex:
