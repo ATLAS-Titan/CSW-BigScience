@@ -173,8 +173,8 @@ when the job’s requested wall time is too long to fit within the duration
 available through backfill opportunity. Figures
 \ref{fig:spatial-blocking-by-month} and \ref{fig:temporal-blocking-by-month}
 demonstrate how spatial and temporal blocking probabilities vary from month to
-month, and Figure~\ref{fig:spatial-vs-temporal} shows how the values relate to
-each other.
+month, and Figure~\ref{fig:spatial-vs-temporal} shows how the two quantities
+relate to each other.
 
 % For two-column wide figures use
 \begin{figure*}
@@ -240,12 +240,16 @@ Titan.
 % For tables use
 \begin{table}
 % table caption is above the table
-\caption{(placeholder caption)}
+\caption{The table contains the parameter values for the Ordinary Least Squares
+(OLS) linear regression models regarding wait times. The first column
+corresponds to the figure depicting the model, while the second and third
+columns correspond the coefficients $\beta_1$ and $\beta_0$ in the model
+$y = \beta_{1}x + \beta_0$.}
 \label{tab:wait-time-params}       % Give a unique label
 % For LaTeX tables use
 \begin{tabular}{crr}
 \hline\noalign{\smallskip}
-Figure  & Slope   & Intercept   \\
+Figure  & Slope $\beta_1$ & Intercept $\beta_0$  \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 \ref{fig:wait-time-spatial-all}     &    43.8167    &    6928.8257  \\
 \ref{fig:wait-time-temporal-all}    &   -40.7038    &   13735.0370  \\
@@ -332,6 +336,11 @@ temporal blocking probability for all points.}
 
 
 
+
+
+
+
+
 Future work in spatiotemporal blocking \ldots
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -365,12 +374,17 @@ resulting models are shown in Figures~\ref{fig:throughput-all},
 % For tables use
 \begin{table}
 % table caption is above the table
-\caption{(placeholder caption)}
+\caption{The table contains the parameter values for the Ordinary Least Squares
+(OLS) linear regression models regarding throughput. The first column 
+corresponds to the figure depicting the model, and the second column
+corresponds to the OLCF bin number, as defined in Table~\ref{tab:olcfbins}. The
+second and third columns correspond the coefficients $\beta_1$ and $\beta_0$ in
+the model $y = \beta_{1}x + \beta_0$.}
 \label{tab:throughput-params}       % Give a unique label
 % For LaTeX tables use
 \begin{tabular}{ccrr}
 \hline\noalign{\smallskip}
-Figure  &   Bin & Slope   & Intercept   \\
+Figure & OLCF Bin & Slope $\beta_1$  & Intercept $\beta_0$  \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 \ref{fig:throughput-all}    &   All &   0.6797  &   1184.1510   \\
 \ref{fig:throughput-bin3}   &   3   &  -0.7029  &   1742.0276   \\
@@ -492,12 +506,16 @@ Table~\ref{tab:utilization-params}.
 % For tables use
 \begin{table}
 % table caption is above the table
-\caption{(placeholder caption)}
+\caption{The table contains the parameter values for the Ordinary Least Squares
+(OLS) linear regression models regarding utilization. The first column
+corresponds to the figure depicting the model, and the second column
+corresponds to the OLCF bin number, as defined in Table~\ref{tab:olcfbins}. The second and third columns correspond the coefficients $\beta_1$ and $\beta_0$ in 
+the model $y = \beta_{1}x + \beta_0$.}
 \label{tab:utilization-params}       % Give a unique label
 % For LaTeX tables use
 \begin{tabular}{ccrr}
 \hline\noalign{\smallskip}
-Figure  &   Bin & Slope   & Intercept   \\
+Figure  & OLCF Bin & Slope $\beta_1$  & Intercept $\beta_0$  \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 \ref{fig:utilization-all}    &   All &  -0.5079 &   93.2965 \\
 \ref{fig:utilization-bin3}   &   3   &  -0.8270 &   92.6575 \\
