@@ -173,8 +173,11 @@ when the job’s requested wall time is too long to fit within the duration
 available through backfill opportunity. Figures
 \ref{fig:spatial-blocking-by-month} and \ref{fig:temporal-blocking-by-month}
 demonstrate how spatial and temporal blocking probabilities vary from month to
-month, and Figure~\ref{fig:spatial-vs-temporal} shows how the two quantities
-relate to each other.
+month, and Figure~\ref{fig:spatial-vs-temporal} shows that the two quantities
+relate to each other in an intuitive way, namely, that time periods of greater
+spatial blocking often correspond to time periods of greater temporal blocking
+as well.
+
 
 % For two-column wide figures use
 \begin{figure*}
@@ -223,11 +226,12 @@ resources.}
 % figure caption is below the figure
 \caption{This figure demonstrates the relationship between spatial and temporal
 blocking probabilities. Each blue point represents one day. The red line is an
-Ordinary Least Squares (OLS) linear regression with a slope of 0.2245 and a Y
-intercept of 70.6849. The shaded gray areas represent 95\% confidence regions.
-The horizontal dotted black line represents the mean spatial blocking
-probability for all points, and the vertical dotted black line represents the
-mean temporal blocking probability for all points.}
+Ordinary Least Squares (OLS) linear regression ($y = \beta_{1}x + \beta_0$)
+with a slope $\beta_1$ of 0.2245 and an intercept $\beta_0$ of 70.6849. The
+shaded gray areas represent 95\% confidence regions. The horizontal dotted
+black line represents the mean spatial blocking probability for all points, and
+the vertical dotted black line represents the mean temporal blocking
+probability for all points.}
 \label{fig:spatial-vs-temporal}
 \end{figure*}
 
@@ -235,7 +239,32 @@ mean temporal blocking probability for all points.}
 Having established the two measures of blocking probability and their
 relationship to one another, we have created models to show the relationships
 between the blocking probabilities and the wait times experienced by jobs on
-Titan.
+Titan. Figures \ref{fig:wait-time-spatial-all} and
+\ref{fig:wait-time-temporal-all} illustrate the effects of spatial and temporal
+blocking probability on wait times, and Figures
+\ref{fig:wait-time-spatial-csc108} and \ref{fig:wait-time-temporal-csc108}
+depict show how CSC108's contribution to blocking impacts wait times. More
+specifically, in Figures
+\ref{fig:wait-time-spatial-csc108} and \ref{fig:wait-time-temporal-csc108},
+the values used for the blocking probabilities correspond to the red regions
+in Figures \ref{fig:spatial-blocking-by-month} and
+\ref{fig:temporal-blocking-by-month}, which indicate the percentage of samples
+in which at least one eligible job would no longer be blocked if CSC108 freed
+its resources.
+
+None of the linear regression models that assessed the impact of blocking
+probability on wait times found any meaningful effect. The simplest evidence
+for this claim is that, in all four cases, the mean of the response variable
+fell entirely within the 95\% confidence region. Interestingly, the signs for
+the slopes of the spatial models were opposite those of the temporal models,
+seemingly indicating that wait times increase as spatial blocking increases but
+decrease as temporal blocking increases. Because the magnitude of the slopes
+indicate that effects over the given domains are small, the signs of the slopes
+are similarly unlikely to be of much importance. We conjecture that
+one-dimensional blocking probabilities are too simplistic to account for true
+behavior, but that current work in spatiotemporal blocking probability will
+show that CSC108 does impact other projects' wait times in the future.
+
 
 % For tables use
 \begin{table}
@@ -253,8 +282,8 @@ Figure  & Slope $\beta_1$ & Intercept $\beta_0$  \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 \ref{fig:wait-time-spatial-all}     &    43.8167    &    6928.8257  \\
 \ref{fig:wait-time-temporal-all}    &   -40.7038    &   13735.0370  \\
-\ref{fig:wait-time-spatial-all}     &     7.2053    &   10189.3894  \\
-\ref{fig:wait-time-temporal-all}    &   -20.1897    &   11825.2399  \\
+\ref{fig:wait-time-spatial-csc108}  &     7.2053    &   10189.3894  \\
+\ref{fig:wait-time-temporal-csc108} &   -20.1897    &   11825.2399  \\
 \noalign{\smallskip}\hline
 \end{tabular}
 \end{table}
@@ -331,7 +360,7 @@ given in Table~\ref{tab:wait-time-params}. The shaded gray areas represent 95\%
 confidence regions. The horizontal dotted black line represents the mean wait
 times for all points, and the vertical dotted black line represents the mean
 temporal blocking probability for all points.}
-\label{fig:wait-time-spatial-csc108}
+\label{fig:wait-time-temporal-csc108}
 \end{figure*}
 
 
@@ -339,9 +368,6 @@ temporal blocking probability for all points.}
 
 
 
-
-
-Future work in spatiotemporal blocking \ldots
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\subsubsection{Dormant period}
@@ -645,6 +671,9 @@ In conclusion,
     \item Further results are needed to confirm these trends, and studies are
         ongoing.
 \end{itemize}
+
+
+
 
 
 %-  vim:set syntax=tex:
