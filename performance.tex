@@ -4,7 +4,7 @@
 %
 %   This is the fourth section of the paper.
 %
-%                                                   ~~ last updated 05 Dec 2018
+%                                                   ~~ last updated 07 Dec 2018
 
 %Availability note: code supporting this section is available at
 %\url{https://github.com/ATLAS-Titan/moab-data}. 
@@ -125,8 +125,8 @@ other Python scripts to import these files' sample data into SQLite. These
 tables contain data about the exact state of the queues at given times,
 including active jobs, blocked jobs, eligible jobs, recently completed jobs,
 and system information such as active nodes and available backfill
-opportunities. We then supplemented these live samples with daily availability
-data and historical job traces obtained from ORNL. The daily availability data
+opportunities. We then supplemented these live samples with historical data
+from ORNL about daily availability and job traces. The daily availability data
 span from January 1, 2016 to October 18, 2018 and contain only the total Titan
 core hours that were available each day. The historical job trace data span
 from January 1, 2016 to October 15, 2018 and contain only job submission time,
@@ -143,16 +143,12 @@ NumPy, and SciPy libraries via Anaconda.
 \subsection{Wait Times}
 \label{subsec:waittimes}
 
-First, we discuss the impact of CSC108's jobs on the wait times experienced by
-other projects' jobs on Titan.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Blocking Model}
-\label{subsubsec:blockingmodel}
-
-We began by developing a simple model to estimate how often that a CSC108 job
-was using resources on Titan that would have been used by another project's job
-if they had been available. To this end, we defined an abstract event called a
+One of the main ways that a project like CSC108 can impact other projects,
+especially negatively, is to occupy resources in such a way that the wait times
+for other projects' jobs experience significant increases. Thus, we began by
+developing a simple model to estimate how often a CSC108 job occupied resources
+on Titan that could have been used by another project's job if the resources
+had been available. To this end, we defined an abstract event called a
 ``block'' and then detected occurrences of the event within our data.
 
 Let $C_i$ be the abstract resources in use by CSC108 at the $i^{\text{th}}$
@@ -162,15 +158,23 @@ exists at least one job at the $i^{\text{th}}$ sample point which requests
 $(C_i + U_i)$ resources or less when $C_i$ is non-zero; we define $B_i$ to be
 zero otherwise. Summing $B_i$ over all $i$ gives a count of sample points at
 which a block occurred, and dividing that count by the number of total sample
-points yields a quantity we call a ``blocking fraction''. The blocking fraction
-is a rational number between 0 and 1, with lesser numbers corresponding to
-lesser impacts by CSC108.
+points yields a quantity we call a ``blocking probability''. The blocking
+probability is a rational number between 0 and 1, with lesser numbers
+corresponding to lesser impacts by CSC108.
 
 To apply this abstract model to a real data set, we have initially defined the
-resources in a purely ``spatial'' manner by considering only jobs' requested
-numbers of nodes. Further work will explore ``spatiotemporal'' blocking by also
-considering jobs' requested wall times.
-
+resources in purely ``spatial'' and ``temporal'' manners, by considering only
+jobs' requested numbers of nodes in the former and only jobs' requested wall
+times in the latter. An eligible job in the batch queue is said to be spatially
+blocked when the job’s number of requested nodes is too large to fit within the
+nodes available through backfill opportunity, so that the job must wait to run.
+Similarly, An eligible job in the batch queue is said to be temporally blocked
+when the job’s requested wall time is too long to fit within the duration
+available through backfill opportunity. Figures
+\ref{fig:spatial-blocking-by-month} and \ref{fig:temporal-blocking-by-month}
+demonstrate how spatial and temporal blocking probabilities vary from month to
+month, and Figure~\ref{fig:spatial-vs-temporal} shows how the values relate to
+each other.
 
 % For two-column wide figures use
 \begin{figure*}
@@ -180,7 +184,7 @@ considering jobs' requested wall times.
 % figure caption is below the figure
 \caption{This figure shows the spatial blocking probabilities by month for
 samples where CSC108 was actively utilizing backfill opportunity. An eligible
-job in the batch queue is said to be blocked spatially when the job's number of
+job in the batch queue is said to be spatially blocked when the job's number of
 requested nodes is too large to fit within the nodes available through backfill
 opportunity, so that the job must wait to run. The total height of the bars
 indicates the spatial blocking probability for the month, which is the
@@ -191,7 +195,6 @@ resources.}
 \label{fig:spatial-blocking-by-month}
 \end{figure*}
 
-
 % For two-column wide figures use
 \begin{figure*}
 % Use the relevant command to insert your figure file.
@@ -200,7 +203,7 @@ resources.}
 % figure caption is below the figure
 \caption{This figure shows the temporal blocking probabilities by month for
 samples where CSC108 was actively utilizing backfill opportunity. An eligible
-job in the batch queue is said to be blocked temporally when the job's
+job in the batch queue is said to be temporally blocked when the job's
 requested wall time is too long to fit within the duration available through
 backfill opportunity, so that the job must wait to run. The total height of the
 bars indicates the temporal blocking probability for the month, which is the
@@ -212,35 +215,152 @@ resources.}
 \end{figure*}
 
 
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-spatial-vs-temporal-by-day.png}
+% figure caption is below the figure
+\caption{This figure demonstrates the relationship between spatial and temporal
+blocking probabilities. Each blue point represents one day. The red line is an
+Ordinary Least Squares (OLS) linear regression with a slope of 0.2245 and a Y
+intercept of 70.6849. The shaded gray areas represent 95\% confidence regions.
+The horizontal dotted black line represents the mean spatial blocking
+probability for all points, and the vertical dotted black line represents the
+mean temporal blocking probability for all points.}
+\label{fig:spatial-vs-temporal}
+\end{figure*}
+
+
+Having established the two measures of blocking probability and their
+relationship to one another, we have created models to show the relationships
+between the blocking probabilities and the wait times experienced by jobs on
+Titan.
+
+% For tables use
+\begin{table}
+% table caption is above the table
+\caption{(placeholder caption)}
+\label{tab:wait-time-params}       % Give a unique label
+% For LaTeX tables use
+\begin{tabular}{crr}
+\hline\noalign{\smallskip}
+Figure  & Slope   & Intercept   \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\ref{fig:wait-time-spatial-all}     &    43.8167    &    6928.8257  \\
+\ref{fig:wait-time-temporal-all}    &   -40.7038    &   13735.0370  \\
+\ref{fig:wait-time-spatial-all}     &     7.2053    &   10189.3894  \\
+\ref{fig:wait-time-temporal-all}    &   -20.1897    &   11825.2399  \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{table}
+
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-wait-time-vs-spatial-blocking-by-day.png}
+% figure caption is below the figure
+\caption{This figure demonstrates the relationship between wait times on Titan
+and spatial blocking probabilities. Each blue point represents one day. The red
+line is an Ordinary Least Squares (OLS) linear regression with parameters given
+in Table~\ref{tab:wait-time-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean wait
+times for all points, and the vertical dotted black line represents the mean
+spatial blocking probability for all points.}
+\label{fig:wait-time-spatial-all}
+\end{figure*}
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-wait-time-vs-temporal-blocking-by-day.png}
+% figure caption is below the figure
+\caption{This figure demonstrates the relationship between wait times on Titan
+and temporal blocking probabilities. Each blue point represents one day. The
+red line is an Ordinary Least Squares (OLS) linear regression with parameters
+given in Table~\ref{tab:wait-time-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean wait
+times for all points, and the vertical dotted black line represents the mean
+temporal blocking probability for all points.}
+\label{fig:wait-time-temporal-all}
+\end{figure*}
+
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-wait-time-vs-csc108-spatial.png}
+% figure caption is below the figure
+\caption{This figure demonstrates the relationship between wait times on Titan
+and the spatial blocking due to CSC108. Note that the spatial blocking
+probabilities shown here correspond to the red regions of
+Figure~\ref{fig:spatial-blocking-by-month}, which indicate the percentage of
+samples in which at least one eligible job would no longer be spatially blocked
+if CSC108 freed its resources. Each blue point represents one day. The red line
+is an Ordinary Least Squares (OLS) linear regression with parameters given in
+Table~\ref{tab:wait-time-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean wait
+times for all points, and the vertical dotted black line represents the mean
+spatial blocking probability for all points.}
+\label{fig:wait-time-spatial-csc108}
+\end{figure*}
+
+
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{images/linfit-wait-time-vs-csc108-temporal.png}
+% figure caption is below the figure
+\caption{This figure demonstrates the relationship between wait times on Titan
+and the temporal blocking due to CSC108. Note that the temporal blocking
+probabilities shown here correspond to the red regions of
+Figure~\ref{fig:temporal-blocking-by-month}, which indicate the percentage of
+samples in which at least one eligible job would no longer be temporally
+blocked  if CSC108 freed its resources. Each blue point represents one day. The
+red line is an Ordinary Least Squares (OLS) linear regression with parameters
+given in Table~\ref{tab:wait-time-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean wait
+times for all points, and the vertical dotted black line represents the mean
+temporal blocking probability for all points.}
+\label{fig:wait-time-spatial-csc108}
+\end{figure*}
+
+
+
+Future work in spatiotemporal blocking \ldots
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Dormant period}
-\label{subsubsec:dormantperiod}
-
-An interesting opportunity arose during July 2018 following the end of a large
-simulation campaign by ATLAS, because CSC108 submitted zero backfill jobs for
-14 consecutive days. For convenience, we have called this the ``dormant
-period''. This unusually long dormant period allows comparison of the system
-when CSC108 is running versus the system when CSC108 is completely absent.
-
-Prior to the dormant period, CSC108 had consumed an average of 7.5 million
-Titan core hours every two weeks during the first six months of 2018.
-
-
-
-\textbf{Keep going.}
-
+%\subsubsection{Dormant period}
+%\label{subsubsec:dormantperiod}
+%
+%An interesting opportunity arose during July 2018 following the end of a large
+%simulation campaign by ATLAS, because CSC108 submitted zero backfill jobs for
+%14 consecutive days. For convenience, we have called this the ``dormant
+%period''. This unusually long dormant period allows comparison of the system
+%when CSC108 is running versus the system when CSC108 is completely absent.
+%
+%Prior to the dormant period, CSC108 had consumed an average of 7.5 million
+%Titan core hours every two weeks during the first six months of 2018.
+%
+%\textbf{Keep going.}
+%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Throughput}
 \label{subsec:throughput}
 
-
-Next, we discuss the impact of CSC108's jobs on throughput on Titan. We modeled
-the relationships between overall throughput on Titan, in units of jobs
-completed per day, with CSC108's overall throughput and also with its
-throughputs when separated by OLCF bin number. The resulting models are shown
-in Figures~\ref{fig:throughput-all}, \ref{fig:throughput-bin3},
-\ref{fig:throughput-bin4}, and \ref{fig:throughput-bin5}.
+Another way to quantify the impact of CSC108's jobs on Titan is to study its
+effects on throughput. We have modeled the relationships between overall
+throughput on Titan, in units of jobs completed per day, with CSC108's overall
+throughput and also with its throughputs when separated by OLCF bin number. The
+resulting models are shown in Figures~\ref{fig:throughput-all},
+\ref{fig:throughput-bin3}, \ref{fig:throughput-bin4}, and
+\ref{fig:throughput-bin5}.
 
 % For tables use
 \begin{table}
@@ -286,8 +406,15 @@ CSC108's throughput minimally impacts Titan's overall throughput.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-all.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:throughput-params}.}
+\caption{This figure demonstrates the relationship between CSC108 backfill
+throughput and overall throughput on Titan, in terms of jobs completed per day.
+Each blue point represents one day. The red line is an Ordinary Least Squares
+(OLS) linear regression with parameters given in
+Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean number
+of jobs completed every day on Titan, and the vertical dotted black line
+represents the mean number of jobs completed every day by CSC108's use of
+backfill opportunity.}
 \label{fig:throughput-all}
 \end{figure*}
 
@@ -297,8 +424,15 @@ CSC108's throughput minimally impacts Titan's overall throughput.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin3.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:throughput-params}.}
+\caption{This figure demonstrates the relationship between the throughput of
+CSC108's bin 3 jobs and the overall throughput on Titan, in terms of jobs
+completed per day. Each blue point represents one day. The red line is an
+Ordinary Least Squares (OLS) linear regression with parameters given in
+Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean number
+of jobs completed every day on Titan, and the vertical dotted black line
+represents the mean number of bin 3 jobs completed every day by CSC108's use of
+backfill opportunity.}
 \label{fig:throughput-bin3}
 \end{figure*}
 
@@ -308,8 +442,15 @@ CSC108's throughput minimally impacts Titan's overall throughput.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin4.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:throughput-params}.}
+\caption{This figure demonstrates the relationship between the throughput of
+CSC108's bin 4 jobs and the overall throughput on Titan, in terms of jobs
+completed per day. Each blue point represents one day. The red line is an
+Ordinary Least Squares (OLS) linear regression with parameters given in
+Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean number
+of jobs completed every day on Titan, and the vertical dotted black line
+represents the mean number of bin 4 jobs completed every day by CSC108's use of
+backfill opportunity.}
 \label{fig:throughput-bin4}
 \end{figure*}
 
@@ -319,8 +460,15 @@ CSC108's throughput minimally impacts Titan's overall throughput.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-throughput-bin5.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:throughput-params}.}
+\caption{This figure demonstrates the relationship between the throughput of
+CSC108's bin 5 jobs and the overall throughput on Titan, in terms of jobs
+completed per day. Each blue point represents one day. The red line is an
+Ordinary Least Squares (OLS) linear regression with parameters given in
+Table~\ref{tab:throughput-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean number
+of jobs completed every day on Titan, and the vertical dotted black line
+represents the mean number of bin 5 jobs completed every day by CSC108's use of
+backfill opportunity.}
 \label{fig:throughput-bin5}
 \end{figure*}
 
@@ -399,8 +547,14 @@ continuing to pursue this study in order to optimize our job sizing algorithm.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-all.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:utilization-params}.}
+\caption{This figure demonstrates the relationship between CSC108 backfill
+utilization and overall utilization on Titan, as percentages of available
+node-hours each day. Each blue point represents one day. The red line is an
+Ordinary Least Squares (OLS) linear regression with parameters given in
+Table~\ref{tab:utilization-params}. The shaded gray areas represent 95\%
+confidence regions. The horizontal dotted black line represents the mean
+utilization every day on Titan, and the vertical dotted black line represents
+the mean utilization of backfill opportunity every day by CSC108.}
 \label{fig:utilization-all}
 \end{figure*}
 
@@ -411,8 +565,15 @@ continuing to pursue this study in order to optimize our job sizing algorithm.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-bin3.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:utilization-params}.}
+\caption{This figure demonstrates the relationship between overall utilization
+on Titan and CSC108's utilization of backfill opportunity with bin 3 jobs, as
+percentages of node-hours available each day. Each blue point represents one
+day. The red line is an Ordinary Least Squares (OLS) linear regression with
+parameters given in Table~\ref{tab:utilization-params}. The shaded gray areas
+represent 95\% confidence regions. The horizontal dotted black line represents
+the mean utilization every day on Titan, and the vertical dotted black line
+represents the mean utilization of backfill opportunity every day by CSC108's
+bin 3 jobs.}
 \label{fig:utilization-bin3}
 \end{figure*}
 
@@ -423,8 +584,15 @@ continuing to pursue this study in order to optimize our job sizing algorithm.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-bin4.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:utilization-params}.}
+\caption{This figure demonstrates the relationship between overall utilization
+on Titan and CSC108's utilization of backfill opportunity with bin 4 jobs, as
+percentages of node-hours available each day. Each blue point represents one
+day. The red line is an Ordinary Least Squares (OLS) linear regression with
+parameters given in Table~\ref{tab:utilization-params}. The shaded gray areas
+represent 95\% confidence regions. The horizontal dotted black line represents
+the mean utilization every day on Titan, and the vertical dotted black line
+represents the mean utilization of backfill opportunity every day by CSC108's
+bin 4 jobs.}
 \label{fig:utilization-bin4}
 \end{figure*}
 
@@ -435,8 +603,15 @@ continuing to pursue this study in order to optimize our job sizing algorithm.
 % For example, with the graphicx package use
   \includegraphics[width=0.75\textwidth]{images/linfit-utilization-by-true-day-bin5.png}
 % figure caption is below the figure
-\caption{Parameters for the model are shown in
-    Table~\ref{tab:utilization-params}.}
+\caption{This figure demonstrates the relationship between overall utilization
+on Titan and CSC108's utilization of backfill opportunity with bin 5 jobs, as
+percentages of node-hours available each day. Each blue point represents one
+day. The red line is an Ordinary Least Squares (OLS) linear regression with
+parameters given in Table~\ref{tab:utilization-params}. The shaded gray areas
+represent 95\% confidence regions. The horizontal dotted black line represents
+the mean utilization every day on Titan, and the vertical dotted black line
+represents the mean utilization of backfill opportunity every day by CSC108's
+bin 5 jobs.}
 \label{fig:utilization-bin5}
 \end{figure*}
 
