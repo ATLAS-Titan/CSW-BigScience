@@ -117,7 +117,8 @@ based on the amount of input data (number of files) and the amount of processed
 data per job (number of events per job from task parameters). For each task,
 not all jobs are generated in one interaction. In this way, the job buffer is
 kept to a manageable size, enabling tuning of task parameters based on initial
-job results and, in case, task prioritization (Fig.~\ref{fig:architecture}:4).
+job results and, if needed, task prioritization
+(Fig.~\ref{fig:architecture}:4).
 
 Once derived, jobs are collected into the Job Buffer, waiting to be bound to a
 specific resource for execution (Fig.~\ref{fig:architecture}:5). The Brokerage
@@ -130,7 +131,7 @@ Configuration component is also called Schedconfig.
 Once bound, jobs are passed to the Job Scheduler to be scheduled on the
 assigned resource and executed (Fig.~\ref{fig:architecture}:10). Before
 scheduling each job, the Job Scheduler checks whether input data are available
-and, in case, requests a transfer to the storage associated with the target
+and, if needed, requests a transfer to the storage associated with the target
 resource (Fig.~\ref{fig:architecture}:11).
 
 Meanwhile, AutoPyFactory defines PanDA Pilots on the basis of the number of
