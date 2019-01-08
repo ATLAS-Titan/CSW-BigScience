@@ -7,7 +7,7 @@
 #   This isn't as fancy as my "usual" Makefiles, which are full of macros and
 #   happiness, but there is a much greater level of urgency here than usual.
 #
-#                                                   ~~ last updated 25 Sep 2018
+#                                                   ~~ last updated 08 Jan 2019
 
 SHELL       :=  sh
 ECHO        :=  echo
@@ -70,11 +70,12 @@ run: $(SUBMISSION)
 
 $(SUBMISSION): $(wildcard $(PROJ_ROOT)/*.tex)
 	@   cd $(PROJ_ROOT)                                             ;   \
-            $(LATEX) -jobname $(PROJECT) main                           ;   \
+            $(LATEX) -draftmode -jobname $(PROJECT) main                ;   \
             while $(call greplog, "Rerun to"); do                           \
                 $(BIBTEX) $(PROJECT)                                    ;   \
-                $(LATEX) -jobname $(PROJECT) main                       ;   \
-            done
+                $(LATEX) -draftmode -jobname $(PROJECT) main            ;   \
+            done                                                        ;   \
+            $(LATEX) -jobname $(PROJECT) main
 
 ###
 
