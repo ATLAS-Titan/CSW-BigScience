@@ -5,7 +5,7 @@
 %   This contains what was originally the seventh section of the Google Docs
 %   draft of the paper.
 %
-%                                                   ~~ last updated 24 Sep 2018
+%                                                   ~~ last updated 18 Jan 2019
 
 The objective of each subsection is to:
 (i) describe the science; and
@@ -55,7 +55,8 @@ integration with existing experiment computing infrastructure or even
 development an additional components. This includes the issues with data
 management, user authentication, monitoring, workflow control and etc.
 
-PanDA system may be the best solution for the new experiments and scientific groups by diversity of provided advantages. The main motivations for users are:
+PanDA system may be the best solution for the new experiments and scientific
+groups by diversity of provided advantages. The main motivations for users are:
 \begin{itemize}
     \item Powerful workload management. Automation of the jobs handling,
         monitoring and logging.
@@ -70,71 +71,74 @@ PanDA system may be the best solution for the new experiments and scientific gro
         OLCF resources or those who wish to get use them. 
 \end{itemize}
 
-Currently, there are few PanDA instances in use by different experiments and groups. 
-In this paper, we have considered three instances. The original instance is installed at CERN, 
-and it is used exclusively for the ATLAS experiment. Another instance is installed at OLCF, 
-and it is dedicated to supporting projects on Titan, subject to OLCF policies. 
-Finally, an instance on Amazon’s EC2 cloud infrastructure provides access to multiple independent 
-experiments from different disciplines, and it has the least restrictive security and usage policies.
+Currently, there are few PanDA instances in use by different experiments and
+groups.  In this paper, we have considered three instances. The original
+instance is installed at CERN, and it is used exclusively for the ATLAS
+experiment. Another instance is installed at OLCF, and it is dedicated to
+supporting projects on Titan, subject to OLCF policies. Finally, an instance on
+Amazon's EC2 cloud infrastructure provides access to multiple independent
+experiments from different disciplines, and it has the least restrictive
+security and usage policies.
 
 \subsection{PanDA instance at OLCF}
 \label{subsec:panda_instance}
 
 In March 2017, we implemented a new PanDA server instance within OLCF operating
-under Red Hat OpenShift Origin \cite{RH_OpenShift} - a powerful
-container cluster management and orchestration system in order to serve various
+under Red Hat OpenShift Origin \cite{RH_OpenShift} - a powerful container
+cluster management and orchestration system in order to serve various
 experiments at Titan supercomputer. By running on-premise Red Hat OpenShift
-built on Kubernetes \cite{Kubernetes}, the OLCF provides a container orchestration
-service that allows users to schedule and run their HPC middleware service
-containers while maintaining a high level of support for many diverse service
-workloads. The containers have direct access to all OLCF shared resources such
-as parallel filesystems and batch schedulers. With this PanDA instance, we
-implemented a set of demonstrations serving diverse scientific workflows
-including physics, biology studies of the genes and human brain, and molecular
-dynamics studies:
+built on Kubernetes \cite{Kubernetes}, the OLCF provides a container
+orchestration service that allows users to schedule and run their HPC
+middleware service containers while maintaining a high level of support for
+many diverse service workloads. The containers have direct access to all OLCF
+shared resources such as parallel filesystems and batch schedulers. With this
+PanDA instance, we implemented a set of demonstrations serving diverse
+scientific workflows including physics, biology studies of the genes and human
+brain, and molecular dynamics studies:
 
 \begin{itemize}
     \item Biology / Genomics. 
 In collaboration with Center for Bioenergy Innovation at ORNL the PanDA based
 workflow for epistasis researches was established. Epistasis is the phenomenon
 where the effect of one gene is dependent on the presence of one or more
-``modifier genes'', i.e. the genetic background. GBOOST application \cite{GBOOST} a
+``modifier genes'', i.e. the genetic background. GBOOST \cite{GBOOST} is a
 GPU-based tool for detecting gene-gene interactions in genome-wide case control
 studies, was used for initial tests.
 
     \item Molecular Dynamics.
-In collaboration with Chemistry and Biochemistry department of the University
-of Texas Arlington we implemented test to try out PanDA to support the
-Molecular Dynamics study ``Simulating Enzyme Catalysis, Conformational Change,
-and Ligand Binding/Release''. The CHARMM (Chemistry at HARvard Macromolecular
-Mechanics) \cite{Brooks2009CHARMM} a molecular simulation program was chosen as a basic
-payload tool. CHARMM design for hybrid MPI/OpenMP/GPU computing.
+In collaboration with the Chemistry and Biochemistry department of the
+University of Texas Arlington, we implemented a test to try out PanDA to
+support the Molecular Dynamics study ``Simulating Enzyme Catalysis,
+Conformational Change, and Ligand Binding/Release''. The CHARMM (Chemistry at
+HARvard Macromolecular Mechanics) \cite{Brooks2009CHARMM} a molecular
+simulation program was chosen as a basic payload tool. CHARMM design for hybrid
+MPI/OpenMP/GPU computing.
 
     \item IceCube. 
-Together with  experts from the IceCube experiment we implemented the
-demonstrator PanDA system. IceCube \cite{Halzen:2010yj} is a particle detector at the
-South Pole that records the interactions of a nearly massless subatomic
+Together with experts from the IceCube experiment we implemented the
+demonstrator PanDA system. IceCube \cite{Halzen:2010yj} is a particle detector
+at the South Pole that records the interactions of a nearly massless subatomic
 particle called the neutrino. Demonstrator includes the use of NuGen package (a
-modified version of ANIS \cite{Gazizov:2004va} that works with IceCube software) - GPU
-application for atmospheric neutrinos are simulations packed in singularity
-container and remote stage-in/-out the data from GridFTP \cite{Allcock:2005:GSG:1105760.1105819} storage with
-GSI authentication. 
+modified version of ANIS \cite{Gazizov:2004va} that works with IceCube
+software) - GPU application for atmospheric neutrinos are simulations packed in
+Singularity container and remote stage-in/-out the data from GridFTP
+\cite{Allcock:2005:GSG:1105760.1105819} storage with GSI authentication. 
 
     \item BlueBrain.
 In 2017, a R\&D project was started between BigPanDA and the Blue Brain Project
-(BBP) \cite{Markram} of the Ecole Polytechnique Federal de Lausanne (EPFL) located in
-Lausanne, Switzerland. This proof of concept project is aimed at demonstrating
-the efficient application of the BigPanDA system to support the complex
-scientific workflow of the BBP which relies on using a mix of desktop, cluster
-and supercomputers to reconstruct and simulate accurate models of brain tissue.
-In the first phase of this joint project we supported the execution of BBP
-software on a variety of distributed computing systems powered by BigPanDA. The
-targeted systems for demonstration included: Intel x86-NVIDIA GPU based BBP
-clusters located in Geneva (47 TFlops) and Lugano (81 TFlops), BBP IBM
-BlueGene/Q supercomputer \cite{citeulike:472727} (0.78 PFLops and 65 TB of DRAM memory)
-located in Lugano, the Titan Supercomputer with peak theoretical performance 27
-PFlops operated by the Oak Ridge Leadership Computing Facility (OLCF), and
-Cloud based resources such as Amazon Cloud.
+(BBP) \cite{Markram} of the Ecole Polytechnique Federal de Lausanne (EPFL)
+located in Lausanne, Switzerland. This proof of concept project is aimed at
+demonstrating the efficient application of the BigPanDA system to support the
+complex scientific workflow of the BBP which relies on using a mix of desktop,
+cluster, and supercomputers to reconstruct and simulate accurate models of
+brain tissue. In the first phase of this joint project we supported the
+execution of BBP software on a variety of distributed computing systems powered
+by BigPanDA. The targeted systems for demonstration included: Intel x86-NVIDIA
+GPU based BBP clusters located in Geneva (47 TFlops) and Lugano (81 TFlops),
+BBP IBM BlueGene/Q supercomputer \cite{citeulike:472727} (0.78 PFLops and 65 TB
+of DRAM memory) located in Lugano, the Titan Supercomputer with peak
+theoretical performance 27 PFlops operated by the Oak Ridge Leadership
+Computing Facility (OLCF), and Cloud based resources such as Amazon Cloud.
 
     \item LSST.
 A goal of LSST (Large Synoptic Survey Telescope) project is to conduct a
@@ -145,37 +149,39 @@ universe and the objects in it. It will require a large amount of simulations,
 which model the atmosphere, optics and camera to understand the collected data.
 For running LSST simulations with the PanDA WMS we have established a
 distributed testbed infrastructure that employs the resources of several sites
-on GridPP \cite{0954-3899-32-1-N01} and Open Science Grid (OSG) \cite{1742-6596-78-1-012057} as well as the Titan
-supercomputer at ORNL. In order to submit jobs to these sites we have used a
-PanDA server instance deployed on the Amazon AWS Cloud.
+on GridPP \cite{0954-3899-32-1-N01} and Open Science Grid (OSG)
+\cite{1742-6596-78-1-012057} as well as the Titan supercomputer at ORNL. In
+order to submit jobs to these sites we have used a PanDA server instance
+deployed on the Amazon AWS Cloud.
 
     \item LQCD.
-Lattice QCD (LQCD) \cite{Babich:2010:PQL:1884643.1884695} is a well-established 
-non-perturbative approach to solving the quantum chromodynamics theory of quarks 
-and gluons.  Current LQCD payloads can be characterized as massively parallel, 
-occupying thousands of nodes on leadership-class supercomputers.
+Lattice QCD (LQCD) \cite{Babich:2010:PQL:1884643.1884695} is a well-established
+non-perturbative approach to solving the quantum chromodynamics theory of
+quarks  and gluons. Current LQCD payloads can be characterized as massively
+parallel,  occupying thousands of nodes on leadership-class supercomputers.
 
-In 2017, as a part of SciDAC-4 funded project, a collaboration was formed between 
-several US LQCD groups and BigPanDA team with the goal to adopt PanDA WMS for the 
-needs of the SciDAC-4 LQCD computational program. 
+In 2017, as a part of SciDAC-4 funded project, a collaboration was formed
+between several US LQCD groups and BigPanDA team with the goal to adopt PanDA
+WMS for the needs of the SciDAC-4 LQCD computational program. 
 
 LQCD payloads have been successfully tested on Titan as well as on other sites.
-%In order to run LQCD payloads we have also used our PanDA Server in Amazon cloud. 
-Production campaigns were executed on BNL Institutional Cluster through a 
-dedicated instance of Harvester installed on the front node of this site. 
-During the period between April and June 2018 13 TB 
-of input data were processed, producing output of 176 GB. LQCD jobs used around 
-15000 GPU hours with average job duration around 12 hours.
+%In order to run LQCD payloads we have also used our PanDA Server in Amazon
+%cloud.
+Production campaigns were executed on BNL Institutional Cluster through a
+dedicated instance of Harvester installed on the front node of this site.
+During the period between April and June 2018 13 TB of input data were
+processed, producing output of 176 GB. LQCD jobs used around 15,000 GPU hours
+with average job duration around 12 hours.
 
     \item nEDM.
 Precision measurements of the properties of the neutron present an opportunity
 to search for violations of fundamental symmetries and to make critical tests
 of the validity of the Standard Model of electroweak interactions. These
-experiments have been pursued \cite{Sakharov:1967dj} with great energy and interest since
-the discovery of neutron in 1932. The goal of the nEDM \cite{0954-3899-36-10-104002} experiment at the
-Fundamental Neutron Physics Beamline at the Spallation Neutron Source (Oak
-Ridge National Laboratory) is to further improve the precision of this
-measurement by another factor of 100.
+experiments have been pursued \cite{Sakharov:1967dj} with great energy and
+interest since the discovery of neutron in 1932. The goal of the nEDM
+\cite{0954-3899-36-10-104002} experiment at the Fundamental Neutron Physics
+Beamline at the Spallation Neutron Source (Oak Ridge National Laboratory) is to
+further improve the precision of this measurement by another factor of 100.
 \end{itemize}
 
 To isolate the workflows of different groups and experiments, dedicated queues
