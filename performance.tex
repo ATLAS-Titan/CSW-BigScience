@@ -4,7 +4,7 @@
 %
 %   This is the fourth section of the paper.
 %
-%                                                   ~~ last updated 15 Mar 2019
+%                                                   ~~ last updated 18 Mar 2019
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -382,7 +382,9 @@ must wait to run. Similarly, an eligible job in the batch queue is said to be
 temporally blocked when the job’s requested wall time is too long to fit within
 the duration available through backfill opportunity. Similarly, a job is said
 to be blocked ``due to CSC108'' if at least one job which was blocked would no
-longer be blocked if CSC108's jobs were removed. Figures
+longer be blocked if CSC108's jobs were removed. Thus, a job is only said to be
+blocked due to CSC108 if it requests resources with are greater than $U_i$ but
+less than $(C_i + U_i)$. Figures
 \ref{fig:spatial-blocking-by-month} and \ref{fig:temporal-blocking-by-month}
 demonstrate how spatial and temporal blocking probabilities vary from month to
 month, and Figure~\ref{fig:spatial-vs-temporal} shows that the two quantities
