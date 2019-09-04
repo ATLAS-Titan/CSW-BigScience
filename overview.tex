@@ -1,59 +1,56 @@
 PanDA is a Workload Management System (WMS)~\cite{marco2009glite} designed to
 support the execution of workloads in grid-like distributed computing
-environment via pilots~\cite{turilli2017comprehensive}. Pilot-capable WMS
-enable high throughput of task execution via multi-level scheduling while
+environment via pilots~\cite{turilli2017comprehensive}. A pilot-capable WMS
+enables high throughput of task execution via multi-level scheduling while
 supporting interoperability across multiple sites. This is particularly
 relevant for Large Hadron Collider (LHC) experiments, where millions of tasks
-are executed across multiple sites of the Worldwide LHC Computing Grid (WLCG)
-every month, analyzing and producing petabytes of data. The design of PanDA WMS
-started in 2005 to support ATLAS.
+are executed across more than 170 sites of the Worldwide LHC Computing Grid
+(WLCG) every month, analyzing and producing petabytes of data. The design of
+PanDA WMS started in 2005 to support ATLAS \cite{?}.
 
 % ---------------------------------------------------------------------------
 \subsection{Design}
 \label{subsec:design}
 
-PanDA's application model assumes tasks grouped into workloads. Tasks
-represent a set of homogeneous operations performed on datasets stored in a
-set of input files. Tasks are decomposed into jobs, where each job consists
-of the task's operations performed on a partition of the task's data set.
-PanDA acts as a unified interface to distributed computing resources,
-enabling users of the ATLAS project to submit datasets for processing. Data
-can be processed by a single job or by one or more tasks created for each
-dataset, where each task is partitioned into one or more jobs. Jobs are
-distributed across the available resources for concurrent execution. So-called
-``production workflows'' are sets of transformations of collected and
-simulated data into the formats required for user analysis. These workflows are
-rendered into a set of tasks and therefore executed as a set of jobs on diverse
-computing infrastructures.
+PanDA's application model renders workloads into tasks which are decomposed
+into jobs. Workloads are sets of data and transformations for the data. Tasks
+are sets of homogeneous operations performed on data stored in sets of input
+files. Tasks are decomposed into jobs, where each job consists of the task's
+operations performed on a partition of the task's data. Jobs are distributed
+across the available compute resources for concurrent execution.
+
+PanDA's data model has been exclusively motivated by the needs of ATLAS, where
+each datum refers to a recorded or simulated measurement of a physical process.
+Data are stored in files that are grouped into datasets, with a many-to-many
+relationship between files and datasets. Data have both attributes and states.
+Raw, reconstruction, and simulation data are all assumed to be distributed
+across multiple storage facilities and managed by the ATLAS Distributed Data
+Management (DDM)~\cite{garonne2012atlas}. Files required by jobs are assumed to
+be replicated over the network as needed, both for input and output data. PanDA
+supports provenance and traceability for jobs and data. Attributes enable
+provenance by linking jobs and data items, providing information like ownership
+or project affiliation. States enable traceability by providing information
+about the past and present stages of the execution for each job and data file.
+
+%As with jobs, data have both attributes and states, and some of the attributes
+%are shared among events and jobs.
+
+PanDA's execution model is based on four main abstractions: tasks, jobs,
+queues, and pilots. Both tasks and jobs are assumed to have attributes and
+states and to be queued into a global queue for execution. Prioritization and
+binding of jobs are assumed to depend on the attributes of each task and job.
+PanDA has one global queue where all jobs are registered and one resource queue
+for each target compute resource. PanDA assigns specific sets of jobs from
+the global queue to the resource queues, depending on the jobs' requirements
+and each resource's capability and availability. When pilots become available
+on the target compute resource, PanDA sends jobs on each pilot from the
+resource queue associated with that target compute resource.
 
 PanDA's security model is based on separation among authentication,
 authorization, and accounting for both single users and groups of users. Both
 authentication and authorization are based on digital certificates and on the
-virtual organization abstraction~\cite{foster2001anatomy}. Currently, PanDA's
-execution model is based on four main abstractions: task, job, global queue,
-and pilot. Both tasks and jobs are assumed to have attributes and states and
-to be queued into a global queue for execution. Prioritization and binding of
-jobs are assumed to depend on the attributes of each task and job. PanDA has
-a global queue where all jobs are registered and one resource queue for each
-target computing resource. PanDA assigns specific sets of jobs from the global
-queue to the resource queues, depending on the jobs requirements, and each
-resource capability and availability. When pilots become available on the
-target compute resource, PanDA sends jobs on each pilot from the resource queue
-associated with that target compute source.
+virtual organization abstraction~\cite{foster2001anatomy}. 
 
-In PanDA's data model, each datum refers to a recorded or simulated measurement
-of a physical process. Data are stored in files that are grouped into datasets,
-with a many-to-many relationship between files and datasets. As with jobs, data
-have both attributes and states, and some of the attributes are shared among
-events and jobs. Raw, reconstruction, and simulation data are all assumed to be
-distributed across multiple storage facilities and managed by the ATLAS
-Distributed Data Management (DDM)~\cite{garonne2012atlas}. When necessary,
-input files required by each job are assumed to be replicated over the network,
-both for input and output data. PanDA's design supports provenance and
-traceability for both jobs and data. Attributes enable provenance by linking
-jobs and data items, providing information like ownership or project
-affiliation. States enable traceability by providing information about the past
-and present stages of the execution for each job and data file.
 
 % ---------------------------------------------------------------------------
 \subsection{Implementation and Execution}
@@ -61,32 +58,33 @@ and present stages of the execution for each job and data file.
 
 The implementation of PanDA WMS consists of several interconnected
 subsystems, most of them built from off-the-shelf and Open Source components.
-Subsystems communicate via messaging using HTTP and dedicated APIs, and each
+Subsystems communicate via messaging using HyperText Transfer Protocol (HTTP)
+and dedicated Application Programming Interfaces (APIs), and each
 subsystem is implemented by one or more modules. Databases are used to store
-eventful entities like tasks, jobs, and input/output data and to store
-information about sites and resources.
+tasks, jobs, input/output data, and information about WLCG sites and compute
+resources.
 
-Currently, PanDA's architecture has five main subsystems: JEDI/PanDA Server~
-\cite{maeno2011overview,borodin2015scaling}, PanDA
-Pilot~\cite{nilsson2011atlas}, Schedconfig~\cite{nilsson2008panda},
-AutoPyFactory~\cite{caballero2012autopyfactory} and PanDA
-Monitoring~\cite{klimentov2011atlas}. JEDI and PanDA Server process tasks into
-jobs and broker their distributed execution. PanDA Pilot is a pilot system that
-executes jobs on computing infrastructures, managing the stage-in and stage-out
-of their data. Schedconfig is an information system implemented within PanDA to
-store PanDA queue (resource) descriptions.  Schedconfig synchronizes with the
+Currently, PanDA's architecture has five main subsystems:
+AutoPyFactory~\cite{caballero2012autopyfactory},
+JEDI/PanDA Server~\cite{maeno2011overview,borodin2015scaling},
+PanDA Monitoring~\cite{klimentov2011atlas},
+PanDA Pilot~\cite{nilsson2011atlas}, and Schedconfig~\cite{nilsson2008panda}.
+AutoPyFactory is the system used to submit pilots to grid sites. JEDI and PanDA
+Server process tasks into jobs and broker their distributed execution. PanDA
+Monitoring is a web application to monitor the execution of workloads in a
+distributed computing environment. PanDA Pilot is a pilot system that executes
+jobs on computing infrastructures, managing the stage-in and stage-out of the
+jobs' data. Schedconfig is an information system implemented within PanDA to
+store PanDA queue (resource) descriptions. Schedconfig synchronizes with the
 ATLAS Grid Information system (AGIS)~\cite{anisenkov2014agis} to obtain
-information about distributed resources. AutoPyFactory is the system used to
-submit pilots to grid sites. PanDA Monitoring is a web application to monitor
-the execution of workloads in a distributed computing environment. Other
-subsystems are used by some of ATLAS workflows (e.g., ATLAS Event
-Service~\cite{calafiura2015atlas} and ATLAS Production
-System~\cite{borodin2016atlas}), but their discussion is omitted here because
-they are irrelevant to understanding how PanDA has been ported to
+information about distributed resources. Other subsystems are used by some
+ATLAS workflows (e.g., ATLAS Event Service~\cite{calafiura2015atlas} and ATLAS
+Production System~\cite{borodin2016atlas}), but their discussion is omitted
+here because they are irrelevant to understanding how PanDA has been ported to
 supercomputers. For a full list of subsystems, see Ref.~\cite{panda-wiki_url}.
 
 Figure~\ref{fig:architecture} shows a diagrammatic representation of PanDA's
-main subsystems, highlighting the execution process of tasks while omitting
+main subsystems, highlighting the task execution process while omitting
 monitoring details to improve readability. During the first data collection
 period at the LHC (LHC Run 1), PanDA required users to perform a static
 conversion between tasks and jobs; tasks were described as a set of jobs and
@@ -108,95 +106,49 @@ requirements.
 
 PanDA registers three types of workloads for execution: a set of tasks
 submitted by the ATLAS Production system (Fig.~\ref{fig:architecture}:1); a
-single user task when a whole dataset is submitted for processing
+single user task submitted with a whole dataset
 (Fig.~\ref{fig:architecture}:2); and a single job submitted by the user,
 usually with a single input file (Fig.~\ref{fig:architecture}:3).
 
-The Job Generator component derives a set of jobs for each registered task
-based on the amount of input data (number of files) and the amount of processed
-data per job (number of events per job from task parameters). For each task,
-not all jobs are generated in one interaction. In this way, the job buffer is
-kept to a manageable size, enabling tuning of task parameters based on initial
-job results and, if needed, task prioritization
-(Fig.~\ref{fig:architecture}:4).
+The Job Generator component renders a set of jobs from each registered task
+based on the amount of input data and the amount of processed data per job by
+taking into account the number of input files and number of events per job from
+task parameters. Because jobs are not generated from a task all at once, the
+job buffer is kept to a manageable size. This strategy enables the tuning of
+task parameters based on initial job results and also task prioritization, if
+needed (Fig.~\ref{fig:architecture}:4).
 
-Once derived, jobs are collected into the Job Buffer, waiting to be bound to a
+The Job Buffer component stores jobs that are waiting to be bound to a
 specific resource for execution (Fig.~\ref{fig:architecture}:5). The Brokerage
 component pulls jobs from the Job Buffer (Fig.~\ref{fig:architecture}:6),
-binding each job to a computing resource based on job requirements, resource
+binding each job to a compute resource based on job requirements, resource
 capability (Fig.~\ref{fig:architecture}:7 and (Fig.~\ref{fig:architecture}:8),
 and data availability (Fig.~\ref{fig:architecture}:9). Note that the Resource
 Configuration component is also called Schedconfig.
 
-Once bound, jobs are passed to the Job Scheduler to be scheduled on the
-assigned resource and executed (Fig.~\ref{fig:architecture}:10). Before
+The Job Scheduler component stores bound jobs that are waiting to be scheduled
+on the assigned resource and executed (Fig.~\ref{fig:architecture}:10). Before
 scheduling each job, the Job Scheduler checks whether input data are available
 and, if needed, requests a transfer to the storage associated with the target
 resource (Fig.~\ref{fig:architecture}:11).
 
-Meanwhile, AutoPyFactory defines PanDA Pilots on the basis of the number of
-jobs bound and ready to execute, and it submits these pilots to a Condor-G
-agent (Fig.~\ref{fig:architecture}:12). Condor-G schedules these pilots on the
+Meanwhile, AutoPyFactory defines PanDA Pilots based on the number of jobs that
+are bound and ready to execute, and it submits these pilots to a Condor-G agent
+(Fig.~\ref{fig:architecture}:12). Condor-G schedules these pilots on the
 required sites (Fig.~\ref{fig:architecture}:13). Once active, pilots interact
 with the Job Dispatcher to pull jobs for execution
 (Fig.~\ref{fig:architecture}:14). Depending on task and job parameters, failed
-jobs can be rescheduled with a new Job ID (Fig.~\ref{fig:architecture}:15).
+jobs may be rescheduled with a new job identifier
+(Fig.~\ref{fig:architecture}:15).
 
-Once all the jobs of a task have been executed and, depending on the failure
-policy, all or most of the output data have been collected, tasks are marked as
-done. Thus, no more jobs will be generated for that task, and ATLAS Production
-System or single users will be informed about the completion of their tasks
-(Fig.~\ref{fig:architecture}:16). Tasks can also be marked as failed, depending
-on whether a user-defined threshold for number of failures has been exceeded.
+Once all of a task's jobs have been executed and, depending on the failure
+policy, all or most of the output data have been collected, a task is marked as
+done. At that point, no more jobs will be generated for that task, and ATLAS
+Production System or single users will be informed about the completion of the
+task (Fig.~\ref{fig:architecture}:16). Tasks can also be marked as failed,
+depending on whether a user-defined threshold for number of failures has been
+exceeded.
 
-% Users submit task descriptions to JEDI (Fig.~\ref{fig:architecture}:1),
-% which stores them into a queue implemented by a database
-% (Fig.~\ref{fig:architecture}:2). Tasks are partitioned into jobs of
-% different sizes, depending on both static and dynamic information about
-% available resources (Fig.~\ref{fig:architecture}:3). Jobs are bound to
-% sites with resources that best match jobs' requirements, and they are
-% submitted to the PanDA Server for execution
-% (Fig.~\ref{fig:architecture}:4).
-
-% Once submitted to the PanDA Server, tasks are stored by the Task Buffer
-% component into a global queue implemented by a database
-% (Fig.~\ref{fig:architecture}:5). When jobs are submitted directly to the
-% PanDA Server, the Brokerage module is used to bind jobs to available sites,
-% depending on static information about the resources available for each
-% site. Jobs submitted by JEDI are already bound to sites, so no further
-% brokerage is needed.
-
-% Once jobs are bound to sites, the Brokerage module communicates to the Data
-% Service module about which datasets need to be made available to which
-% sites (Fig.~\ref{fig:architecture}:6). The Data Service communicates these
-% requirements to the ATLAS DDM (Fig.~\ref{fig:architecture}:7) which
-% replicates datasets at the required sites when needed
-% (Fig.~\ref{fig:architecture}:8).
-
-
-% When a PanDA Pilot becomes available, it requests a job to execute from the
-% Job Dispatcher module of the PanDA Server (Fig.~\ref{fig:architecture}:11).
-% The Job Dispatcher interrogates the Task Buffer module for a job which is
-% bound to the site of that pilot and ready to be executed. Task Buffer
-% checks the global queue (i.e., the PanDA database) and returns a job to the
-% Job Dispatcher if one is available. The Job Dispatcher dispatches that job
-% to the PanDA Pilot (Fig.~\ref{fig:architecture}:12).
-
-% Upon receiving a job, a PanDA Pilot starts a monitoring process and forks a
-% subprocess for the execution of the job's payload. Input data are
-% transferred from the stage-in location (Fig.~\ref{fig:architecture}:13) and
-% the job's payload is executed (Fig.~\ref{fig:architecture}:14). Once
-% completed, output is transferred to the staging-out location
-% (Fig.~\ref{fig:architecture}:15).
-
-% The Data Service module of the PanDA Server tracks and collects the output
-% generated by each job (Fig.~\ref{fig:architecture}:16), updating jobs'
-% attributes via the Task Buffer module (Fig.~\ref{fig:architecture}:17).
-% When the output of all the jobs of a task are retrieved, it is made
-% available to the user via PanDA Server. When a task is submitted to JEDI,
-% task is instead marked as done (Fig.~\ref{fig:architecture}:18) and the
-% result of its execution is made available to the user by JEDI
-% (Fig.~\ref{fig:architecture}:19).
 
 % ---------------------------------------------------------------------------
 \subsection{Job State Definitions in PanDA}
@@ -267,7 +219,7 @@ statistics - number of requests of different types like ``get job'' or
 PanDA Broker - key  component of the BigPanDA workflow automation - is an
 intelligent module designed to prioritize and assign PanDA jobs (job passed
 the brokerage transitioning from ``defined'' to the ``assigned'' state) to
-available computing resources on the basis of job type, software
+available compute resources on the basis of job type, software
 availability, input data and its locality, real-time job statistics,
 available CPU and storage resources and etc. Users are able to specify
 explicitly the resource while job submission or they can rely on automated
