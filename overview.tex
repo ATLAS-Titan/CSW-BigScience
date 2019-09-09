@@ -172,34 +172,35 @@ submitted to PaNDA WMS.
 \label{fig:jobstates}
 \end{figure*}
 
-Jobs are injected into the system by JEDI in ATLAS or by the PanDA client in
-the general case as a ``job parameters'' object with a ``Pending'' status.
+Jobs are injected into the system as a ``job parameters'' object with a
+``Pending'' status by JEDI in ATLAS or by the PanDA client otherwise.
 Initially, this object is represented by a string containing unsorted
-parameters. Next, the string is processed and the parameters of the job are
-sorted into dedicated database fields, and the status is changed to
-``Defined.'' After that, the job is processed through the brokerage algorithm
-and assigned to a particular resource (PanDA queue), and the status is changed
-to ``Assigned''. Then, the status is changed to ``Waiting'' while the PanDA
-server checks the availability of the input data and the required software at
-the resource before changing the job's status to ``Activated''. An activated
-job is ready to be dispatched to the next corresponding pilot. When the job is
-dispatched and taken by the pilot, the job's status is changed to ``Sent''. At
-this time, the handling of the job processing has not been delegated to the
-pilot, and thus, the next few job states correspond to the steps of the job
-processing on the assigned resource. When the job status changes to
-``Starting'', the pilot is starting the job on a worker node or local batch
-system, after which the status becomes ``Running'' when the job begins running
-on a worker node. At this time, the progression of states is once again handled
-by the server instead of by the pilot. When the job finishes executing and
-output and log files are transferred, then the PanDA server is responsible to
-register the files in the file catalog. At the same time, the pilot returns the
-final status of the job to the server by communicating that the job either
-succeeded or failed. During this process, the job has a ``Holding'' status. The
-PanDA server check the output files regularly by using cron, and it assigns the
-final ``Finished'' or ``Failed'' status to the job. There are also some other
-statuses, the two most important of which are ``Cancelled'' for manually killed
-jobs and ``Closed'' for jobs which were terminated by the system before
-completion so they could be reassigned to other sites.
+parameters. Next, the string is processed, the parameters of the job are sorted
+into dedicated database fields, and the status is changed to ``Defined.'' After
+that, the job is processed through the brokerage algorithm and assigned to a
+particular resource using a PanDA queue, and the status is changed to
+``Assigned''. Then, the status is changed to ``Waiting'' while the PanDA server
+checks the availability of the input data and the required software at the
+resource before changing the job's status to ``Activated''. An activated job is
+a job which is ready to be dispatched to the next corresponding pilot. When the
+job is dispatched and taken by the pilot, the job's status is changed to
+``Sent''. At this time, the handling of the job processing has not been
+delegated to the pilot yet, and thus, the next few job states correspond to the
+steps of the job processing on the assigned resource. When the job status
+changes to ``Starting'', the pilot is starting the job on a worker node or
+local batch system, after which the status becomes ``Running'' when the job
+begins running on a worker node. At this time, the progression of states is
+once again handled by the server instead of by the pilot. After the job
+finishes executing and output and log files are transferred, the PanDA server
+is responsible for registering the files in the file catalog. At the same time,
+the pilot returns the final status of the job to the server by communicating
+that the job either succeeded or failed. During this process, the job has a
+``Holding'' status. The PanDA server checks the output files regularly by using
+cron, and it assigns the final ``Finished'' or ``Failed'' status to the job.
+There are also some other statuses, the two most important of which are
+``Cancelled'' for manually killed jobs and ``Closed'' for jobs which were
+terminated by the system before completion so they could be reassigned to other
+sites.
 
 % ---------------------------------------------------------------------------
 \subsection{Brokerage Characterization}
