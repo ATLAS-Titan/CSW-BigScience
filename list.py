@@ -1,9 +1,16 @@
-# Require: par; atr = (val_1, . . . , val_k)
-# Ensure: True or False
-# 1. procedure SATISFY REQ(par, atr)
-# 2.    if par.value in atr then:
-# 3.	    return True
-# 4.	return False
+for each job in jobs:
 
-# This file corresponds to the \lstinputlisting example added by Matteo.
-Require: par; atr = (val_1, ..., val_k)
+    candidate_queues = []
+    for queue in queues:
+        if match_constraints(job, queue):
+            candidate_queues.append(queue)
+
+    best_queue = candidate_queues[0]
+    max_weight = 0
+    for queue in candidate_queues:
+        queue_weight = calculate_weight(queue)
+        if queue_weight > max_weight:
+            max_weight = queue_weight
+            best_queue = queue
+
+    return best_queue

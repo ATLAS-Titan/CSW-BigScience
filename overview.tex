@@ -206,226 +206,31 @@ sites.
 \subsection{Brokerage Characterization}
 \label{subsec:brokerage}
 
-Resources (queues) presented in the database together with the wide set of
-static parameters such as walltime, CPU cores, memory, disk space etc. Same
-parameters can be provided within job definition to specify strict demands to
-the resource where the job can be executed. Both resources (queues) and jobs
-with parameters stored in the PanDA database.
+The purpose of PanDA Broker is to assign a job to a queue corresponding to a
+resource where the job will run. A job has parameters which constrain where it
+can be assigned, and a queue has attributes which constrain what can be
+assigned to it. This section details how PanDA Broker solves the constraint
+problems and assigns jobs to queues, and it contains a benchmark study.
 
-Also PanDA server maintains in the DB the dynamic information for queues
-about the number of defined, activated and running jobs and also the pilots
-statistics - number of requests of different types like ``get job'' or
-``update job status''.
+The general brokerage algorithm works in the following way. Given a set of jobs
+and a set of queues, PanDA Broker checks each job's parameters, such as
+requested nodes and requested wall time, against each queue's attributes, which
+represent the allowable values for job parameters for the queue's underlying
+resource. For each job, a set of candidate queues is generated from this
+matching procedure, and then one queue is chosen according to a weighting
+function which takes factors such as the resource's network bandwidth and
+sharing policies into account.
 
-PanDA Broker - key  component of the BigPanDA workflow automation - is an
-intelligent module designed to prioritize and assign PanDA jobs (job passed
-the brokerage transitioning from ``defined'' to the ``assigned'' state) to
-available compute resources on the basis of job type, software
-availability, input data and its locality, real-time job statistics,
-available CPU and storage resources and etc. Users are able to specify
-explicitly the resource while job submission or they can rely on automated
-brokerage engine. Full power of the PanDA brokerage integrated with another
-distributed computing and data management tools (internal and external with
-respect to the PanDA) is actively used in ATLAS experiment. In this paper we
-will present and will benchmark the basic brokerage functionality.
-
-The basic brokerage algorithm works the following way. It takes the lists of
-submitted jobs and available queues. Then each job is checked against each
-queue by set of parameters if the queue meets the jobs static demands like
-number of CPU core or the walltime. All queues passed the round are
-proceeding to the short list where for each queue Broker calculates the
-weight on the basis of current job statistics for given queue according to
-the formula (1). Job finally assigning to the queue with bigger weight.
-Weight calculation algorithm fo ATLAS is more complicated and taking into
-account clouds default weights, network bandwidth, sharing policies etc.
-
-The basic brokerage algorithm works the following way. Having the list of the
-submitted jobs, each job is checked against available resources as shown in
-SELECT{\textunderscore}CAND (Alg. ). Available resources presented as the set
-of defined PanDA queues: res = queue$_1$, \ldots, queue$_n$. For each queue
-in the set (3) we checking if it's satisfying the parameters of job (4).
-Successfully passed queues are concatenating to the list of candidate-queues
-(5).
-
-SATISFY{\textunderscore}JOB function (Alg. ) is used to check if the queue
-attributes can scope job parameters. Set of the job parameters defined as
-par$_1$, \ldots, par$_m$ represents the software/hardware demands to the
-resource like CPU core count, walltime, SW releases etc. Each of these
-parameters can be mapped to the set of queue attributes defined as atr$_1$,
-\ldots, atr$_n$, where $n \geq m$. So for each job parameter (2) we check if
-it can be satisfied with the corresponding queue attribute (3). Finally queue
-passes the test if it copes all the jobs parameters (5).
-
-The procedure SATISFY{\textunderscore}REQ (Alg. ) is responsible to testing
-if the value of the job parameter is in the set of allowed values val$_1$,
-\ldots, val$_k$ of the queue attribute (2).
-
-%-  NOTE: I think there are indenting mistakes present in the original
-%   writing, because things just honestly don't look right to me, but right
-%   now, I'm just typesetting what I see in Google Docs.
-
-% I have already included the package required by this. Just put the code
-% list.py file (or whatever other name you want to use.)
+Pseudo-code for the brokerage algorithm is shown as idealized Python code in
+\ref{lst:list.py}. The \texttt{match\_constraints} function matches a job's
+parameters $\{p_1, p_2, \ldots, p_m\}$ to a queue's attributes $\{a_1, a_2,
+\ldots, a_n\}$, where $n \geq m$, in such a way that mapped parameters are
+tested for membership in the set of allowed values specified in the attribute.
+The \texttt{calculate\_weight} function used by ATLAS takes many factors into
+account including current availability, network bandwidth, and sharing policies.
 
 \lstinputlisting[language=Python, 
          label={lst:list.py}, 
          caption={Caption}]{list.py}
-
-\begin{tabbing}
-\hspace{0.5in}\=
-     Require: par; atr = (val$_1$, \ldots, val$_k$) \\
-  \> Ensure: True or False \\
-  \> 1: \hspace{1em}\= procedure SATISFY{\textunderscore}REQ(par, atr) \\
-  \> 2:             \> \hspace{1em}\= if par.value in atr then: \\
-  \> 3:             \>             \> return True \\
-  \> 4:             \>             \> \hspace{0.1in} return False
-\end{tabbing}
-
-\begin{tabbing}
-\hspace{0.5in}\=
-     Require: job = \{par$_1$, \ldots, par$_m$\}; queue = \{atr$_1$, \ldots, atr$_n$\} \\
-  \> Ensure: True or False \\
-  \> 1: \hspace{1em}\= procedure SATISFY{\textunderscore}JOB(queue, job) \\
-  \> 2:             \> \hspace{1em}\= for all par in job do: \\
-  \> 3:             \>             \> if SATISFY{\textunderscore}REQ(par, atr)%
-= False then \\
-  \> 4:             \>             \> \hspace{2em} return False \\
-  \> 5:             \>             \> \hspace{1em} return True
-\end{tabbing}
-
-\begin{tabbing}
-\hspace{0.5in}\=
-     Require: job; res = (queue$_1$, \ldots, queue$_n$) \\
-  \> Ensure: cand \\
-  \> 1: \hspace{1em}\= procedure SELECT{\textunderscore}CAND(job, res) \\
-  \> 2:             \> \hspace{1em}\= cand $\leftarrow$ NONE \\
-  \> 3:             \> \hspace{1em}\= for all queue in res do: \\
-  \> 4:             \>             \> if SATISFY{\textunderscore}JOB(queue, %
-job) = True then \\
-  \> 5:             \>             \> \hspace{1em} cand $\cup$ queue \\
-  \> 6:             \>             \> return True
-\end{tabbing}
-
-As it was shown SELECT{\textunderscore}CAND procedure provides generates the
-short list of the candidates queues. SELECT{\textunderscore}QUEUE (Alg. )
-taking the short list of the candidate-queues as the set queue$_1$, \ldots,
-queue$_n$. For each queue (4) Broker calculates the weight (5) on the basis of
-current job statistics for given queue according to the formula (1). Job
-finally assigning to the queue with bigger weight (6-7). Weight calculation
-algorithm fo ATLAS is more complicated and taking into account clouds default
-weights, network bandwidth, sharing policies etc
-
-\begin{tabbing}
-\hspace{0.5in}\=
-     Require: cand = (queue$_1$, \ldots, queue$_n$) \\
-  \> Ensure: res{\textunderscore}queue \\
-  \> 1: \hspace{1em}\= procedure SELECT{\textunderscore}QUEUE(cand) \\
-  \> 2:             \> \hspace{1em}\= res{\textunderscore}queue $\leftarrow$%
-queue$_1$ \\
-  \> 3:             \>             \> \hspace{0.1in} max{\textunderscore}%
-weight $\leftarrow 0$ \\
-  \> 4:             \> \hspace{1em}\= for all queue in cand do: \\
-  \> 5:             \>             \> queue.weight $\leftarrow$ %
-WEIGHT{\textunderscore}CALC(queue) \\
-  \> 6:             \>             \> \hspace{1em} if queue.weight $>$ %
-max{\textunderscore}weight then \\
-  \> 7:             \>             \> \hspace{2em} res{\textunderscore}queue%
-$\leftarrow$ queue \\
-  \> 8:             \>             \> \hspace{0.5em} return %
-res{\textunderscore}queue
-\end{tabbing}
-
-\begin{equation}
-  \begin{aligned}
-    & manyAssigned = \max(1, \min(2, \frac{assigned}{activated})), \\
-    & weight = \frac{running + 1}{(activated + assigned + sharing + defined +
-        10) * manyAssigned}
-  \end{aligned}
-\end{equation}
-
-Response time of the brokerage in general can be estimated as (2). Basically it's time the job
-transits from ``defined'' to assigned state.  
-
-\begin{equation}
-    T = \sum_{i = 1}^{Q} \sum_{j = 1}^{J} T_{ij}
-\end{equation}
-
-In formula (2) $Q$ is the number of available queues, $J$ is the number of
-concurrently  submitted jobs and $T_{ij}$ is the time to process job $j$ for
-queue $i$. The processing time includes the check if queue meet demands of the
-job. Then for successfully selected queues the weight is calculating and job
-assigning for the queue with bigger weight. Hence the time $T$ can be presented as sum (3).
-
-\begin{equation}
-T = t_1 + t_2 + t3_3 + C
-\end{equation}
-
-In formula 3, $t_1$ is the time to make checks if queue meet demands of the
-job, $t_2$ is the time for weight calculation and finally $t_3$ is the time
-spent to assign job to the resulted queue. 
-
-Under the assumption that all jobs can run on the same average number of queues
-$N$ then we can transform equation as (4).
-
-\begin{equation}
-T = J * \left ( \sum_{i = 1}^{Q - N} t1_j + \sum_{j = 1}^{N} (tmax + t2_j) + t3 \right) + C, t1 < tmax
-\end{equation}
-
-Here N is the average number of queues which met all demands of each job.  As shown in the SATISFY{\textunderscore}JOB algorithm the function returns FALSE as soon as the first discrepancy in the job parameter and queue attributes is met. Hence for for all other Q-N queues the time to make checks  t1 will be less than tmax.
-
-Here N is the average number of queues which met all demands of each job. As shown in the SATISFY{\textunderscore}JOB algorithm the function returns False as
-soon as the first discrepancy in the job parameter and queue attributes is met.
-Hence for for all other Q-N queues the time to make checks t1 will be less than tmax.
-
-Again taking assumption that the times for different queues are equal we can
-streamline the equation like (5)
-
-\begin{equation}
-  \begin{aligned}
-    T =& J * \left(( Q - N) * t1 + N * (tmax + t2) + t3 \right) + C \\
-     =& J * \left(Q * t1 + N * (tmax - t1 + t2) + t3 \right) + C,
-        \text{where}~(tmax - t1) > 0
-  \end{aligned}
-\end{equation}
-
-In order to estimate dependency of brokerage response time from the number of
-concurrently submitted jobs we deployed a dedicated test instance of PanDA
-server at ORNL. PanDA was configured to use ten testing queues. Two of the
-queus was configured to provide 8 CPU cores and eight remaining queues provide
-2 cores. All other parameters are configured equal for all queues.
-
-Job submission client was configured to generate and send to the server the
-lists of equal jobs where each job demands 4 CPU cores. PanDA testing-instance
-was adjusted to simulate the brokerage two queues will be selected as meeting
-the criteria of cores number. Then due to simulation of job statistics on that
-selected queues the jobs will be assigned to the queue with bigger weight.
-Brokerage time dependency on number of concurrently submitted jobs is shown in
-figure.
-
-%-  The publisher prefers TIFF, and Ruslan and others have provided the images
-%   in TIFF as requested. I am not aware of a LaTeX engine that understands
-%   TIFF natively, and pasting shell-escape sequences from the internet is a
-%   very, very bad idea, so I just converted it to PNG for now and included
-%   both in the repository.
-
-% For two-column wide figures use
-\begin{figure*}
-  \includegraphics[width=0.75\textwidth]{images/Fig2.png}
-\caption{Response time dependency on number of concurrently submitted jobs}
-\label{fig:brokeragescaling}
-\end{figure*}
-
-For this experiment we measured the response time for a jobs to transit from the
-``Defined'' status to the ``Activated''. As in the test environment the JEDI
-system wasn't used and injection of the jobs was done using the simple python
-client interaction with PanDA REST API the first stated of the job indicated in
-PanDA is ``Defined'' and corresponds to the creation time. Also during this
-measurements we used no-input jobs. Hence the status of the jobs progressed to
-the ``Activated'' immediately after ``Defined''. In general the time to check
-input files can be considered as constant for the constant number of input
-files. So omitting the ``Assigned'' state in this testing environment is
-acceptable. 
-
-
 
 %-  vim:set syntax=tex:
