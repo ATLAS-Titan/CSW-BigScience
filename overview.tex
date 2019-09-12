@@ -210,7 +210,7 @@ The purpose of PanDA Broker is to assign a job to a queue corresponding to a
 resource where the job will run. A job has parameters which constrain where it
 can be assigned, and a queue has attributes which constrain what can be
 assigned to it. This section details how PanDA Broker solves the constraint
-problems and assigns jobs to queues, and it contains a benchmark study.
+problems and assigns jobs to queues.
 
 The general brokerage algorithm works in the following way. Given a set of jobs
 and a set of queues, PanDA Broker checks each job's parameters, such as
@@ -231,6 +231,7 @@ account including current availability, network bandwidth, and sharing policies.
 
 \lstinputlisting[language=Python, 
          label={lst:list.py}, 
-         caption={Caption}]{list.py}
+         caption={Idealized Python implementation of the general brokerage
+		  algorithm}]{list.py}
 
 %-  vim:set syntax=tex:
