@@ -10,7 +10,7 @@ for each job in jobs:
     for queue in candidate_queues:
         queue_weight = calculate_weight(queue)
         if queue_weight > max_weight:
-            max_weight = queue_weight
             best_queue = queue
+            max_weight = queue_weight
 
-    return best_queue
+    assign(job, best_queue)
