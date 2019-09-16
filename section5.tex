@@ -71,8 +71,6 @@ Amazon's EC2 cloud infrastructure provides access to multiple independent
 experiments from different disciplines, and it has the least restrictive
 security and usage policies.
 
-\subsection{PanDA instance at OLCF}
-\label{subsec:panda_instance}
 
 Using the OpenShift instance of PanDA outlined in Section~\ref{subsec:panda_instance}, we created demonstrations for orchestrating workflows from various
 scientific fields on OLCF resources.
@@ -187,7 +185,8 @@ Daemon launches the pilots. Number of parallel running pilots can be
 configured. Pilots are running and interacts with the PBS under user account
 and with Titan group privileges of the responsible representative.
 
-The most important parameters of conducted tests are presented in the table
+The most important parameters of conducted tests are presented in
+Table~\ref{tab:beyondhep}.
 
 % For tables use
 \begin{table}
@@ -203,10 +202,10 @@ The most important parameters of conducted tests are presented in the table
 Experiment & Payload & Jobs & Nodes & Walltime & Input data & Output data \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 Genomics           & GBOOST & 10    & 2    & 30 min    & 100 MB & 300 MB \\
-Molecular Dynamics & CHARMM & 10    & 124  & 30-90 min & 10 KB  & 2-6 GB \\
 IceCube            & NuGen  & 4500K & 1    & 120 min   & 500 KB & 10KB - 4GB \\
 LSST/DESC          & Phosim & 20    & 2    & 600 min   & 700 MB & 70 MB \\
 LQCD               & QDP++  & 10    & 8000 & 700 min   & 40 GB  & 150 MB \\
+Molecular Dynamics & CHARMM & 10    & 124  & 30-90 min & 10 KB  & 2-6 GB \\
 nEDM               & GEANT  & 10    & 200  & 20 min    & 120 MB & 20 MB \\
 \noalign{\smallskip}\hline
 \end{tabular}
