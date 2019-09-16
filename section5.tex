@@ -5,16 +5,7 @@
 %   This contains what was originally the seventh section of the Google Docs
 %   draft of the paper.
 %
-%                                                   ~~ last updated 18 Jan 2019
-
-The objective of each subsection is to:
-(i) describe the science; and
-(ii) detail what customizations had to be done -- either on PanDA or the Titan
-    end to support the science driver.
-We will then conclude this section with a summary.
-
-\subsection{PanDA WMS beyond HEP}
-\label{subsec:panda_beyond}
+%                                                   ~~ last updated 16 Sep 2019
 
 Traditionally computing in physics experiments at the basic level is usually
 independent processing of the input files to produce the output. This
@@ -83,18 +74,8 @@ security and usage policies.
 \subsection{PanDA instance at OLCF}
 \label{subsec:panda_instance}
 
-In March 2017, we implemented a new PanDA server instance within OLCF operating
-under Red Hat OpenShift Origin \cite{RH_OpenShift} - a powerful container
-cluster management and orchestration system in order to serve various
-experiments at Titan supercomputer. By running on-premise Red Hat OpenShift
-built on Kubernetes \cite{Kubernetes}, the OLCF provides a container
-orchestration service that allows users to schedule and run their HPC
-middleware service containers while maintaining a high level of support for
-many diverse service workloads. The containers have direct access to all OLCF
-shared resources such as parallel filesystems and batch schedulers. With this
-PanDA instance, we implemented a set of demonstrations serving diverse
-scientific workflows including physics, biology studies of the genes and human
-brain, and molecular dynamics studies:
+Using the OpenShift instance of PanDA outlined in Section~\ref{subsec:panda_instance}, we created demonstrations for orchestrating workflows from various
+scientific fields on OLCF resources.
 
 \begin{itemize}
     \item Biology / Genomics. 
