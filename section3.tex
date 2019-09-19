@@ -1,10 +1,10 @@
 %-  LaTeX source file
 
-%-  deploying.tex ~~
+%-  section3.tex ~~
 %
 %   This is the third section of the paper.
 %
-%                                                   ~~ last updated 27 Nov 2018
+%                                                   ~~ last updated 16 Sep 2019
 
 %\begin{itemize}
 %    \item Start of project and proof of concept, restrictions caused by policy
@@ -71,7 +71,7 @@ within backfill.  If no such backfill jobs are present in the queue, then
 available compute resources will remain unutilized.
 
 In describing how the PanDA Workload management system is deployed on Titan, we
-necessarily describe it integration with the Moab Workload management system.
+necessarily describe its integration with the Moab Workload management system.
 In so doing, two rather different approaches to interfacing the PanDA managed
 work on Titan are availed: ``Batch Queue Mode'' and ``Backfill Mode''.  In
 ``Batch Queue Mode'', PanDA interacts with Titan's Moab scheduler in a static,
@@ -195,6 +195,24 @@ due to further optimization of the workload management system.
 two methods used by PanDA.}
 \label{fig:monthly-consumption}
 \end{figure*}
+
+
+\subsection{PanDA instance at OLCF}
+\label{subsec:panda_instance}
+
+In March 2017, we implemented a new PanDA server instance within OLCF operating
+under Red Hat OpenShift Origin \cite{RH_OpenShift} - a powerful container
+cluster management and orchestration system in order to serve various
+experiments at Titan supercomputer. By running on-premise Red Hat OpenShift
+built on Kubernetes \cite{Kubernetes}, the OLCF provides a container
+orchestration service that allows users to schedule and run their HPC
+middleware service containers while maintaining a high level of support for
+many diverse service workloads. The containers have direct access to all OLCF
+shared resources such as parallel filesystems and batch schedulers. With this
+PanDA instance, we implemented a set of demonstrations serving diverse
+scientific workflows including physics, biology studies of the genes and human
+brain, and molecular dynamics studies. These demonstrations are detailed in
+Section~\ref{sec:beyond_hep}.
 
 
 %-  vim:set syntax=tex:

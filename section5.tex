@@ -1,20 +1,11 @@
 %-  LaTeX source file
 
-%-  beyond_hep.tex ~~
+%-  section5.tex ~~
 %
 %   This contains what was originally the seventh section of the Google Docs
 %   draft of the paper.
 %
-%                                                   ~~ last updated 18 Jan 2019
-
-The objective of each subsection is to:
-(i) describe the science; and
-(ii) detail what customizations had to be done -- either on PanDA or the Titan
-    end to support the science driver.
-We will then conclude this section with a summary.
-
-\subsection{PanDA WMS beyond HEP}
-\label{subsec:panda_beyond}
+%                                                   ~~ last updated 16 Sep 2019
 
 Traditionally computing in physics experiments at the basic level is usually
 independent processing of the input files to produce the output. This
@@ -80,21 +71,9 @@ Amazon's EC2 cloud infrastructure provides access to multiple independent
 experiments from different disciplines, and it has the least restrictive
 security and usage policies.
 
-\subsection{PanDA instance at OLCF}
-\label{subsec:panda_instance}
 
-In March 2017, we implemented a new PanDA server instance within OLCF operating
-under Red Hat OpenShift Origin \cite{RH_OpenShift} - a powerful container
-cluster management and orchestration system in order to serve various
-experiments at Titan supercomputer. By running on-premise Red Hat OpenShift
-built on Kubernetes \cite{Kubernetes}, the OLCF provides a container
-orchestration service that allows users to schedule and run their HPC
-middleware service containers while maintaining a high level of support for
-many diverse service workloads. The containers have direct access to all OLCF
-shared resources such as parallel filesystems and batch schedulers. With this
-PanDA instance, we implemented a set of demonstrations serving diverse
-scientific workflows including physics, biology studies of the genes and human
-brain, and molecular dynamics studies:
+Using the OpenShift instance of PanDA outlined in Section~\ref{subsec:panda_instance}, we created demonstrations for orchestrating workflows from various
+scientific fields on OLCF resources.
 
 \begin{itemize}
     \item Biology / Genomics. 
@@ -206,7 +185,8 @@ Daemon launches the pilots. Number of parallel running pilots can be
 configured. Pilots are running and interacts with the PBS under user account
 and with Titan group privileges of the responsible representative.
 
-The most important parameters of conducted tests are presented in the table
+The most important parameters of conducted tests are presented in
+Table~\ref{tab:beyondhep}.
 
 % For tables use
 \begin{table}
@@ -222,26 +202,14 @@ The most important parameters of conducted tests are presented in the table
 Experiment & Payload & Jobs & Nodes & Walltime & Input data & Output data \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 Genomics           & GBOOST & 10    & 2    & 30 min    & 100 MB & 300 MB \\
-Molecular Dynamics & CHARMM & 10    & 124  & 30-90 min & 10 KB  & 2-6 GB \\
 IceCube            & NuGen  & 4500K & 1    & 120 min   & 500 KB & 10KB - 4GB \\
 LSST/DESC          & Phosim & 20    & 2    & 600 min   & 700 MB & 70 MB \\
 LQCD               & QDP++  & 10    & 8000 & 700 min   & 40 GB  & 150 MB \\
+Molecular Dynamics & CHARMM & 10    & 124  & 30-90 min & 10 KB  & 2-6 GB \\
 nEDM               & GEANT  & 10    & 200  & 20 min    & 120 MB & 20 MB \\
 \noalign{\smallskip}\hline
 \end{tabular}
 \end{table}
 
-
-\subsection{Summary}
-\label{subsec:summary}
-
-The overview of the successfully implemented demonstrations of diverse
-workflows implementation via PanDA shows that PanDA model can cope the
-challenges of the different experiments and user groups and also provide
-possibility for extensions beyond the core components set.  The proof of
-concept was received from all considered experiments representatives and
-results that PanDA is considered as a possible solution. Preproduction
-utilization of PanDA is now under investigation with BlueBrain, IceCube, LSST,
-nEDM experiments, LQCD uses PanDA for Production.
 
 %-  vim:set syntax=tex:
