@@ -5,5 +5,14 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{algorithm}
+\usepackage{xcolor}
 \usepackage[noend]{algpseudocode}
 \usepackage[caption=false]{subfig}
+
+\newif\ifdraft
+\drafttrue
+\ifdraft
+\newcommand{\jhanote}[1]{ {\textcolor{red} { ***shantenu: #1 }}}
+\else
+\newcommand{\jhanote}[1]{}
+\fi
