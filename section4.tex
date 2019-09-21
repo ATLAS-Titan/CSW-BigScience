@@ -358,17 +358,22 @@ relationships in the data, and the goodness-of-fit values are uniformly poor.
 \subsection{Blocking probability}
 \label{subsec:blocking-probability}
 
-Having struggled to find simple linear relationships using throughput and
-utilization as indicators, we next defined an event called a ``block'' and
-looked for its occurrence in the data. A block is said to occur when an
-eligible job in the batch queue waits due to insufficient resources on Titan
-for it to begin running; some other job(s) must be using the resources, and
-therefore the eligible job has been ``blocked'' by an already-running job. This
-event is interesting because it can indicate competition for resources even
-when there are large amounts of idle resources. It also serves as a way to
-symbolize the event when a user checks the system queue and sees that there are
-active jobs that are causing the user's job to wait. The goal was to try to
-detect CSC108's impact by focusing on times of great competition.
+The previous subsection analyzed traces for correlations between global set of
+all jobs on Titan and CSC108 jobs. Although a useful exercise, the results are
+at best inconclusive due to intrinsic noisiness which makes discerning
+correlations even harder. In this section, we  try to model the underlying
+process with the objective of moving beyond correlations and inferring casual
+relationships between CSC108 scheduling events and a measure of impact
+(utilization, wait time or throughput).
+
+We begin by defining a ``block'' which is an event that occurs when an job
+submitted to the batch queue is stalled in the wait state even though there
+might be sufficient resources to run that job. A block typically occurs due to
+some other job(s) using resources, and therefore the otherwise eligible job
+has been ``blocked'' by an already-running job. A blocking event is
+interesting because it indicates interference between jobs and competition for
+resources even in the presence of available resources. A systematic analysis
+of CSC108 has the potential to determine its impact on non-CSC108 jobs.
 
 The data used for this experiment include the same historical trace data used
 in Section~\ref{subsec:compression-study} and the daily availability
@@ -386,17 +391,19 @@ Python using the same libraries and database as the previous sections.
 
 Formally, the definitions for a block and a blocking probability follow. Let
 $C_i$ be the abstract resources in use by CSC108 at the $i^{\text{th}}$ sample
-point in time, and let $U_i$ be the unused (idle) resources remaining on Titan.
-We then define a boolean $B_i$ representing a ``block'' to be 1 if there exists
-at least one job at the $i^{\text{th}}$ sample point which requests
-$(C_i + U_i)$ resources or less when $C_i$ is non-zero; we define $B_i$ to be
-zero otherwise. Summing $B_i$ over all $i$ gives a count of sample points at
-which a block occurred, and dividing that count by the number of total sample
-points yields a quantity we call a ``blocking probability''. The blocking
-probability is a rational number between 0 and 1.
+point in time, and let $U_i$ be the unused (idle) resources remaining on
+Titan. We then define a boolean $B_i$ representing a ``block'' event to occur
+if there exists at least one job at the $i^{\text{th}}$ sample point which
+requests $(C_i + U_i)$ resources or less (when $C_i$ is non-zero). If there is
+no job at $i^{\text{th}}$ which requests more than $(C_i + U_i)$ we say a
+blocking event $B_i$  does not occur. Summing $B_i$ over all $i$ gives a count
+of the number of blocking events that occur, and dividing that count by the
+number of total sample points yields a quantity we call a ``blocking
+probability''.
 
-Informally, blocking probability represents the proportion of samples in which
-a block occurred. The idea here is that when blocking probability increases, it
+Informally, blocking probability represents the proportion of samples 
+\jhanote{sample of what? time? intervals possibly better term?} in which a
+block occurred. The idea here is that when blocking probability increases, it
 indicates that the system is experiencing greater competition for its
 resources. Blocking probability does not predict the probability that a
 particular job will be blocked, but rather the probability that a given sample
