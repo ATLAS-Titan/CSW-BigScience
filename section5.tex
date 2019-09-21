@@ -5,193 +5,211 @@
 %   This contains what was originally the seventh section of the Google Docs
 %   draft of the paper.
 %
-%                                                   ~~ last updated 16 Sep 2019
+%                                                   ~~ last updated 20 Sep 2019
 
-Traditionally computing in physics experiments at the basic level is usually
-independent processing of the input files to produce the output. This
-processing in referring in the paper as a job. Processing algorithm usually
-utilizes some experiment-specific software which may require parameterization
-and even additional configuration files. In the case if such a configuration
-file is specific for each job it can be defined in a job as another input file.
-Also experiment software may produce some additional files along with the
-primary output and they need to be stored. For instance PanDA pilot itself
-produces the tar-archive file containing the logs its own logs and the
-experiments software logs. Processing algorithm (referenced as ``transformation
-script'') responsible for the correct launching the experiment software and
-provide all necessary input information including the configuration and run
-parameters. PanDA job definition is only defines the launching command for the
-transformation script. This launching command is referring as a payload.
+The PanDA WMS was originally developed to meet the needs of ATLAS, where it has
+been handling production workloads since 2005. PanDA's design was not only
+informed by the needs of ATLAS but also optimized to meet them, and similarly,
+ATLAS workloads were tailored to run through PanDA. Despite this long history
+of co-evolution, nothing about PanDA restricts its use to running physics
+simulations on Titan or the WLCG. This section describes some of the
+applications of PanDA for managing workloads in other scientific disciplines,
+using Titan and other HPC resources.
 
-The following components are usually provided and controlled by the experiment groups outside from PanDA core components.
-\begin{itemize}
-    \item Transformation scripts. User groups should define a complete set of
-        the transformations scripts to cover all possible SW usage. In the case
-        if the same software is used and only the run parameters, configuration
-        and input/output file names are changing, the single transformation
-        script should be able to cope this.
-    \item Input/output files conventions. The size of the input files often
-        adjusted in a way to balance of the total processing walltime and
-        flexibility in order to cope the failure risks. There is often case
-        that the equal sized input files are required relatively equal
-        processing time and produce equal sized output. Also input files are
-        often named conventionally and grouped in the datasets by some
-        attributes. PanDA job definition allows to provide name for the
-        input/output datasets.
-\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Common Themes for PanDA-Based Workflows}
+\label{subsec:common-themes}
 
-The real workflow for each scientific group provides a lot of additional
-requirements and constraints. A common example is a specific order of the jobs
-execution. Also implementation of the dedicated workflows demands an
-integration with existing experiment computing infrastructure or even
-development an additional components. This includes the issues with data
-management, user authentication, monitoring, workflow control and etc.
 
-PanDA system may be the best solution for the new experiments and scientific
-groups by diversity of provided advantages. The main motivations for users are:
-\begin{itemize}
-    \item Powerful workload management. Automation of the jobs handling,
-        monitoring and logging.
-    \item Streamlining the usage of the computing resources. Possibility for
-        users to run their jobs on diversity of the computing resources. Local
-        resource schedulers, and policies are transparent for the users.
-    \item PanDA native data handling. PanDA provides a diverse set of the
-        plugins to support data stage-in/-out from the remote storages and
-        different data movement tools of different types.
-    \item Close integration with OLCF. Being integrated with OLCF PanDA system
-        also became attractive for many scientific groups already utilizing
-        OLCF resources or those who wish to get use them. 
-\end{itemize}
+Traditionally, the basic pattern for computing in support of physics
+experiments is to process input files to produce output files. In this paper,
+we have referred to this processing in terms of discrete jobs. These jobs often
+require that further input parameters be provided to experiment-specific
+software in the form of command-line arguments or additional configuration
+files. PanDA can manage a variety of different workloads because it can handle
+many different ways of specifying jobs' input and output. For example,
+job-specific configuration files can be defined in a PanDA job description
+simply as additional input files, and log files created by experiment-specific
+software can be defined as additional output files to be saved in the same
+tarball that the PanDA pilot creates to save its own log files.
 
-Currently, there are few PanDA instances in use by different experiments and
-groups.  In this paper, we have considered three instances. The original
-instance is installed at CERN, and it is used exclusively for the ATLAS
-experiment. Another instance is installed at OLCF, and it is dedicated to
-supporting projects on Titan, subject to OLCF policies. Finally, an instance on
-Amazon's EC2 cloud infrastructure provides access to multiple independent
+
+PanDA manages all this processing according to ``transformation scripts'' which
+contain full descriptions that provide all necessary information like
+configuration and execution parameters for running jobs and saving output. A
+PanDA job definition only defines the ``payload'', which is the launching
+command for the transformation script. Experiments like ATLAS need to define
+complete sets of transformation scripts that cover all possible software usage,
+but in many cases, a single transformation script suffices.
+
+PanDA is an attractive solution for new experiments for many reasons. PanDA
+provides high-level features for automating the job handling, monitoring, and
+logging without removing the ability to control and customize stages in a
+workflow. It streamlines the usage of computing resources, especially when
+federating resources from multiple facilities, and it insulates users from
+details like policies and schedulers that are specific to a local resource.
+PanDA provides a diverse set of plugins to support staging data in and out from
+remote storages and using different protocols. Another important feature of
+PanDA is that is has the ability to integrate closely with the systems at OLCF,
+and this makes it attractive both to existing and aspiring OLCF users.
+
+
+Currently, there are several instances of PanDA Server in use by different
+experiments and groups, but in this paper, we have considered three main
+instances. The original instance is installed at CERN, and it is used
+exclusively for the ATLAS experiment. Another instance is installed at OLCF, as
+outlined in Section~\ref{subsec:panda_instance}, and it is dedicated to
+supporting projects on Titan, subject to OLCF policies. Finally, the instance
+on Amazon's EC2 cloud infrastructure provides access to multiple independent
 experiments from different disciplines, and it has the least restrictive
 security and usage policies.
 
+Using the OpenShift instance of PanDA outlined in
+Section~\ref{subsec:panda_instance}, we created demonstrations for
+orchestrating workflows from various scientific fields on OLCF resources. To
+isolate the workflows of different groups and experiments, dedicated queues
+were defined on each instance of PanDA Server. Separating different groups'
+workflows by using different queues provides advantages in customizing
+environment variables, system settings, and workflows for different user
+groups, and it simplifies job monitoring via the web-based interface. In
+collaboration with representatives from other scientific groups, we implemented
+transformation scripts as command-line tools that can be addressed by name. A
+client tool provided to the users allows them to submit jobs to PanDA Server
+with authentication based on grid certificates. Each group's representatives
+were authorized to run the pilot launcher daemon with a configurable amount of
+concurrency. In this way, the pilots ran and interacted with PBS using the user
+and project privileges of the research group, as opposed to running under the
+BigPanDA team's account, CSC108.
 
-Using the OpenShift instance of PanDA outlined in Section~\ref{subsec:panda_instance}, we created demonstrations for orchestrating workflows from various
-scientific fields on OLCF resources.
 
-\begin{itemize}
-    \item Biology / Genomics. 
-In collaboration with Center for Bioenergy Innovation at ORNL the PanDA based
-workflow for epistasis researches was established. Epistasis is the phenomenon
-where the effect of one gene is dependent on the presence of one or more
-``modifier genes'', i.e. the genetic background. GBOOST \cite{GBOOST} is a
-GPU-based tool for detecting gene-gene interactions in genome-wide case control
-studies, was used for initial tests.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Managing Non-ATLAS Workloads on Titan}
+\label{subsec:other-workloads}
 
-    \item Molecular Dynamics.
-In collaboration with the Chemistry and Biochemistry department of the
-University of Texas Arlington, we implemented a test to try out PanDA to
-support the Molecular Dynamics study ``Simulating Enzyme Catalysis,
-Conformational Change, and Ligand Binding/Release''. The CHARMM (Chemistry at
-HARvard Macromolecular Mechanics) \cite{Brooks2009CHARMM} a molecular
-simulation program was chosen as a basic payload tool. CHARMM design for hybrid
-MPI/OpenMP/GPU computing.
-
-    \item IceCube. 
-Together with experts from the IceCube experiment we implemented the
-demonstrator PanDA system. IceCube \cite{Halzen:2010yj} is a particle detector
-at the South Pole that records the interactions of a nearly massless subatomic
-particle called the neutrino. Demonstrator includes the use of NuGen package (a
-modified version of ANIS \cite{Gazizov:2004va} that works with IceCube
-software) - GPU application for atmospheric neutrinos are simulations packed in
-Singularity container and remote stage-in/-out the data from GridFTP
-\cite{Allcock:2005:GSG:1105760.1105819} storage with GSI authentication. 
-
-    \item BlueBrain.
-In 2017, a R\&D project was started between BigPanDA and the Blue Brain Project
-(BBP) \cite{Markram} of the Ecole Polytechnique Federal de Lausanne (EPFL)
-located in Lausanne, Switzerland. This proof of concept project is aimed at
-demonstrating the efficient application of the BigPanDA system to support the
-complex scientific workflow of the BBP which relies on using a mix of desktop,
-cluster, and supercomputers to reconstruct and simulate accurate models of
-brain tissue. In the first phase of this joint project we supported the
-execution of BBP software on a variety of distributed computing systems powered
-by BigPanDA. The targeted systems for demonstration included: Intel x86-NVIDIA
-GPU based BBP clusters located in Geneva (47 TFlops) and Lugano (81 TFlops),
-BBP IBM BlueGene/Q supercomputer \cite{citeulike:472727} (0.78 PFLops and 65 TB
-of DRAM memory) located in Lugano, the Titan Supercomputer with peak
-theoretical performance 27 PFlops operated by the Oak Ridge Leadership
-Computing Facility (OLCF), and Cloud based resources such as Amazon Cloud.
-
-    \item LSST.
-A goal of LSST (Large Synoptic Survey Telescope) project is to conduct a
-10-year survey of the sky that is expected to deliver 200 petabytes of data
-after it begins full science operations in 2022. The project  will address some
-of the most pressing questions about the structure and evolution of the
-universe and the objects in it. It will require a large amount of simulations,
-which model the atmosphere, optics and camera to understand the collected data.
-For running LSST simulations with the PanDA WMS we have established a
-distributed testbed infrastructure that employs the resources of several sites
-on GridPP \cite{0954-3899-32-1-N01} and Open Science Grid (OSG)
-\cite{1742-6596-78-1-012057} as well as the Titan supercomputer at ORNL. In
-order to submit jobs to these sites we have used a PanDA server instance
-deployed on the Amazon AWS Cloud.
-
-    \item LQCD.
-Lattice QCD (LQCD) \cite{Babich:2010:PQL:1884643.1884695} is a well-established
-non-perturbative approach to solving the quantum chromodynamics theory of
-quarks  and gluons. Current LQCD payloads can be characterized as massively
-parallel,  occupying thousands of nodes on leadership-class supercomputers.
-
-In 2017, as a part of SciDAC-4 funded project, a collaboration was formed
-between several US LQCD groups and BigPanDA team with the goal to adopt PanDA
-WMS for the needs of the SciDAC-4 LQCD computational program. 
-
-LQCD payloads have been successfully tested on Titan as well as on other sites.
-%In order to run LQCD payloads we have also used our PanDA Server in Amazon
-%cloud.
-Production campaigns were executed on BNL Institutional Cluster through a
-dedicated instance of Harvester installed on the front node of this site.
-During the period between April and June 2018 13 TB of input data were
-processed, producing output of 176 GB. LQCD jobs used around 15,000 GPU hours
-with average job duration around 12 hours.
-
-    \item nEDM.
-Precision measurements of the properties of the neutron present an opportunity
-to search for violations of fundamental symmetries and to make critical tests
-of the validity of the Standard Model of electroweak interactions. These
-experiments have been pursued \cite{Sakharov:1967dj} with great energy and
-interest since the discovery of neutron in 1932. The goal of the nEDM
-\cite{0954-3899-36-10-104002} experiment at the Fundamental Neutron Physics
-Beamline at the Spallation Neutron Source (Oak Ridge National Laboratory) is to
-further improve the precision of this measurement by another factor of 100.
-\end{itemize}
-
-To isolate the workflows of different groups and experiments, dedicated queues
-were defined at the PanDA server. Presumably in  next steps we will provide the
-security mechanisms that will provide the access to each queue for job
-submission and dispatching only for authorised users. Also, the PanDA server
-provides the tools to customise environment variables, system settings and
-workflow algorithms for different user groups. Also this split of the different
-groups workflows on the level of PanDA queues simplifies jobs monitoring via
-the web based PanDA tool. 
-
-In collaboration with the dedicated scientific groups representatives, we
-implemented the ``transformation'' scripts containing complete definition of
-the processing actions (set of specific software and general system commands)
-are has to be applied to the input data to produce the output. The
-transformation script then can be addressed by its name. Client tool provided
-to the users allows to submit jobs to the PanDA server with authentication
-based on grid certificates. 
-
-Responsible group representative also authorized to run pilots launcher daemon.
-Daemon launches the pilots. Number of parallel running pilots can be
-configured. Pilots are running and interacts with the PBS under user account
-and with Titan group privileges of the responsible representative.
-
-The most important parameters of conducted tests are presented in
+The BigPanDA team collaborated with experts from research groups in other
+scientific disciplines in order to demonstrate PanDA's abilities to manage
+different kinds of workloads on Titan at OLCF. Four representative experiments
+are briefly described here, the details for which are summarized in
 Table~\ref{tab:beyondhep}.
+
+In the field of genomics, the BigPanDA team collaborated with the Center for
+Bioenergy Innovation at ORNL to construct a PanDA-based workflow for genomics
+research focused on epistasis. Epistasis is the phenomenon in which the effect
+of one gene is dependent on the presence of one or more ``modifier genes''. The
+payload used in this workflow is GBOOST \cite{GBOOST}, which is a GPU-based
+implementation of the Boolean Operation-based Screening and Testing (BOOST)
+software for detecting gene-gene interactions in genome-wide association
+studies (GWAS). Each job used only 2 nodes for 30 minutes of wall time to
+process 100 MB of input data and produce 300 MB of output data. These jobs were
+ideal candidates for using PanDA on Titan because they were small, short, and
+GPU-based, which meant that they can take advantage of Titan's hybrid
+architecture using backfill opportunities.
+
+In molecular dynamics, the BigPanDA team collaborated with the Chemistry and
+Biochemistry Department at the University of Texas at Arlington to construct a
+PanDA-based workflow for simulating enzyme catalysis, conformational change,
+and ligand binding and release. The payload used in this workflow is CHARMM
+(Chemistry at HARvard Macromolecular Mechanics) \cite{Brooks2009CHARMM}, which
+is a molecular simulation program capable of using hybrid MPI, OpenMP, and GPU
+computing. These jobs ranged in size, but each typically used 124 nodes for
+30-90 minutes of wall time. They required just 10 KB of input data files but
+produced 2-6 GB of output data. These workloads are interesting because they
+can scale to many hundreds of nodes while not requiring large amounts of wall
+time, which means they can potentially take great advantage of backfill
+opportunities, too.
+
+In particle physics, the BigPanDA team collaborated with the IceCube experiment
+\cite{Halzen:2010yj} to construct a PanDA-based workflow for neutrino event
+simulation. IceCube is a particle detector at the South Pole that records the
+interactions of a nearly massless subatomic particle called the neutrino. The
+payload used in this workflow is NUGEN, which is an experiment-specific
+software based on ANIS \cite{Gazizov:2004va} that uses GPU computing to
+generate samples of atmospheric neutrinos for analysis. These jobs only
+required one node at a time for 120 minutes in order to process 500 KB of input
+data, but there were many, many jobs to perform as part of their scientific
+campaign, and each job produced a volume of output data that could be anywhere
+from 10 KB all the way to 4 GB. These workloads were interesting because they
+required the use of Singularity containers \cite{} as well as remote stage-in
+and stage-out of the data from GridFTP \cite{Allcock:2005:GSG:1105760.1105819}
+storage with GSI authentication.
+
+Finally, in neutron science, the BigPanDA team collaborated with the Neutron
+Electric Dipole Moment (nEDM) experiment \cite{0954-3899-36-10-104002} to
+construct a PanDA-based workflow for processing experimental and observational
+data from the Fundamental Neutron Physics Beamline at the Spallation Neutron
+Source at ORNL. The goal of the nEDM experiment is to improve the precision of
+the measurements of the properties of the neutron in order to search for
+violations of fundamental symmetries and to make critical tests of the validity
+of the Standard Model of electroweak interactions. The payload used in this
+workflow is GEANT \cite{}, which is the same software used by ATLAS to simulate
+the passage of particles through matter. These jobs required 200 nodes at a
+time, but only for 20 minutes of wall time, in order to process 120 MB of input
+data and produce 20 MB of output data. These workloads are particularly
+interesting because it is an experimental/observational facility (EOF) which is
+local to OLCF resources.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Managing Workloads for HPC on Non-OLCF Resources}
+\label{subsec:other-hpc-resources}
+
+
+The BigPanDA team also collaborated on workload management for HPC resources
+beyond just Titan at OLCF. Three of these experiments are briefly described
+here to represent some of these collaborations, the details for which are
+summarized in Table~\ref{tab:beyondhep}.
+
+In the field of astronomy, the BigPanDA team collaborated with the Large
+Synoptic Survey Telescope (LSST) project to construct a PanDA-based workflow
+for Monte Carlo simulation of image data. Beginning in 2022, LSST will conduct
+a 10-year survey of the sky that is expected to deliver 200 PB of data in order
+to address some of the most pressing questions about the structure and
+evolution of the universe and the objects in it. The payload used in this
+workflow is PhoSim \cite{}, a set of fast photon Monte Carlo codes used to
+calculate the physics of the atmosphere and a telescope and camera in order to
+simulate realistic astronomical images. Each job in the demonstration workflow
+used only 2 nodes but required 600 minutes of wall time to process 700 MB of
+input data and produce 70 MB of output data. For running LSST simulations with
+the PanDA WMS, we have established a distributed testbed infrastructure that
+employs the resources of several sites on GridPP \cite{0954-3899-32-1-N01} and
+Open Science Grid (OSG) \cite{1742-6596-78-1-012057} as well as the Titan
+supercomputer at ORNL. In order to submit jobs to these sites we have used a
+PanDA server instance deployed on the Amazon AWS Cloud.
+
+In the field of nuclear physics, and as a part of a SciDAC-4 funded project,
+the BigPanDA team collaborated with the Lattice QCD (LQCD)
+\cite{Babich:2010:PQL:1884643.1884695} experiment to construct a PanDA-based
+workflow to meet the needs of the SciDAC-4 LQCD computational program. LQCD is
+a well-established, non-perturbative approach to solving the quantum
+chromodynamics theory of quarks and gluons. Current LQCD payloads can be
+characterized as massively parallel, occupying thousands of nodes on
+leadership-class supercomputers. LQCD payloads have been successfully tested on
+Titan as well as on other sites. Production campaigns were executed on the
+Institutional Cluster at Brookhaven National Laboratory (BNL) through a
+dedicated instance of Harvester \cite{} installed on the site's front node.
+Between April and June 2018, PanDA managed workloads that processed 13 TB of
+input data and produced 176 GB of output data. LQCD jobs used around 15,000 GPU
+hours with an average job duration of approximately 12 hours.
+
+Finally, in the field of neuroscience, the BigPanDA team collaborated with the
+Blue Brain Project (BBP) \cite{Markram} of the Ecole Polytechnique Federal de
+Lausanne (EPFL) in Switzerland. This proof-of-concept project was aimed at
+demonstrating the efficient application of the BigPanDA system to support the
+complex scientific workflow of the BBP, which relies on using a mix of
+desktops, clusters, and supercomputers to reconstruct and simulate accurate
+models of brain tissue. In the first phase of this joint project, we supported
+the execution of BBP software on a variety of distributed computing systems
+powered by BigPanDA. The targeted systems for demonstration included
+cloud-based resources on Amazon Cloud, two clusters using Intel x86 and Nvidia
+GPUs located in Geneva and Lugano, one IBM Blue Gene/Q \cite{citeulike:472727}
+supercomputer which was also located in Lugano, and of course, Titan at OLCF.
+
 
 % For tables use
 \begin{table}
 % table caption is above the table
-\caption{Please write your table caption here}
+\caption{Summary of job parameters for non-ATLAS workloads deployed to Titan at
+OLCF.}
 \label{tab:beyondhep}       % Give a unique label
 % For LaTeX tables use
 \begin{tabular}{llrrrrr}
@@ -203,7 +221,7 @@ Experiment & Payload & Jobs & Nodes & Walltime & Input data & Output data \\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 Genomics           & GBOOST & 10    & 2    & 30 min    & 100 MB & 300 MB \\
 IceCube            & NuGen  & 4500K & 1    & 120 min   & 500 KB & 10KB - 4GB \\
-LSST/DESC          & Phosim & 20    & 2    & 600 min   & 700 MB & 70 MB \\
+LSST/DESC          & PhoSim & 20    & 2    & 600 min   & 700 MB & 70 MB \\
 LQCD               & QDP++  & 10    & 8000 & 700 min   & 40 GB  & 150 MB \\
 Molecular Dynamics & CHARMM & 10    & 124  & 30-90 min & 10 KB  & 2-6 GB \\
 nEDM               & GEANT  & 10    & 200  & 20 min    & 120 MB & 20 MB \\
