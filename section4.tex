@@ -8,90 +8,73 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In 2013, the PanDA team began working to incorporate the Titan supercomputer at
-Oak Ridge National Laboratory as a grid site for the Worldwide LHC Compute
-Grid, on behalf of the ATLAS Collaboration. The team has operated under several
-different project identifiers, including CSC108, HEP110, and HEP113. The HEP110
-and HEP113 projects represent traditional ASCR Leadership Computing Challenge
-(ALCC) allocations, but the CSC108 project operates exclusively in what the
-team has colloquially referred to as ``backfill mode'', which is outlined in
-Section~\ref{sec:deploying}. 
 \jhanote{Please consider moving the above to Section 3.}
+\seannote{The paragraph was moved to Section 3, and I wrote the following one
+to replace it.}
+As outlined in Section~\ref{subsec:panda-at-olcf}, the BigPanDA team operated
+using several OLCF project identifiers, including CSC108, a DD project which
+sought to take advantage of ``backfill mode'' in order to consume unutilized
+resources on Titan which would otherwise have gone to waste without affecting
+other projects' quality of service. In other words, CSC108 sought to use PanDA
+to use ``backfill mode'' consume idle resources on Titan without disturbing the
+rest of Titan's ecosystem. The focus of this section is to assess the degree to
+which CSC108 accomplished that goal and especially to analyze the impact the
+project made on Titan.
 
 \jhanote{there is a difference between ``idle'' and ``unutilized''. Need more
 rigour in the definition of the stated goals}
+\seannote{I admit I don't know the difference. What I generally intend is to
+refer to machine which are available to perform work but aren't working.}
 
-The goal of CSC108 was to consume idle resources on Titan which would
-otherwise have gone to waste, while making a good-faith effort not to disturb
-the rest of Titan's ecosystem. The focus of this section is to assess the
-degree to which CSC108 has accomplished this goal and especially to analyze
-the impact of the project on Titan.
-
-% SOMEWHERE, there needs to be discussion of the constraints that face CSC108,
-% and also there needs to be discussion of the different bins, somewhere before
-% the section in which I start to talk about bins. (Obviously.)
-
-% Somewhere, I probably also need to explain the ``rocks in a jar'' metaphor.
-
-Before proceeding, however, it is important to summarize the relevant policies
-at OLCF for running jobs on Titan. There are three queues on Titan: batch,
-debug, and killable. There is no actual backfill queue on Titan; instead,
-smaller jobs from each queue are scheduled into spaces that cannot be used by
-larger jobs. \jhanote{slightly misleading to claim there are three queues then
-to say immediately there is no backfill queue. Haven't we alread discussed
-this in Section 3?} The batch queue is the default queue for submitted jobs,
-and it is the only queue considered in this analysis. Jobs submitted to the
-batch queue are grouped into five ``bins'' according to the number of
-requested nodes, and each bin has a maximum wall time. The definitions and
-rules for each bin are shown in Table~\ref{tab:olcf-bins}. Jobs that request
-fewer nodes have correspondingly lesser maximum wall times. Nodes are assigned
-exclusively to one job at a time. Because Titan is a leadership class machine
-and priority is a function of wait time, the batch scheduler awards aging
-boosts to jobs in bins 1 and 2 in order to prioritize larger jobs over smaller
-ones. Once jobs in the batch queue begin to run, however, they will not be
-killed when new jobs arrive, regardless of their priority. Sometimes, jobs
-small enough to use currently idle resources on Titan are scheduled to run
-immediately, and this is what we refer to as ``backfill opportunity''. CSC108
-takes advantage of the ``showbf'' command in order to query the Moab scheduler
-directly for currently available backfill opportunity and then tailors its own
-submissions to Titan accordingly. CSC108 has a special policy applied to
-guarantee that its jobs run with lesser priority than all others on Titan, to
-ensure that its jobs consume only backfill resources. Finally, ``Titan core
-hours'' are the billable units used at OLCF; they convert at a rate of 30
-Titan core hours per 1 node hour.
+\jhanote{slightly misleading to claim there are three queues then to say
+immediately there is no backfill queue. Haven't we already discussed this in
+Section 3?}
+\seannote{It was confusing as written, so I moved the discussion of queues into
+Section 3.2. There was no backfill queue -- backfill was an optional feature
+that could be added to existing queues, and we played fast and loose in the
+past with how we referred to a ``queue'' that didn't actually exist.}
 
 As a convention, we will sometimes make use of a common scheduling metaphor in
 which jobs waiting to run on a computer are represented by rocks that are being
 used to fill a jar. Capability class jobs on Titan are the largest rocks, and
 the scheduler typically fills the remaining space around the largest rocks
-with smaller rocks. CSC108 attempts to fill whatever space remains, thanks
+with smaller rocks. CSC108 attempted to fill whatever space remains, thanks
 to its having been given the lowest possible priority.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Compression study}
 \label{subsec:compression-study}
 
-\jhanote{Please make the formulation of the statement more precise} Recall
-that the goal of CSC108 is to consume idle resources that will otherwise go to
-waste. 
-\jhanote{the following is a very strong statement. Discuss} As shown in
-Figure~\ref{fig:monthly-consumption}, CSC108 has successfully consumed
-hundreds of millions of core hours on Titan, and because there is no
-pre-emption of any kind on Titan, all resources that were consumed were
-guaranteed to have been idle. What remains to be shown is that these resources
-would otherwise have gone to waste. The simple bar plot shown in
-Figure~\ref{fig:jacks-slide} seems to show, at first glance, that utilization
-by CSC108 has increased at the same time that utilization by other projects
-has decreased, which is suggestive of competition for resources. As a simple
-test of the hypothesis that CSC108 has no effect on Titan, three years' worth
-of job traces from Titan were ``compressed'', with and without CSC108's jobs,
-as a way to measure ``displacement'' due to CSC108.
+\jhanote{Please make the formulation of the statement more precise}
+\seannote{I'm not sure I made it any better, but I tried.} Recall that
+the goal of CSC108 was to consume resources on Titan that would otherwise have
+remained unutilized, without decreasing the quality of service experienced by
+other projects on Titan. \jhanote{the following is a very strong statement.
+Discuss} \seannote{Discussed with more words, but it's one of those ``true by
+definition'' moments in a math proof, so I hope I'm capturing it in words.} As
+shown in Figure~\ref{fig:monthly-consumption}, CSC108 consumed hundreds of
+millions of core hours on Titan. Because there was no pre-emption in the batch
+queue on Titan during that time period, the Moab scheduler never ended running
+jobs in order to run other jobs with higher priority instead. Thus, all
+resources consumed on Titan by CSC108 were guaranteed to have been idle at the
+times that the project's jobs started to run.
+
+What remains to be shown, however, is that these resources would otherwise have
+gone to waste. The simple bar plot shown in Figure~\ref{fig:jacks-slide} seems
+to show, at first glance, that utilization by CSC108 has increased at the same
+time that utilization by other projects has decreased, which is suggestive of
+competition for resources. As a simple test of the null hypothesis that CSC108
+has no effect on Titan, three years' worth of job traces from Titan were
+``compressed'', with and without CSC108's jobs, as a way to measure
+``displacement'' due to CSC108.
 \jhanote{Hypothesis as currently formulated needs greater clarity: ``Has no
 effect on Titan'' is too casual and clearly wrong, because it does increase
-the utilization!}
-
+the utilization!} \seannote{I changed it to say ``null hypothesis''. It is
+definitely a null hypothesis. The problem then, I suppose, is the implication
+then that I will be seeking a p-value to test it.}
 
 \jhanote{Difficult to read /understand algorithm as is presented.}
+\seannote{I have updated to explain with more words and simpler pseudocode.}
 % For two-column wide figures use
 \begin{figure*}
 % Use the relevant command to insert your figure file.
@@ -117,15 +100,20 @@ into a SQLite database.
 
 What we mean by ``compressing'' job traces is rescheduling the jobs that ran
 on Titan while preserving the original execution order, under the assumption of
-100\% availability (all nodes up and running all the time). Doing this once
-while including CSC108's jobs and once with CSC108's jobs removed allows
-effects on throughput and utilization to be estimated simply, using the same
-logic as measuring the displacement of rocks in a jar by measuring the volume
-in the jar with and without those rocks. Throughput was defined as jobs
-completed per day, and utilization was defined as the percentage of available
-core hours which were consumed.
+100\% availability (all nodes up and running all the time). In order to
+estimate a measure of displacement, we reschedule the jobs once with CSC108's
+jobs included and then once with CSC108's jobs removed. The difference in end
+time will provide an idea about the ability of CSC108's jobs to fit precisely
+in the voids between other jobs. This idea is akin to Archimedes's famous
+insight to measure volume of an irregularly shaped object by measuring the
+difference between before and after it was submerged in water. This technique
+also allows effects on throughput and utilization to be estimated in a simple
+way, by simply computing them with and without CSC108's jobs included with the
+other job traces. Throughput was defined as jobs completed per day, and
+utilization was defined as the percentage of available core hours which were
+consumed.
 
-The rescheduling algorithm is shown as pseudo-code in
+The rescheduling algorithm is shown as pseudo-code in the form of Python in
 Listing~\ref{lst:rescheduling.py}.
 
 \lstinputlisting[language=Python,
@@ -134,8 +122,8 @@ Listing~\ref{lst:rescheduling.py}.
                 time.}]{rescheduling.py}
 
 The results, which are shown in Table~\ref{tab:compression-results}, suggest
-that the hypothesis that CSC108 has no effect on Titan should be rejected. If
-CSC108 had no effect, then the percent changes in time to completion,
+that the null hypothesis that CSC108 has no effect on Titan should be rejected.
+If CSC108 had no effect, then the percent changes in time to completion,
 throughput, and utilization would all have been zero. The 1.30\% increase in
 the time to completion demonstrates that CSC108's jobs displaced other
 projects' jobs in this study, but the 1.94\% change in utilization indicates
@@ -151,7 +139,8 @@ have consumed resources which would otherwise have gone to waste.``. Recall
 the statement ``must have consumed resources which would otherwise have gone
 to waste.`` is a corollary to the hypothesis that ``CSC108 does not impact
 Titan''... so you cannot use that to justify the hypothesis.}
-
+\seannote{I don't really understand this, so I will have to talk to you about
+it.}
 
 % For tables use
 \begin{table}
@@ -172,26 +161,28 @@ Utilization (percent)               &   92.36   &   94.15   &   1.94        \\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Simple linear relationships}
+\subsection{Searching for simple linear relationships}
 \label{subsec:simple-linear-relationships}
 
 \jhanote{relationships of what to what? is the result being used as the
 subsection title?}
+\seannote{I don't know what to call it. I looked across dozens of combinations
+of variables with ordinary least squares regression and never found anything
+conclusive. I had to give it a title of some kind. Naming is hard.}
 
-% So here, I need to present a bunch of results cleverly because I never found
-% any conclusive patterns.
+\jhanote{Please be specific about the ecosystem, viz., the QOS for other users
+as measured by their average wait time.} \jhanote{of what??} \jhanote{unclear opening. I think it needs rewrite.} \seannote{I rewrote it. It sounds similar but
+it has more details \ldots ?}
 
-Recall that the goal of CSC108 has been to consume idle resources on Titan
-which would otherwise have gone to waste, while also making a good faith
-effort not to disturb the rest of Titan's ecosystem. \jhanote{Please be
-specific about the ecosystem, viz., the QOS for other users as measured by
-their average wait time.} The results of
-Section~\ref{subsec:compression-study} suggested that CSC108 has satisfied
-part of this goal, but that it may have disturbed Titan's ecosystem. In this
-section, we detail our explorations to understand the impact of CSC108 on
-Titan and search for simple linear relationships \jhanote{of what??}
-especially direct and inverse relationships, by using ordinary least-squares
-regression. \jhanote{unclear opening. I think it needs rewrite.}
+Recall that the goal of CSC108 was to consume resources on Titan which would
+otherwise have gone unutilized, while not decreasing the quality of service for
+other projects on Titan. The results of Section~\ref{subsec:compression-study}
+suggested that CSC108 consumed resources which might have gone to waste, but
+that it also may have impacted other projects' quality of service. This section
+details further explorations to understand the impact of CSC108 on Titan by
+searching for simple linear relationships, especially direct and inverse
+relationships, between variables like bin size and indicators like wait times,
+throughput, and utilization, by using ordinary least-squares regression.
 
 The data used for this experiment include the same historical trace data used
 in Section~\ref{subsec:compression-study}, supplemented with daily availability
@@ -317,18 +308,17 @@ poor fit.
 
 Similar problems exist for the utilization results, but they raise one very
 interesting question. The plots shown in Figures~\ref{fig:utilization-all},
-\ref{fig:utilization-bin3}, and \ref{fig:utilization-bin4} all clearly suggest
-an inverse relationship, but \ref{fig:utilization-bin5} suggests a direct
-relationship, by virtue of its positive slope. Unfortunately, once again, the
-numbers show that linear relationships explain very little of the variability
-in the data, as shown in Table~\ref{tab:utilization-params}, because the
-$\text{R}^2$ values are very close to 0, on a scale of 0 to 1. This raises the
-question, what has caused the sign change? It can be tempting to assign blame
-and credit in such a case, such as to say that CSC108's consumption in bin 5
-causes an increase in overall utilization, while its consumption in other bins
-decreases overall utilization. Here, however, we are only looking for
-relationships in the data, and the goodness-of-fit values are uniformly poor. 
+\ref{fig:utilization-bin3}, and \ref{fig:utilization-bin4} are all suggestive
+of an inverse relationship, but \ref{fig:utilization-bin5} suggests a direct
+relationship, by virtue of its positive slope. The $R^2$ values show that
+linear relationships explain very little of the variability in the data,
+however, as shown in Table~\ref{tab:utilization-params}, because the
+$\text{R}^2$ values are very close to 0, on a scale of 0 to 1. Thus, there are
+no simple linear relationships at work here, because the goodness-of-fit values
+are consistently close to 0.
 \jhanote{Previous paragraph is casual and not precise. Needs fixing.}
+\seannote{Agreed. I took out judgmental language and moved the opinions to be
+stored in the Summary section for now.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Blocking probability}
