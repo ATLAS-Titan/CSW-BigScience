@@ -16,3 +16,12 @@
 \else
 \newcommand{\jhanote}[1]{}
 \fi
+
+\newif\ifdraft
+\drafttrue
+\ifdraft
+\newcommand{\seannote}[1]{ {\textcolor{blue} { ***Sean: #1 }}}
+\else
+\newcommand{\seannote}[1]{}
+\fi
+

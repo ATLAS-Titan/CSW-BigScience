@@ -4,7 +4,7 @@
 %
 %   This is the fourth section of the paper.
 %
-%                                                   ~~ last updated 16 Sep 2019
+%                                                   ~~ last updated 22 Sep 2019
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -59,30 +59,6 @@ guarantee that its jobs run with lesser priority than all others on Titan, to
 ensure that its jobs consume only backfill resources. Finally, ``Titan core
 hours'' are the billable units used at OLCF; they convert at a rate of 30
 Titan core hours per 1 node hour.
-
-%%%
-% OLCF BINS TABLE
-%%%
-% For tables use
-\begin{table}
-% table caption is above the table
-\caption{OLCF policies sort jobs into numbered bins based on the requested
-number of nodes, and each bin has its own set of constraints.}
-\label{tab:olcf-bins}       % Give a unique label
-% For LaTeX tables use
-\begin{tabular}{crrr}
-\hline\noalign{\smallskip}
-Bin & Requested Nodes   & Maximum Wall Time &   Aging Boost \\
-\noalign{\smallskip}\hline\noalign{\smallskip}
-1   &   11,250 - 18,688 &   24 hours        &   15 days     \\
-2   &    3,750 - 11,249 &   24 hours        &    5 days     \\
-3   &       313 - 3,749 &   12 hours        &         0     \\
-4   &         126 - 312 &    6 hours        &         0     \\
-5   &           1 - 125 &    2 hours        &         0     \\
-\noalign{\smallskip}\hline
-\end{tabular}
-\end{table}
-%%%%
 
 As a convention, we will sometimes make use of a common scheduling metaphor in
 which jobs waiting to run on a computer are represented by rocks that are being
