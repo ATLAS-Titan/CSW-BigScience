@@ -8,31 +8,29 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\jhanote{Please consider moving the above to Section 3.}
-\seannote{The paragraph was moved to Section 3, and I wrote the following one
-to replace it.}
 As outlined in Section~\ref{subsec:panda-at-olcf}, the BigPanDA team operated
 using several OLCF project identifiers, including CSC108, a DD project which
 sought to take advantage of ``backfill mode'' in order to consume unutilized
 resources on Titan which would otherwise have gone to waste without affecting
 other projects' quality of service. In other words, CSC108 sought to use PanDA
-to use ``backfill mode'' consume idle resources on Titan without disturbing the
-rest of Titan's ecosystem. The focus of this section is to assess the degree to
-which CSC108 accomplished that goal and especially to analyze the impact the
-project made on Titan.
+to use ``backfill mode'' consume idle resources on Titan without disturbing
+the rest of Titan's ecosystem. The focus of this section is to assess the
+degree to which CSC108 accomplished that goal and especially to analyze the
+impact the project made on Titan.
 
 \jhanote{there is a difference between ``idle'' and ``unutilized''. Need more
 rigour in the definition of the stated goals}
 \seannote{I admit I don't know the difference. What I generally intend is to
 refer to machine which are available to perform work but aren't working.}
+\jhanote{Idle is a state when not running. Underutilized is a ``response'' measured against a notion of adequate or desired utilization.}
 
-\jhanote{slightly misleading to claim there are three queues then to say
-immediately there is no backfill queue. Haven't we already discussed this in
-Section 3?}
-\seannote{It was confusing as written, so I moved the discussion of queues into
-Section 3.2. There was no backfill queue -- backfill was an optional feature
-that could be added to existing queues, and we played fast and loose in the
-past with how we referred to a ``queue'' that didn't actually exist.}
+% \jhanote{slightly misleading to claim there are three queues then to say
+% immediately there is no backfill queue. Haven't we already discussed this in
+% Section 3?}
+% \seannote{It was confusing as written, so I moved the discussion of queues into
+% Section 3.2. There was no backfill queue -- backfill was an optional feature
+% that could be added to existing queues, and we played fast and loose in the
+% past with how we referred to a ``queue'' that didn't actually exist.}
 
 As a convention, we will sometimes make use of a common scheduling metaphor in
 which jobs waiting to run on a computer are represented by rocks that are being
@@ -45,36 +43,39 @@ to its having been given the lowest possible priority.
 \subsection{Compression study}
 \label{subsec:compression-study}
 
-\jhanote{Please make the formulation of the statement more precise}
-\seannote{I'm not sure I made it any better, but I tried.} Recall that
-the goal of CSC108 was to consume resources on Titan that would otherwise have
-remained unutilized, without decreasing the quality of service experienced by
-other projects on Titan. \jhanote{the following is a very strong statement.
-Discuss} \seannote{Discussed with more words, but it's one of those ``true by
-definition'' moments in a math proof, so I hope I'm capturing it in words.} As
-shown in Figure~\ref{fig:monthly-consumption}, CSC108 consumed hundreds of
-millions of core hours on Titan. Because there was no pre-emption in the batch
-queue on Titan during that time period, the Moab scheduler never ended running
-jobs in order to run other jobs with higher priority instead. Thus, all
-resources consumed on Titan by CSC108 were guaranteed to have been idle at the
-times that the project's jobs started to run.
+% \jhanote{Please make the formulation of the statement more precise}
+% \seannote{I'm not sure I made it any better, but I tried.} 
 
-What remains to be shown, however, is that these resources would otherwise have
-gone to waste. The simple bar plot shown in Figure~\ref{fig:jacks-slide} seems
-to show, at first glance, that utilization by CSC108 has increased at the same
-time that utilization by other projects has decreased, which is suggestive of
-competition for resources. As a simple test of the null hypothesis that CSC108
-has no effect on Titan, three years' worth of job traces from Titan were
-``compressed'', with and without CSC108's jobs, as a way to measure
-``displacement'' due to CSC108.
+Recall that the goal of CSC108 was to consume resources on Titan that would
+otherwise have remained unutilized, without decreasing the quality of service
+experienced by other projects on Titan. \jhanote{the following is a very
+strong statement. Discuss} \seannote{Discussed with more words, but it's one
+of those ``true by definition'' moments in a math proof, so I hope I'm
+capturing it in words.} As shown in Figure~\ref{fig:monthly-consumption},
+CSC108 consumed hundreds of millions of core hours on Titan. Because there was
+no pre-emption in the batch queue on Titan during that time period, the Moab
+scheduler never ended running jobs in order to run other jobs with higher
+priority instead. Thus, all resources consumed on Titan by CSC108 were
+guaranteed to have been idle at the times that the project's jobs started to
+run.
+
+What remains to be shown, however, is that these resources would otherwise
+have gone to waste. The simple bar plot shown in Figure~\ref{fig:jacks-slide}
+seems to show, at first glance, that utilization by CSC108 has increased at
+the same time that utilization by other projects has decreased, which is
+suggestive of competition for resources. As a simple test of the null
+hypothesis that CSC108 has no effect on Titan, three years' worth of job
+traces from Titan were ``compressed'', with and without CSC108's jobs, as a
+way to measure ``displacement'' due to CSC108.
+
 \jhanote{Hypothesis as currently formulated needs greater clarity: ``Has no
 effect on Titan'' is too casual and clearly wrong, because it does increase
 the utilization!} \seannote{I changed it to say ``null hypothesis''. It is
 definitely a null hypothesis. The problem then, I suppose, is the implication
 then that I will be seeking a p-value to test it.}
 
-\jhanote{Difficult to read /understand algorithm as is presented.}
-\seannote{I have updated to explain with more words and simpler pseudocode.}
+% \jhanote{Difficult to read /understand algorithm as is presented.}
+% \seannote{I have updated to explain with more words and simpler pseudocode.}
 % For two-column wide figures use
 \begin{figure*}
 % Use the relevant command to insert your figure file.
@@ -170,9 +171,9 @@ subsection title?}
 of variables with ordinary least squares regression and never found anything
 conclusive. I had to give it a title of some kind. Naming is hard.}
 
-\jhanote{Please be specific about the ecosystem, viz., the QOS for other users
-as measured by their average wait time.} \jhanote{of what??} \jhanote{unclear opening. I think it needs rewrite.} \seannote{I rewrote it. It sounds similar but
-it has more details \ldots ?}
+% \jhanote{Please be specific about the ecosystem, viz., the QOS for other users
+% as measured by their average wait time.} \jhanote{of what??} \jhanote{unclear opening. I think it needs rewrite.} \seannote{I rewrote it. It sounds similar but
+% it has more details \ldots ?}
 
 Recall that the goal of CSC108 was to consume resources on Titan which would
 otherwise have gone unutilized, while not decreasing the quality of service for
