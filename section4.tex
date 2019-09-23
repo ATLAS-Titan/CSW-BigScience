@@ -246,12 +246,12 @@ conclusive. I had to give it a title of some kind. Naming is hard.}
 Recall that the goal of CSC108 was to consume resources on Titan which would
 otherwise have gone unutilized, while not decreasing the quality of service for
 other projects on Titan. The results of Section~\ref{subsec:rescheduling-study}
-suggested that CSC108 consumed resources which might have gone to waste, but
-that it also may have impacted other projects' quality of service. This section
-details further explorations to understand the impact of CSC108 on Titan by
-searching for simple linear relationships, especially direct and inverse
-relationships, between variables like bin size and indicators like wait times,
-throughput, and utilization, by using ordinary least-squares regression.
+suggested that some of the resources CSC108 consumed might have gone to waste,
+but that CSC108 also may have impacted other projects' quality of service. This
+section details further explorations to understand the impact of CSC108 on
+Titan by searching for simple linear relationships, especially direct and
+inverse relationships, between variables like bin size and indicators like wait
+times, throughput, and utilization, by using ordinary least-squares regression.
 
 The data used for this experiment include the same historical trace data used
 in Section~\ref{subsec:rescheduling-study}, supplemented with daily availability
@@ -396,7 +396,7 @@ stored in the Summary section for now.}
 The previous subsection analyzed traces for correlations between global set of
 all jobs on Titan and CSC108 jobs. Although a useful exercise, the results are
 at best inconclusive due to intrinsic noisiness which makes discerning
-correlations even harder. In this section, we  try to model the underlying
+correlations even harder. In this section, we try to model the underlying
 process with the objective of moving beyond correlations and inferring casual
 relationships between CSC108 scheduling events and a measure of impact
 (utilization, wait time or throughput).
@@ -436,13 +436,15 @@ of the number of blocking events that occur, and dividing that count by the
 number of total sample points yields a quantity we call a ``blocking
 probability''.
 
-Informally, blocking probability represents the proportion of samples 
-\jhanote{sample of what? time? intervals possibly better term?} in which a
-block occurred. The idea here is that when blocking probability increases, it
-indicates that the system is experiencing greater competition for its
-resources. Blocking probability does not predict the probability that a
-particular job will be blocked, but rather the probability that a given sample
-will contain a block.
+Informally, blocking probability represents the proportion of live samples from
+Moab \jhanote{sample of what? time? intervals possibly better term?}
+\seannote{clarified it, but yes, they'll either have to be samples or
+snapshots, and I did previously mention both terms while explaining how the
+data were collected.} in which a block occurred. The idea here is that when
+blocking probability increases, it indicates that the system is experiencing
+greater competition for its resources. Blocking probability does not predict
+the probability that a particular job will be blocked, but rather the
+probability that a given sample will contain a block.
 
 To apply this abstract model to a real data set, we have initially defined the
 resources in one-dimensional ``spatial'' and ``temporal'' manners, by
