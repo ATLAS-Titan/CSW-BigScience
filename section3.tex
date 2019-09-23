@@ -183,15 +183,15 @@ the necessary input data from the ATLAS Grid, and once all the necessary data
 was transferred, the pilot submitted jobs to Titan using an MPI wrapper. 
 
 The MPI wrappers were Python scripts that were typically workload-specific,
-since they were responsible for setup of the workload environment, organization
-of per-rank worker directories, rank-specific data management, optional input
-parameter modification, and cleanup on exit. When activated on worker nodes,
-each copy of the wrapper script would, after completing the necessary
-preparations, start the actual payload as a sub-process and wait until its
-completion. This approach allowed for flexible execution of a wide spectrum of
-grid-centric workloads on parallel computational platforms such as Titan
-\cite{htchpc2017converging}. \seannote{I could not find the ``HTC on HPC'' eScience paper in the
-RADICAL bib file.}
+since they were responsible for setup of the workload environment,
+organization of per-rank worker directories, rank-specific data management,
+optional input parameter modification, and cleanup on exit. When activated on
+worker nodes, each copy of the wrapper script would, after completing the
+necessary preparations, start the actual payload as a sub-process and wait
+until its completion. This approach allowed for flexible execution of a wide
+spectrum of grid-centric workloads on parallel computational platforms such as
+Titan \cite{htchpc2017converging}. \seannote{I could not find the ``HTC on
+HPC'' eScience paper in the RADICAL bib file.}
 
 Because ATLAS detector simulations were executed on Titan as discrete jobs
 submitted via MPI wrappers, parallel performance could scale nearly linearly,
