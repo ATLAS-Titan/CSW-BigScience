@@ -19,7 +19,7 @@ incorporate the Titan supercomputer at the Oak Ridge Leadership Computing
 Facility (OLCF) as a grid site for the Worldwide LHC Compute Grid, and in 2019,
 Titan was decommissioned. This section describes the deployment of the PanDA
 WMS on Titan as well as the relevant policies at OLCF and PanDA's integration
-with the Moab workload manager \cite{}. PanDA operated on Titan in two very
+with the Moab workload manager \cite{moab}. PanDA operated on Titan in two very
 different modes of operation, colloquially termed ``batch queue mode'' and
 ``backfill mode''.  In ``batch queue mode'', PanDA interacted with Titan's Moab
 scheduler in a static, non-adaptive manner to execute the workload. In
@@ -168,7 +168,7 @@ for data transfer to and from Titan, but in principle any ATLAS site could have
 been chosen. Figure~\ref{fig:implementation} shows a schematic view of PanDA's
 interface with Titan. The pilots submitted ATLAS payloads to the worker nodes
 using the local batch system via the Simple API for Grid Applications (SAGA)
-interface \ref{radical-saga_url}. SAGA was also used for monitoring and
+interface \cite{saga_cmst}. SAGA was also used for monitoring and
 management of PanDA jobs running on Titan's worker nodes.
 
 One interesting feature of the deployment was its ability to collect and use
@@ -190,8 +190,20 @@ worker nodes, each copy of the wrapper script would, after completing the
 necessary preparations, start the actual payload as a sub-process and wait
 until its completion. This approach allowed for flexible execution of a wide
 spectrum of grid-centric workloads on parallel computational platforms such as
-Titan \cite{htchpc2017converging}. \seannote{I could not find the ``HTC on
-HPC'' eScience paper in the RADICAL bib file.}
+Titan \cite{htchpc2017converging}. 
+
+% \seannote{I could not find the ``HTC on
+% HPC'' eScience paper in the RADICAL bib file.}
+% =======
+% since they were responsible for setup of the workload environment, organization
+% of per-rank worker directories, rank-specific data management, optional input
+% parameter modification, and cleanup on exit. When activated on worker nodes,
+% each copy of the wrapper script would, after completing the necessary
+% preparations, start the actual payload as a sub-process and wait until its
+% completion. This approach allowed for flexible execution of a wide spectrum of
+% grid-centric workloads on parallel computational platforms such as Titan
+% \cite{htchpc2017converging}.
+% >>>>>>> 2a999b1b3c2003434a6f6a56534f861b0f00990a
 
 Because ATLAS detector simulations were executed on Titan as discrete jobs
 submitted via MPI wrappers, parallel performance could scale nearly linearly,

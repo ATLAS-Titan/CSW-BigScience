@@ -9,12 +9,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 As outlined in Section~\ref{subsec:panda-at-olcf}, the BigPanDA team operated
-using several OLCF project identifiers, including CSC108, a DD project which
+under several OLCF project identifiers, including CSC108, a DD project which
 sought to take advantage of ``backfill mode'' in order to consume unutilized
-resources on Titan which would otherwise have gone to waste without affecting
-other projects' quality of service. In other words, CSC108 sought to use PanDA
-to use ``backfill mode'' consume idle resources on Titan without disturbing
-the rest of Titan's ecosystem. The focus of this section is to assess the
+resources on Titan which would otherwise have gone to waste, without affecting
+other projects' quality of service. The focus of this section is to assess the
 degree to which CSC108 accomplished that goal and especially to analyze the
 impact the project made on Titan.
 
@@ -40,33 +38,45 @@ with smaller rocks. CSC108 attempted to fill whatever space remains, thanks
 to its having been given the lowest possible priority.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Compression study}
-\label{subsec:compression-study}
+\subsection{Rescheduling study}
+\label{subsec:rescheduling-study}
 
 % \jhanote{Please make the formulation of the statement more precise}
 % \seannote{I'm not sure I made it any better, but I tried.} 
 
-Recall that the goal of CSC108 was to consume resources on Titan that would
-otherwise have remained unutilized, without decreasing the quality of service
-experienced by other projects on Titan. \jhanote{the following is a very
-strong statement. Discuss} \seannote{Discussed with more words, but it's one
-of those ``true by definition'' moments in a math proof, so I hope I'm
-capturing it in words.} As shown in Figure~\ref{fig:monthly-consumption},
-CSC108 consumed hundreds of millions of core hours on Titan. Because there was
-no pre-emption in the batch queue on Titan during that time period, the Moab
-scheduler never ended running jobs in order to run other jobs with higher
-priority instead. Thus, all resources consumed on Titan by CSC108 were
-guaranteed to have been idle at the times that the project's jobs started to
-run.
+\jhanote{the following is a very strong statement. Discuss}
 
-What remains to be shown, however, is that these resources would otherwise
-have gone to waste. The simple bar plot shown in Figure~\ref{fig:jacks-slide}
-seems to show, at first glance, that utilization by CSC108 has increased at
-the same time that utilization by other projects has decreased, which is
-suggestive of competition for resources. As a simple test of the null
-hypothesis that CSC108 has no effect on Titan, three years' worth of job
-traces from Titan were ``compressed'', with and without CSC108's jobs, as a
-way to measure ``displacement'' due to CSC108.
+Recall that the goal of CSC108 was to consume unutilized resources on Titan
+that would otherwise have remained unutilized, without decreasing the quality
+of service experienced by other projects on Titan.  As shown in
+Figure~\ref{fig:monthly-consumption}, CSC108 consumed hundreds of millions of
+core hours on Titan. These resources are guaranteed to have been unutilized at
+the time of that CSC108's jobs were scheduled because during that time period,
+there was no pre-emption in the batch queue on Titan. Moreover, even if Moab
+had ended running jobs in order to run other jobs with higher priorities
+instead, CSC108's jobs would never have been used to replace existing jobs
+because of the custom policies in place that guaranteed CSC108 would always
+have the lowest priority on Titan. Therefore, CSC108 consumed millions of core
+hours on Titan, all of which were guaranteed to have been unutilized at the
+time that CSC108's jobs were scheduled.
+
+It is a more difficult problem, however, to prove that these unutilized
+resources on Titan would have remained unutilized and therefore ``gone to
+waste''. For example, although the resources were unutilized at the time that
+CSC108's jobs were scheduled, if other projects submitted jobs to Titan before
+CSC108's jobs completed, then CSC108's jobs could be said to have ``blocked''
+other jobs from running. This competition for resources would immediately imply
+that, although some of the resources consumed by CSC108 would have gone to
+waste, the rest of those resources would not have been wasted.
+
+The simple bar plot shown in Figure~\ref{fig:jacks-slide} seems to show, at
+first glance, that utilization by CSC108 has increased at the same time that
+utilization by other projects has decreased, which is suggestive of competition
+for resources. As a simple way to investigate this competition for resources,
+we conducted an experiment in which three years' worth of job traces from Titan
+were rescheduled, with and without CSC108's jobs, so that we could estimate
+the impact of CSC108's jobs on wait times, throughput, and utilization for
+Titan.
 
 \jhanote{Hypothesis as currently formulated needs greater clarity: ``Has no
 effect on Titan'' is too casual and clearly wrong, because it does increase
@@ -89,6 +99,31 @@ on Titan (shown in blue).}
 \label{fig:jacks-slide}
 \end{figure*}
 
+What we mean by ``compressing'' job traces is rescheduling the jobs that ran
+on Titan while preserving the original execution order, under the assumption of
+100\% node availability (all nodes up and running all the time). 
+
+In order to reschedule the jobs, we made a simplifying assumption of 100\% node
+availability, meaning that we assumed all of Titan's nodes were up and running
+all the time. Original job execution order was also preserved. We rescheduled
+the jobs once with CSC108's jobs included and then once with CSC108's jobs
+removed, using the algorithm shown in Listing~\ref{lst:rescheduling.py} as
+pseudo-code in the form of Python.
+
+The idea here is akin to Archimedes's famous insight to measure the volume of
+an irregularly shaped solid by measuring the difference in the volume of a
+fluid before and after submerging the solid. In this case, however, we are
+trying to evaluate the fluid, because we are most interested in the fluid's
+ability to fill the irregular ``spaces'' between the other projects' jobs. The
+difference in the completion times for the last scheduled job, with and without
+CSC108, provide insight about the ability of CSC108's jobs to fit precisely
+in the spaces between other jobs. This rescheduling technique also allows
+CSC108's jobs' effects on throughput and utilization to be estimated in a
+simple way, by simply computing them with and without CSC108's jobs included
+with the other job traces. Throughput was defined as jobs completed per day,
+and utilization was defined as the percentage of available core hours which
+were consumed.
+
 The data used for this experiment are historical traces for all jobs on Titan
 during the years 2016, 2017, and 2018. These data were provided in anonymized
 form by OLCF so that job, project, and user identifiers were included only for
@@ -99,40 +134,71 @@ written in Python using the well-known Matplotlib, NumPy, and SciPy libraries
 via Anaconda. Data were originally provided as text files but were imported
 into a SQLite database.
 
-What we mean by ``compressing'' job traces is rescheduling the jobs that ran
-on Titan while preserving the original execution order, under the assumption of
-100\% availability (all nodes up and running all the time). In order to
-estimate a measure of displacement, we reschedule the jobs once with CSC108's
-jobs included and then once with CSC108's jobs removed. The difference in end
-time will provide an idea about the ability of CSC108's jobs to fit precisely
-in the voids between other jobs. This idea is akin to Archimedes's famous
-insight to measure volume of an irregularly shaped object by measuring the
-difference between before and after it was submerged in water. This technique
-also allows effects on throughput and utilization to be estimated in a simple
-way, by simply computing them with and without CSC108's jobs included with the
-other job traces. Throughput was defined as jobs completed per day, and
-utilization was defined as the percentage of available core hours which were
-consumed.
-
-The rescheduling algorithm is shown as pseudo-code in the form of Python in
-Listing~\ref{lst:rescheduling.py}.
-
 \lstinputlisting[language=Python,
     label={lst:rescheduling.py},
     caption={Job traces are assumed to be sorted in order of original start
                 time.}]{rescheduling.py}
 
-The results, which are shown in Table~\ref{tab:compression-results}, suggest
-that the null hypothesis that CSC108 has no effect on Titan should be rejected.
-If CSC108 had no effect, then the percent changes in time to completion,
-throughput, and utilization would all have been zero. The 1.30\% increase in
-the time to completion demonstrates that CSC108's jobs displaced other
-projects' jobs in this study, but the 1.94\% change in utilization indicates
-that CSC108's jobs must have consumed resources which would otherwise have gone
-to waste. These results suggest that CSC108 has impacted Titan both positively
-and negatively in real life, and that the positive impact may justify the
-negative. More importantly, however, these results suggest that CSC108 has
-successfully consumed idle resources which would otherwise have gone to waste.
+The results, which are summarized in Table~\ref{tab:rescheduling-results}, show
+that including CSC108's jobs when rescheduling results in the simulation taking
+13.3 additional days of simulation time, which represents a 1.30\% increase in
+the total time to completion. Throughput increases by 190.26 jobs per day,
+which represents a 14.36\% increase, and utilization increases from 92.36\% to
+94.15\%, which is a 1.94\% increase when CSC108's jobs are included versus when
+they are omitted.
+
+If CSC108's jobs fit perfectly within the spaces between the other projects'
+jobs, then we would expect there to be no difference between the simulation's
+times to completion with and without CSC108's jobs. The simulation observed a
+1.30\% increase in time to completion, however, which indicates that CSC108's
+jobs did not fit perfectly within the spaces in the simulation, and this
+suggests that CSC108's jobs do not fit perfectly within the spaces in real
+life. This also serves as an estimate for the impact of CSC108's jobs on the
+wait times experienced by other projects' jobs on Titan, because an increase of
+1.30\% over a three-year period represents an average of sorts for shorter
+time periods. This result suggests that CSC108's jobs may impact other jobs on
+Titan by increasing their wait times.
+
+If CSC108's jobs fit perfectly within the spaces between other projects' jobs,
+then we would expect to observe an increase in throughput, which is defined
+here as jobs completed per day, because every CSC108 job that completed would
+represent one more job that would not have completed if CSC108's jobs had been
+removed. The simulation observed a 14.36\% increase to throughput, but this
+number is ambiguous when evaluated on its own. For example, the same number of
+Titan core hours can be consumed as one large job or a large number of small
+jobs, but in the latter case, throughput may be considerably higher.
+
+Finally, if CSC108's jobs fit perfectly within the spaces between the other
+projects' jobs, then we would expect to observe an increase in utilization,
+because all utilization by CSC108's jobs would represent utilization of
+resources which would otherwise have remained unutilized. The simulation
+observed a 1.94\% increase in utilization, but like throughput, this number is
+also ambiguous when evaluated on its own. For example, an increase in
+utilization could also occur in a scenario where CSC108 was using 100\% of
+Titan, causing all other projects to wait.
+
+The results in Table~\ref{tab:rescheduling-results} do imply, however, that
+some of the resources consumed by CSC108's jobs in the simulation would have
+gone to waste. This is because the product of the time to completion and the
+utilization can be used to calculate the total amount of resources consumed
+during each simulation run. Without CSC108's jobs included, the remaining jobs
+required 1021.2 days of simulation time on Titan to complete, and they consumed
+92.36\% of Titan's resources during that time; this is an equivalent amount of
+work, when redistributed, to consuming 943.18 days of 100\% of Titan's
+resources. By a similar calculation, 973.98 Titan-days of computation were
+consumed when CSC108's jobs were included, and this implies that CSC108's jobs
+were responsible for 30.8 Titan-days of resource consumption. Because the two
+runs' times to completion differed by only 13.3 days, it is impossible for
+CSC108 not to have used at least some of the resources which would have gone to
+waste.
+
+So, while it is difficult to label exactly which resources would have gone to
+waste and when, the simulation results suggest that some non-zero portion of
+the resources consumed by CSC108 would have gone to waste. The simulation
+results also indicated that CSC108's jobs did not fit perfectly within the
+spaces between the other projects' jobs, which suggests that CSC108 ``blocks''
+other projects some of the time and that some non-zero portion of the resources
+consumed by CSC108 would not have gone to waste.
 
 \jhanote{Need more set-up: why do we choose these three metrics? Define them in text too? Contextualize 1.3\% (collective) versus fluctuation per individual
 jobs in queue. Once again, the following claim / statement is wrong: ``''must
@@ -140,14 +206,16 @@ have consumed resources which would otherwise have gone to waste.``. Recall
 the statement ``must have consumed resources which would otherwise have gone
 to waste.`` is a corollary to the hypothesis that ``CSC108 does not impact
 Titan''... so you cannot use that to justify the hypothesis.}
-\seannote{I don't really understand this, so I will have to talk to you about
-it.}
+\seannote{I killed off the use of language related to a ``hypothesis'' to try
+to clean things up, and I used a new data-based argument for why the simulation
+suggests that CSC108 partially uses resources which would otherwise have gone
+to waste.}
 
 % For tables use
 \begin{table}
 % table caption is above the table
-\caption{Compression study results}
-\label{tab:compression-results}       % Give a unique label
+\caption{Rescheduling study results}
+\label{tab:rescheduling-results}       % Give a unique label
 % For LaTeX tables use
 \begin{tabular}{lrrr}
 \hline\noalign{\smallskip}
@@ -177,16 +245,16 @@ conclusive. I had to give it a title of some kind. Naming is hard.}
 
 Recall that the goal of CSC108 was to consume resources on Titan which would
 otherwise have gone unutilized, while not decreasing the quality of service for
-other projects on Titan. The results of Section~\ref{subsec:compression-study}
-suggested that CSC108 consumed resources which might have gone to waste, but
-that it also may have impacted other projects' quality of service. This section
-details further explorations to understand the impact of CSC108 on Titan by
-searching for simple linear relationships, especially direct and inverse
-relationships, between variables like bin size and indicators like wait times,
-throughput, and utilization, by using ordinary least-squares regression.
+other projects on Titan. The results of Section~\ref{subsec:rescheduling-study}
+suggested that some of the resources CSC108 consumed might have gone to waste,
+but that CSC108 also may have impacted other projects' quality of service. This
+section details further explorations to understand the impact of CSC108 on
+Titan by searching for simple linear relationships, especially direct and
+inverse relationships, between variables like bin size and indicators like wait
+times, throughput, and utilization, by using ordinary least-squares regression.
 
 The data used for this experiment include the same historical trace data used
-in Section~\ref{subsec:compression-study}, supplemented with daily availability
+in Section~\ref{subsec:rescheduling-study}, supplemented with daily availability
 data for Titan provided by OLCF for the same years, 2016-2018. The experimental
 programs were written in Python using the well-known Matplotlib, NumPy, SciPy,
 and scikit-learn libraries via Anaconda. Data were originally provided as text
@@ -328,7 +396,7 @@ stored in the Summary section for now.}
 The previous subsection analyzed traces for correlations between global set of
 all jobs on Titan and CSC108 jobs. Although a useful exercise, the results are
 at best inconclusive due to intrinsic noisiness which makes discerning
-correlations even harder. In this section, we  try to model the underlying
+correlations even harder. In this section, we try to model the underlying
 process with the objective of moving beyond correlations and inferring casual
 relationships between CSC108 scheduling events and a measure of impact
 (utilization, wait time or throughput).
@@ -343,7 +411,7 @@ resources even in the presence of available resources. A systematic analysis
 of CSC108 has the potential to determine its impact on non-CSC108 jobs.
 
 The data used for this experiment include the same historical trace data used
-in Section~\ref{subsec:compression-study} and the daily availability
+in Section~\ref{subsec:rescheduling-study} and the daily availability
 data for Titan used in Section~\ref{subsec:simple-linear-relationships}, but
 this time are supplemented with live snapshot data of the system queue for
 Titan. Snapshots were gathered by sampling live data from the Moab scheduler by
@@ -368,13 +436,15 @@ of the number of blocking events that occur, and dividing that count by the
 number of total sample points yields a quantity we call a ``blocking
 probability''.
 
-Informally, blocking probability represents the proportion of samples 
-\jhanote{sample of what? time? intervals possibly better term?} in which a
-block occurred. The idea here is that when blocking probability increases, it
-indicates that the system is experiencing greater competition for its
-resources. Blocking probability does not predict the probability that a
-particular job will be blocked, but rather the probability that a given sample
-will contain a block.
+Informally, blocking probability represents the proportion of live samples from
+Moab \jhanote{sample of what? time? intervals possibly better term?}
+\seannote{clarified it, but yes, they'll either have to be samples or
+snapshots, and I did previously mention both terms while explaining how the
+data were collected.} in which a block occurred. The idea here is that when
+blocking probability increases, it indicates that the system is experiencing
+greater competition for its resources. Blocking probability does not predict
+the probability that a particular job will be blocked, but rather the
+probability that a given sample will contain a block.
 
 To apply this abstract model to a real data set, we have initially defined the
 resources in one-dimensional ``spatial'' and ``temporal'' manners, by
