@@ -3,71 +3,101 @@
 %-  section1.tex ~~
 %                                                   ~~ last updated 24 Sep 2018
 
+
+Traditionally, the ATLAS experiment at the Large Hadron Collider (LHC) at CERN
+has utilized distributed resources as provided by the Worldwide LHC Compute
+Grid (WLCG) to support data distribution and enable the simulation of events.
+The WLCG is the world's largest computing grid, boasting more than 1 million
+computer cores and 1 exabyte of storage combined from more than 170 individual
+computing centers in 42 countries. ATLAS experiment uses this geographically
+distributed grid to process, simulate, and analyze its data, which total more
+than 350 petabytes. Notwithstanding these successes, the need for simulation
+and analysis continue to grow and in the absence of paradigmatic changes will
+overwhelm the expected capacity of WLCG computing facilities, or unless the
+range and precision of physics studies are curtailed.
+
+Driven by an incessantly growing demand for computational resources, as well
+as motivated by the supply and availability of leadership class computers
+which have historically have been utilized for few large-scale simulations
+tasks, a collaborative project between BigPanda team of ATLAS researchers and
+the DOE's Oak Ridge Leadership Computing Facility (OLCF) was established to
+explore if and how leadership class computers could be utilized to meet the
+demand. The two primary intellectual drivers were: (1) Can leadership
+computing facilities support workloads that historically used distributed
+high-throughput resources? (2) Can workload management systems that were
+designed and implemented to support distributed high throughput computing
+(HTC) support the efficient execution of workloads on leadership class
+platforms?
+
 The Production and Distributed Analysis (PanDA) software was originally
-developed as a High Throughput Computing (HTC) workload management system (WMS)
-on distributed grid resources for the ATLAS experiment at the Large Hadron
-Collider (LHC) at CERN. Traditionally, the ATLAS experiment at LHC has utilized
-distributed resources as provided by the Worldwide LHC Compute Grid (WLCG) to
-support data distribution and enable the simulation of events. The WLCG is the
-world's largest computing grid, boasting more than 1 million computer cores and
-1 exabyte of storage combined from more than 170 individual computing centers
-in 42 countries. ATLAS experiment uses this geographically distributed grid to
-process, simulate, and analyze its data, which total more than 350 petabytes.
-After the early success in discovering a new particle consistent with the
-long-awaited Higgs boson, ATLAS continued taking the precision measurements
-necessary for further discoveries during Run 2, which came to an end in
-December 2018. Especially in light of the future Run 3 as well as the High
-Luminosity LHC (HL-LHC) project, it is obvious that the need for simulation and
-analysis will overwhelm the expected capacity of WLCG computing facilities
-unless the range and precision of physics studies are curtailed.
+developed as a High Throughput Computing (HTC) workload management system
+(WMS) on distributed grid resources for the ATLAS experiment. We describe the
+architectural, algorithmic, and software extensions in order to prepare the
+PanDA WMS for Titan at OLCF, which allowed ATLAS to consume more than 620
+million Titan core hours during three years. We will discuss the extensions to
+PanDA that allowed it to interact with Titan's Moab resource manager in two
+distinct operational modes: a ``batch queue mode'' that used traditional
+allocations to consume 200 million core hours, and a ``backfill mode'' that
+opportunistically consumed unutilized resources totaling more than 420 million
+core hours. For the traditional mode, we will describe new techniques that
+were implemented to shape large jobs for consuming DOE Advanced Scientific
+Computing Research (ASCR) Leadership Computing Challenge (ALCC) allocations on
+Titan. It also facilitated the incorporation of additional DOE HPC resources
+as WLCG grid sites, including Theta at the Argonne Leadership Computing
+Facility (ALCF) and Cori at the National Energy Research Scientific Computing
+Center (NERSC).
 
-Over the past few years, the ATLAS experiment has been investigating the
-implications of using high-performance computers -- such as those found at Oak
-Ridge Leadership Computing Facility (OLCF) and other United States Department
-of Energy (DOE) computing facilities -- to augment WLCG computing facilities by
-integrating their High Performance Computing (HPC) resources. This steady
-transition is a consequence of application requirements such as greater than
-expected data production, as well as technology trends and software complexity.
 
-To this end, the BigPanDA team extended PanDA to access HPC resources, allowing
-leadership-class supercomputers like Titan at OLCF to become grid sites for the
-WLCG. HPC resources are not necessarily tuned for processing data on the scale
-of the ATLAS experiment, but they are incredibly well-suited for simulation
-work. Taking advantage of the strengths of HPC resources like Titan allowed
-ATLAS to consume more than 620 million Titan core hours during the three years
-from 2016-2018 as part of its production workflow for simulations. Not only did
-this represent a large proportion of ATLAS's resource consumption for
-simulations, but it also led to the incorporation of other DOE HPC resources as
-WLCG grid sites, including Theta at the Argonne Leadership Computing Facility
-(ALCF) and Cori at the National Energy Research Scientific Computing Center
-(NERSC).
 
-Here, we describe the architectural, algorithmic, and software changes which
-were addressed in order to prepare the PanDA WMS for the exascale. We will
-focus on our experiences in adapting PanDA to work with Titan at the OLCF. Even
-though Titan was decommissioned in August 2019, these experiences are directly
-applicable to Summit, OLCF's pre-exascale successor to Titan. In particular, we
-will discuss the extensions to PanDA that allowed it to interact with Titan's
-Moab resource manager in two distinct operational modes: a ``batch queue mode''
-that used traditional allocations to consume 200 million core hours, and a
-``backfill mode'' that opportunistically consumed unutilized resources totaling
-more than 420 million core hours. For the traditional mode, we will describe
-new techniques that were implemented to shape large jobs for consuming DOE
-Advanced Scientific Computing Research (ASCR) Leadership Computing Challenge
-(ALCC) allocations on Titan.
+% After the early success in discovering a new particle consistent with the
+% long-awaited Higgs boson, ATLAS continued taking the precision measurements
+% necessary for further discoveries during Run 2, which came to an end in
+% December 2018. Especially in light of the future Run 3 as well as the High
+% Luminosity LHC (HL-LHC) project, it is obvious that the need for simulation
+% and analysis will overwhelm the expected capacity of WLCG computing facilities
+% unless the range and precision of physics studies are curtailed.
 
-We also describe the use of a ``backfill mode'' for PanDA in which work was
-streamed steadily to Titan and reshaped and submitted dynamically based on
-available unutilized resources. The BigPanDA team took advantage of the
-backfill scheduling feature of the Moab resource manager with the goal of
-consuming unutilized resources that would have otherwise remained unutilized,
-without affecting other projects' quality of service. We assess the
-performance of PanDA with respect to this goal with several studies that are
-included here.
+% Over the past few years, the ATLAS experiment has been investigating the
+% implications of using high-performance computers -- such as those found at Oak
+% Ridge Leadership Computing Facility (OLCF) and other United States Department
+% of Energy (DOE) computing facilities -- to augment WLCG computing facilities by
+% integrating their High Performance Computing (HPC) resources. This steady
+% transition is a consequence of application requirements such as greater than
+% expected data production, as well as technology trends and software complexity.
 
-Finally, this report describes the use of PanDA for experiments in other
-scientific fields. Multiple demonstration workflows are described for fields
-such as astronomy, genomics, and neuroscience, using both OLCF resources and
-other HPC resources.
+% To this end, the BigPanDA team extended PanDA to access HPC resources, allowing
+% leadership-class supercomputers like Titan at OLCF to become grid sites for the
+% WLCG. 
+
+% HPC resources are not necessarily tuned for processing data on the scale
+% of the ATLAS experiment, but they are incredibly well-suited for simulation
+% work. 
+
+
+% We also describe the use of a ``backfill mode'' for PanDA in which work was
+% streamed steadily to Titan and reshaped and submitted dynamically based on
+% available unutilized resources. The BigPanDA team took advantage of the
+% backfill scheduling feature of the Moab resource manager with the goal of
+% consuming unutilized resources that would have otherwise remained unutilized,
+% without affecting other projects' quality of service. We assess the
+% performance of PanDA with respect to this goal with several studies that are
+% included here.
+
+In \S2 we provide background information and details on PanDA --- its design,
+implementation and its utilization for distributed high-throughput workload
+management, highlighting internal job states within PanDA and the brokerage
+algorithms used. In \S3, we discuss extensions made to PanDA to effectively
+execute, integrate and utilize Titan, and outline Titan's queue policies which
+shape internal PanDA workload shaping decisions. A stated goal of the
+integration of PanDA on Titan for ATLAS workloads was to increase the overall
+utilization of Titan without having a discernible impact on other jobs. In \S4
+we define the metrics of assessing managing ATLAS workload in backfill mode
+and present our findings: we cannot be certain, but with high probability and
+confidence, our analysis suggests no discernible impact. Finally in \S5 we
+describe the use of PanDA for experiments in other scientific fields. Multiple
+demonstration workflows are described for fields such as astronomy, genomics,
+and neuroscience, using both OLCF resources and other HPC resources.
+
+
 
 %-  vim:set syntax=tex:
