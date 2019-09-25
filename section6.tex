@@ -5,9 +5,10 @@
 
 % Section 4 summary
 
-Recall that the goal of CSC108 has been to consume idle resources on Titan
-which would have otherwise gone to waste, while making a good-faith effort not
-to disturb the rest of Titan's ecosystem.
+The goal of the project using allocation CSC108 has been to consume idle
+resources on Titan which would otherwise have likely gone remain unutilized,
+while not having a discernible impact on the quality of service of other jobs
+on Titan.
 
 The results of the rescheduling study in
 Section~\ref{subsec:rescheduling-study} suggested that CSC108 successfully
@@ -21,7 +22,6 @@ blocking probability was used as a means to identify and analyze times of great
 competition for resources, but again the interpretations were weak due to poor
 goodness-of-fit.
 
-
 The plots shown in Figures~\ref{fig:utilization-all},
 \ref{fig:utilization-bin3}, and \ref{fig:utilization-bin4} are all suggestive
 of an inverse relationship, but \ref{fig:utilization-bin5} suggests a direct
@@ -31,26 +31,26 @@ such a case, such as to say that CSC108's consumption in bin 5 causes an
 increase in overall utilization, while its consumption in other bins decreases
 overall utilization. Here, however, we are only looking for relationships in
 the data, and the goodness-of-fit values are consistently poor. Thus, there
-were no simple linear relationships, and this suggests that CSC108 actually did
-accomplish its goal of not decreasing the quality of service for other projects
-on Titan.
+were no simple linear relationships, and this suggests that CSC108 actually
+did accomplish its goal of not decreasing the quality of service for other
+projects on Titan.
 
 These overall results underscore the difficulty of the main problem of this
 section, which was to identify and analyze the impact of the CSC108 project on
 Titan. The original hypothesis stated that CSC108 has no effect on Titan. We
-can see that it has had an impact on Titan in the form of consuming hundreds of
-millions of core hours. Results suggest that CSC108 negatively impacts Titan by
-increasing wait times, that CSC108 positively impacts Titan by increasing
-throughput, and that CSC108 positively impacts Titan by increasing utilization.
-Interestingly, the inability to find simple relationships by using blocking
-probability suggests that users' judging system performance by monitoring the
-batch queue is similarly incapable. In any case, the difficulty in confirming
-any impact may simply provide evidence that the CSC108 project has impacted
-Titan minimally, at least with respect to the indicators used.
+can see that it has had an impact on Titan in the form of consuming hundreds
+of millions of core hours. Results suggest that CSC108 negatively impacts
+Titan by increasing wait times, that CSC108 positively impacts Titan by
+increasing throughput, and that CSC108 positively impacts Titan by increasing
+utilization. Interestingly, the inability to find simple relationships by
+using blocking probability suggests that users' judging system performance by
+monitoring the batch queue is similarly incapable. In any case, the difficulty
+in confirming any impact may simply provide evidence that the CSC108 project
+has impacted Titan minimally, at least with respect to the indicators used.
 
 Finally, we note here that the phenomenon of ``draining'' on Titan may play a
-role in some of the counterintuitive results, such as those depicted in Figures
-\ref{fig:utilization-all}, \ref{fig:utilization-bin3}, and
+role in some of the counterintuitive results, such as those depicted in
+Figures \ref{fig:utilization-all}, \ref{fig:utilization-bin3}, and
 \ref{fig:utilization-bin4}. Draining is technically a node state in the Moab
 scheduler, but it is used here colloquially to refer to the process by which
 the scheduler allows busy nodes to finish executing workload before keeping
@@ -60,17 +60,17 @@ has enabled backfill scheduling, these idle resources may actually be used for
 small, short jobs, provided that they will complete before those nodes will be
 needed for the large job. Because CSC108's consumption increases during times
 of increased backfill opportunity, the data will show that times of decreased
-utilization are correlated with increased utilization, unless CSC108 is able to
-consume all of the backfill opportunity. Even if the project had an infinite
-supply of new workloads to submit to Titan, it is limited to 20 concurrently
-executing jobs. Thus, CSC108 will appear to increase in utilization at the
-same time that all other utilization decreases, even though CSC108 is not
-actually displacing other projects' workloads. Future work will examine
-draining in greater detail, to determine if these times have an identifiable
-signature so that comparisons can be made, in much the same manner as followed
-in the blocking probability study. This will allow us to understand whether
-the results of Figure~\ref{fig:utilization-bin5} imply that CSC108 should
-restrict its individual jobs to use only bin 5, for example.
+utilization are correlated with increased utilization, unless CSC108 is able
+to consume all of the backfill opportunity. Even if the project had an
+infinite supply of new workloads to submit to Titan, it is limited to 20
+concurrently executing jobs. Thus, CSC108 will appear to increase in
+utilization at the same time that all other utilization decreases, even though
+CSC108 is not actually displacing other projects' workloads. Future work will
+examine draining in greater detail, to determine if these times have an
+identifiable signature so that comparisons can be made, in much the same
+manner as followed in the blocking probability study. This will allow us to
+understand whether the results of Figure~\ref{fig:utilization-bin5} imply that
+CSC108 should restrict its individual jobs to use only bin 5, for example.
 
 % Section 5 summary
 
